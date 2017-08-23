@@ -1,3 +1,10 @@
+# Nand to Tetris
+The goal of this course is to design a computer from the bottom up.
+First 6 weeks projects are about the hardware layers (from NAND gate
+to Assembly), the other are about software layers (from Compiler
+to tetris).
+
+
 # Transistor count to this point
 ## Week 1 projects : Base chips
 Nand = 2 transistors
