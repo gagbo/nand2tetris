@@ -1,0 +1,21 @@
+# Transistor count to this point
+## Week 1 projects : Base chips
+Nand = 2 transistors
+Not = 2 transistors
+And = 4 transistors
+Or = 10 transistors
+Xor = 22 transistors
+Mux = 20 transistors
+DMux = 10 transistors
+
+And16 = 64 transistors
+Not16 = 32 transistors
+Or16 = 160 transistors
+Mux16 = 320 transistors
+
+Or8Way = 70 transistors
+Mux4Way16 = 960 transistors
+DMux4Way = 30 transistors
+
+Mux8Way16 = 2240 transistors
+DMux8Way = 70 transistors
