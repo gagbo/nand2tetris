@@ -19,3 +19,12 @@ DMux4Way = 30 transistors
 
 Mux8Way16 = 2240 transistors
 DMux8Way = 70 transistors
+## Week 2 projects : Additions
+Inc16 = 64 transistors
+HalfAdder = 26 transistors
+FullAdder = 62 transistors
+
+Add16 = 956 transistors
+
+Or16Way = 150 transistors
+ALU = 4252 transistors
