@@ -3,3 +3,6 @@
 **/.*.sw*
 **/*~
 .notags
+
+# Cache files
+tools/bin/*.dat
