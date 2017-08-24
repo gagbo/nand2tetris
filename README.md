@@ -4,9 +4,12 @@ First 6 weeks projects are about the hardware layers (from NAND gate
 to Assembly), the other are about software layers (from Compiler
 to tetris).
 
+The so-called HACK computer that is being built works on a 16-bit
+architecture.
 
-# Transistor count to this point
-## Week 1 projects : Base chips
+
+## Transistor count to this point
+### Week 1 projects : Base chips
 - Nand = 2 transistors
 - Not = 2 transistors
 - And = 4 transistors
@@ -27,7 +30,7 @@ to tetris).
 - Mux8Way16 = 2240 transistors
 - DMux8Way = 70 transistors
 
-## Week 2 projects : Additions
+### Week 2 projects : Additions
 - Inc16 = 64 transistors
 - HalfAdder = 26 transistors
 - FullAdder = 62 transistors
@@ -37,7 +40,7 @@ to tetris).
 - Or16Way = 150 transistors
 - ALU = 4252 transistors
 
-## Week 3 projects : Memory
+### Week 3 projects : Memory
 - Bit = 20 transistors + DFF
 - Register = 320 transistors + 16\*DFF
 - PC = 1414 transistors + 16\*DFF
