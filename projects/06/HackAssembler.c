@@ -28,6 +28,9 @@ int main(int argc, char** argv) {
     // At this point, filestream is a symbol-less .asm stream
     // filestream is read line by line into char* line
     // TODO : put in a function
+    // Returns the count of read instructions
+    // uint32_t symbolless_stream_to_machine_code(FILE * filestream,
+    //                                            Instructions list)
     while (fgets(line, 255, filestream) != NULL) {
         char* nextWord;
         char strippedInstruction[20];
