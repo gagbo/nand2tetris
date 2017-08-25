@@ -4,7 +4,7 @@
 // free of symbols. Handling files to get to this point will be done in another
 // module
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     // 1) Open the file or throw error
     char filename[50];
     if (argc > 2) {
@@ -39,7 +39,7 @@ struct Instructions {
 };
 
 // Not sure how it works yet, especially the while condition so left aside.
-void getBin(int16_t num, char *str) {
+void getBin(int16_t num, char* str) {
     // Ensure that the string won't be read after the 16th bit
     *(str + 16) = '\0';
     // Create a mask that is a single 1, shifted to the left to
@@ -53,10 +53,10 @@ void getBin(int16_t num, char *str) {
 // The value to convert is bitwise AND-ed to 1 to get and write the LSB
 // then value is right-shifted so the new LSB of value is actually the next LSB
 // of previous value
-void tobinstr(int16_t value, int bitsCount, char *output) {
+void tobinstr(int16_t value, int bitscount, char* output) {
     int i;
-    output[bitsCount] = '\0';
-    for (i = bitsCount - 1; i >= 0; --i, value >>= 1) {
+    output[bitscount] = '\0';
+    for (i = bitscount - 1; i >= 0; --i, value >>= 1) {
         output[i] = !!(value & 1) + '0';
     }
 }
