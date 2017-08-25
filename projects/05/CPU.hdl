@@ -39,5 +39,58 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    /* General note : Control bits make sense only if the instruction is
+    * a C-instruction, so they are almost always AND-ed with the MSB of
+    * instruction. Only excention are ALU control bits, since ALU output
+    * is already filtered by the Mux if the instruction is A.
+    */
+
+    /* ARegister handling.
+     * 1) It is changed if destination bit for A is true,
+     * or if the instruction is an A instruction
+     * 2) If the instruction is an A-instruction, we have to take input from
+     * instruction entry and not ALU output.*/
+    Mux16 (a=instruction, b=outALU, sel=instruction[15], out=inAReg);
+    Not (in=instruction[15], out=Ainstruction);
+    And (a=instruction[5], b=instruction[15], out=CinstrAset);
+    Or (a=Ainstruction, b=CinstrAset, out=loadAReg);
+    ARegister (in=inAReg, load=loadAReg, out=outAReg, out[0..14]=addressM);
+
+    /* DRegister handling.
+     * The value is changed to ALU output if the destination bit is set
+     * and if it is a C-instruction
+     */
+    And (a=instruction[4], b=instruction[15], out=loadDReg);
+    DRegister (in=outALU, load=loadDReg, out=outDReg);
+
+    /* ALU handling.
+     * First part is a mux of A and M registers, then ALU is used
+     */
+    Mux16 (a=outAReg, b=inM, sel=instruction[12], out=AMReg);
+    ALU (x=outDReg, y=AMReg, zx=instruction[11],
+                             nx=instruction[10],
+                             zy=instruction[9],
+                             ny=instruction[8],
+                             f=instruction[7],
+                             no=instruction[6],
+        out=outALU, out=outM, zr=zrALU, ng=ngALU);
+
+    /* Program Counter handling
+     * Truth table is load = (J2 & ng) or (J1 & zr) or (J0 & (not zr) & (not ng))
+     */
+    Not (in=zrALU, out=notzrALU);
+    Not (in=ngALU, out=notngALU);
+    And (a=notzrALU, b=notngALU, out=posALU);
+    And (a=ngALU, b=instruction[2], out=negativeJump);
+    And (a=zrALU, b=instruction[1], out=zeroJump);
+    And (a=posALU, b=instruction[0], out=positiveJump);
+    Or (a=negativeJump, b=zeroJump, out=leLoadJump);
+    Or (a=leLoadJump, b=positiveJump, out=loadJump);
+    And (a=loadJump, b=instruction[15], out=loadPC); // Ignore the jump if A instruction
+    PC (in=outAReg, load=loadPC, reset=reset, inc=true, out[0..14]=pc);
+
+    /* writeM handling
+     * we need to ignore the bit if it is a A-instruction */
+    And (a=instruction[3], b=instruction[15], out=writeM);
+
 }
