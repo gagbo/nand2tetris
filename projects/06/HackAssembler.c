@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-// Not sure how it works yet, so left aside.
+// Not sure how it works yet, especially the while condition so left aside.
 void getBin(int16_t num, char *str) {
     // Ensure that the string won't be read after the 16th bit
     *(str + 16) = '\0';
@@ -57,6 +57,10 @@ void getBin(int16_t num, char *str) {
     while (mask >>= 1) *str++ = !!(mask & num) + '0';
 }
 
+// Simpler to understand implementation :
+// The value to convert is bitwise AND-ed to 1 to get and write the LSB
+// then value is right-shifted so the new LSB of value is actually the next LSB
+// of previous value
 void tobinstr(int16_t value, int bitsCount, char *output) {
     int i;
     output[bitsCount] = '\0';
