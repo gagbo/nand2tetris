@@ -6,3 +6,6 @@
 
 # Cache files
 tools/bin/*.dat
+
+# Output files from the tests
+**/*.out
