@@ -45,6 +45,23 @@ void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump);
 
 void printInstruction(Instruction* instr);
 
+// TODO : List implementation for Instructions
+// Best abstraction for the list would be a queue
+//    push_back is needed
+//    front is needed
+//    pop_front is needed too
+// Best implementation would be using a deque
+//    Constant time insertion/deletion at beginning and end
+//    Constant time random access (indexed by lineNumber) is a bonus
+// For the time being, we'll just use a linked list
+// Push an Instruction at the end of the instructions list
+Instructions push_back(Instructions list, Instruction instruction);
+Instructions pop_front(void);
+Instruction front(Instructions list);
+Instruction back(Instructions list);
+void print_all_instructions(Instructions list);
+void delete_all_instructions(Instructions list);
+
 // Converts num to it's 16 bit binary representation, and puts it in str
 void getBin(int16_t num, char* str);
 void tobinstr(int16_t value, int bitsCount, char* output);
