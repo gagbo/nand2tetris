@@ -23,27 +23,30 @@ int main(int argc, char** argv) {
     uint32_t instructionCount = 0;
     filestream = fopen(filename, "r");
 
+    // This is where a symbol parser should work to get a symbol-less .asm
+
     // At this point, filestream is a symbol-less .asm stream
+    // filestream is read line by line into char* line
     while (fgets(line, 255, filestream) != NULL) {
-        // Do stuff to parse the file
-        // Strip line from white space
         char* nextWord;
         char strippedInstruction[20];
         strippedInstruction[0] = '\0';
-        // This loop uses strtok to strip all whitespaces in line.
+        // This loop uses strtok to remove all whitespaces in line.
         // Also, if a bracket or a comment symbol is found, we skip to
         // next line
         nextWord = strtok(line, " ");
         while (nextWord != NULL) {
+            // Stop reading the line if there is one of those symbols
             if (strncmp(nextWord, "//", 2) == 0 ||
                 strncmp(nextWord, "{", 1) == 0 ||
                 strncmp(nextWord, "}", 1) == 0) {
                 break;
             }
+            // Otherwise, add the new meaningful symbol, and go the next one
             strcat(strippedInstruction, nextWord);
             nextWord = strtok(NULL, " ");
         }
-        // This is to skip comment lines or open/close brackets
+        // This is needed to skip comment lines or open/close brackets
         if (strlen(strippedInstruction) == 0) {
             continue;
         }
