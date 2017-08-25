@@ -3,9 +3,19 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef struct Instructions {
+#define JGT 1
+#define JEQ 2
+#define JGE 3
+#define JLT 4
+#define JNE 5
+#define JLE 6
+#define JMP 7
+
+typedef struct Instructions Instruction;
+struct Instructions {
     // line Number or Address of instruction in ROM
     uint32_t lineNumber;
+    Instruction *next;
 
     // Concat these from top to bottom to get
     // instruction from MSB to LSB
@@ -15,7 +25,7 @@ typedef struct Instructions {
     bool alu[6];
     bool destination[3];
     bool jump[3];
-} Instruction;
+};
 
 Instruction convertStringToInstruction(char *AssemblyLine);
 // Converts num to it's 16 bit binary representation, and puts it in str
@@ -42,7 +52,7 @@ int main(int argc, char **argv) {
     //      a) It should return the line stripped
     //      b) It should move the cursor in the file
     //      c) It should return '\0' if EOF
-    //  4) Translate the line into an Instruction and print it to stdout
+    //  4) Translate the line into an Instruction and save it for label pass
     return 0;
 }
 
