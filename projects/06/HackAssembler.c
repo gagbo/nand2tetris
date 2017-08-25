@@ -33,21 +33,6 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-struct Instructions {
-    // line Number or Address of instruction in ROM
-    uint32_t lineNumber;
-    Instruction *next;
-
-    // Concat these from top to bottom to get
-    // instruction from MSB to LSB
-    bool aOrC;
-    bool c1s[2];
-    bool aOrM;
-    bool alu[6];
-    bool destination[3];
-    bool jump[3];
-};
-
 // Not sure how it works yet, especially the while condition so left aside.
 void getBin(int16_t num, char* str) {
     // Ensure that the string won't be read after the 16th bit
