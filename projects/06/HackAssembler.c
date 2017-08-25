@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
         // This loop uses strtok to remove all whitespaces in line.
         // Also, if a bracket or a comment symbol is found, we skip to
         // next line
-        nextWord = strtok(line, " ");
+        nextWord = strtok(line, " \r\n\t");
         while (nextWord != NULL) {
             // Stop reading the line if there is one of those symbols
             if (strncmp(nextWord, "//", 2) == 0 ||
@@ -61,7 +61,7 @@ int main(int argc, char** argv) {
             set_AInstruction(&Ainstruction,
                              strtol(strippedInstruction + 1, NULL, 10));
             Ainstruction.lineNumber = instructionCount;
-            fprintf(stderr, "%d ", instructionCount);
+            /* fprintf(stderr, "%d ", instructionCount); */
             ++instructionCount;
             printInstruction(&Ainstruction);
         } else {  // b) else, parse for C instruction
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
             Instruction Cinstruction;
             set_CInstruction(&Cinstruction, dest, comp, jump);
             Cinstruction.lineNumber = instructionCount;
-            fprintf(stderr, "%d ", instructionCount);
+            /* fprintf(stderr, "%d ", instructionCount); */
             ++instructionCount;
             printInstruction(&Cinstruction);
         }
