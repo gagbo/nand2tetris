@@ -16,10 +16,20 @@ int main(int argc, char** argv) {
     } else {
         strcpy(filename, argv[1]);
     }
+    FILE* filestream = NULL;
+    char line[256];
     char str[17];
     tobinstr(12452, 16, str);
     printf("%s %s\n", str, filename);
     // 1) Translate the line into an Instruction and print it
+    filestream = fopen(filename, "r");
+    while (fgets(line, 255, filestream) != NULL) {
+        // Do stuff to parse the file
+        // Strip line from white space
+        // See if line[0] is @
+        // a) if it is, then Ainstruction
+        // b) else, parse for C instruction
+    }
     return 0;
 }
 
