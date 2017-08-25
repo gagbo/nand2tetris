@@ -1,5 +1,9 @@
 #include "HackAssembler.h"
 
+// For the time being, we aim to translate a file stripped of whitespaces, and
+// free of symbols. Handling files to get to this point will be done in another
+// module
+
 int main(int argc, char **argv) {
     // 1) Open the file or throw error
     char filename[50];
@@ -15,12 +19,7 @@ int main(int argc, char **argv) {
     char str[17];
     tobinstr(12452, 16, str);
     printf("%s %s\n", str, filename);
-    // 2) Keep the cursor in this scope
-    // 3) Find the next line to translate
-    //      a) It should return the line stripped
-    //      b) It should move the cursor in the file
-    //      c) It should return '\0' if EOF
-    //  4) Translate the line into an Instruction and save it for label pass
+    // 1) Translate the line into an Instruction and print it
     return 0;
 }
 
