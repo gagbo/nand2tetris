@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
 
     // At this point, filestream is a symbol-less .asm stream
     // filestream is read line by line into char* line
+    // TODO : put in a function
     while (fgets(line, 255, filestream) != NULL) {
         char* nextWord;
         char strippedInstruction[20];
@@ -62,8 +63,16 @@ int main(int argc, char** argv) {
             printInstruction(&Ainstruction);
         } else {  // b) else, parse for C instruction
             // TODO : make the string uppercase
-            char* dest = strtok(strippedInstruction, "=");
-            char* comp = strtok(NULL, ";");
+            char* dest = NULL;
+            char* comp = NULL;
+            // Check if destination is specified before cutting
+            // the C-instruction string
+            if (strchr(strippedInstruction, '=') != NULL) {
+                dest = strtok(strippedInstruction, "=");
+                comp = strtok(NULL, ";");
+            } else {
+                comp = strtok(strippedInstruction, ";");
+            }
             char* jump = strtok(NULL, "\n");
             Instruction Cinstruction;
             set_CInstruction(&Cinstruction, dest, comp, jump);
@@ -116,20 +125,26 @@ void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump) {
     instr->instruct[2] = 1;
 
     // Dest handling
-    if (strchr(dest, 'A') != NULL) {
-        instr->instruct[10] = 1;
-    } else {
+    if (dest == NULL) {
         instr->instruct[10] = 0;
-    }
-    if (strchr(dest, 'D') != NULL) {
-        instr->instruct[11] = 1;
-    } else {
         instr->instruct[11] = 0;
-    }
-    if (strchr(dest, 'M') != NULL) {
-        instr->instruct[12] = 1;
-    } else {
         instr->instruct[12] = 0;
+    } else {
+        if (strchr(dest, 'A') != NULL) {
+            instr->instruct[10] = 1;
+        } else {
+            instr->instruct[10] = 0;
+        }
+        if (strchr(dest, 'D') != NULL) {
+            instr->instruct[11] = 1;
+        } else {
+            instr->instruct[11] = 0;
+        }
+        if (strchr(dest, 'M') != NULL) {
+            instr->instruct[12] = 1;
+        } else {
+            instr->instruct[12] = 0;
+        }
     }
 
     // Comp handling
@@ -177,7 +192,9 @@ void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump) {
     }
 
     // Jump handling
-    if (strcmp(jump, "JGT") == 0) {
+    if (jump == NULL) {
+        tobin(0, 3, instr->instruct + 13);
+    } else if (strcmp(jump, "JGT") == 0) {
         tobin(1, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JEQ") == 0) {
         tobin(2, 3, instr->instruct + 13);
@@ -191,8 +208,6 @@ void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump) {
         tobin(6, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JMP") == 0) {
         tobin(7, 3, instr->instruct + 13);
-    } else {
-        tobin(0, 3, instr->instruct + 13);
     }
 }
 
