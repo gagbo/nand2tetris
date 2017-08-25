@@ -27,5 +27,17 @@ CHIP Memory {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    /* Dmux the address to target the proper memory unit
+    */
+    DMux (in=load, a=loadRAM16K, b=loadIO, sel=address[14]);
+    DMux (in=loadIO, a=loadSCREEN, b=dummyloadKeyboard, sel=address[13]);
+
+    /* Act on memory */
+    RAM16K (in=in, out=outRAM16K, address=address[0..13], load=loadRAM16K);
+    Screen (in=in, out=outSCREEN, load=loadSCREEN, address=address[0..12]);
+    Keyboard (out=outKBD);
+
+    /* Mux the signals back together */
+    Mux16 (a=outSCREEN, b=outKBD, sel=address[13], out=outIO);
+    Mux16 (a=outRAM16K, b=outIO, sel=address[14], out=out);
 }
