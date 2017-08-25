@@ -72,11 +72,11 @@ int main(int argc, char** argv) {
             // the C-instruction string
             if (strchr(strippedInstruction, '=') != NULL) {
                 dest = strtok(strippedInstruction, "=");
-                comp = strtok(NULL, ";");
+                comp = strtok(NULL, ";\r\n");
             } else {
-                comp = strtok(strippedInstruction, ";");
+                comp = strtok(strippedInstruction, ";\r\n");
             }
-            char* jump = strtok(NULL, "\n");
+            char* jump = strtok(NULL, "\r\n");
             Instruction Cinstruction;
             set_CInstruction(&Cinstruction, dest, comp, jump);
             Cinstruction.lineNumber = instructionCount;
