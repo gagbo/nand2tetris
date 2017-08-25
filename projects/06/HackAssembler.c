@@ -48,6 +48,16 @@ int main(int argc, char** argv) {
             ++instructionCount;
             printInstruction(&Ainstruction);
         } else {  // b) else, parse for C instruction
+            // TODO : make the string uppercase
+            char* dest = strtok(strippedInstruction, "=");
+            char* comp = strtok(NULL, ";");
+            char* jump = strtok(NULL, "\n");
+            Instruction Cinstruction;
+            set_CInstruction(&Cinstruction, dest, comp, jump);
+            Cinstruction.lineNumber = instructionCount;
+            fprintf(stderr, "%d ", instructionCount);
+            ++instructionCount;
+            printInstruction(&Cinstruction);
         }
     }
     return 0;
@@ -83,96 +93,98 @@ void tobin(int16_t value, int bitscount, bool* output) {
 }
 
 void set_AInstruction(Instruction* instr, int16_t address) {
-    instr->instruct[15] = 0;
-    tobin(address, 15, instr->instruct);
+    instr->instruct[0] = 0;
+    tobin(address, 15, instr->instruct + 1);
 }
 
 void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump) {
-    instr->instruct[15] = 1;
-    instr->instruct[14] = 1;
-    instr->instruct[13] = 1;
+    instr->instruct[0] = 1;
+    instr->instruct[1] = 1;
+    instr->instruct[2] = 1;
 
     // Dest handling
     if (strchr(dest, 'A') != NULL) {
-        instr->instruct[5] = 1;
+        instr->instruct[10] = 1;
     } else {
-        instr->instruct[5] = 0;
+        instr->instruct[10] = 0;
     }
     if (strchr(dest, 'D') != NULL) {
-        instr->instruct[4] = 1;
+        instr->instruct[11] = 1;
     } else {
-        instr->instruct[4] = 0;
+        instr->instruct[11] = 0;
     }
     if (strchr(dest, 'M') != NULL) {
-        instr->instruct[3] = 1;
-    } else {
-        instr->instruct[3] = 0;
-    }
-
-    // Comp handling
-    if (strchr(comp, 'M') != NULL) {
         instr->instruct[12] = 1;
     } else {
         instr->instruct[12] = 0;
     }
+
+    // Comp handling
+    if (strchr(comp, 'M') != NULL) {
+        instr->instruct[3] = 1;
+    } else {
+        instr->instruct[3] = 0;
+    }
     if (strcmp(comp, "0") == 0) {
-        tobin(42, 6, instr->instruct + 6);
+        tobin(42, 6, instr->instruct + 4);
     } else if (strcmp(comp, "1") == 0) {
-        tobin(63, 6, instr->instruct + 6);
+        tobin(63, 6, instr->instruct + 4);
     } else if (strcmp(comp, "-1") == 0) {
-        tobin(58, 6, instr->instruct + 6);
+        tobin(58, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D") == 0) {
-        tobin(12, 6, instr->instruct + 6);
+        tobin(12, 6, instr->instruct + 4);
     } else if (strcmp(comp, "A") == 0 || strcmp(comp, "M") == 0) {
-        tobin(48, 6, instr->instruct + 6);
+        tobin(48, 6, instr->instruct + 4);
     } else if (strcmp(comp, "!D") == 0) {
-        tobin(13, 6, instr->instruct + 6);
+        tobin(13, 6, instr->instruct + 4);
     } else if (strcmp(comp, "!A") == 0 || strcmp(comp, "!M") == 0) {
-        tobin(49, 6, instr->instruct + 6);
+        tobin(49, 6, instr->instruct + 4);
     } else if (strcmp(comp, "-D") == 0) {
-        tobin(15, 6, instr->instruct + 6);
+        tobin(15, 6, instr->instruct + 4);
     } else if (strcmp(comp, "-A") == 0 || strcmp(comp, "-M") == 0) {
-        tobin(51, 6, instr->instruct + 6);
+        tobin(51, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D+1") == 0) {
-        tobin(31, 6, instr->instruct + 6);
+        tobin(31, 6, instr->instruct + 4);
     } else if (strcmp(comp, "A+1") == 0 || strcmp(comp, "M+1") == 0) {
-        tobin(57, 6, instr->instruct + 6);
+        tobin(57, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D-1") == 0) {
-        tobin(14, 6, instr->instruct + 6);
+        tobin(14, 6, instr->instruct + 4);
     } else if (strcmp(comp, "A-1") == 0 || strcmp(comp, "M-1") == 0) {
-        tobin(50, 6, instr->instruct + 6);
+        tobin(50, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D+A") == 0 || strcmp(comp, "D+M") == 0) {
-        tobin(2, 6, instr->instruct + 6);
+        tobin(2, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D-A") == 0 || strcmp(comp, "D-M") == 0) {
-        tobin(19, 6, instr->instruct + 6);
+        tobin(19, 6, instr->instruct + 4);
     } else if (strcmp(comp, "A-D") == 0 || strcmp(comp, "M-D") == 0) {
-        tobin(7, 6, instr->instruct + 6);
+        tobin(7, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D&A") == 0 || strcmp(comp, "D&M") == 0) {
-        tobin(0, 6, instr->instruct + 6);
+        tobin(0, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D|A") == 0 || strcmp(comp, "D|M") == 0) {
-        tobin(21, 6, instr->instruct + 6);
+        tobin(21, 6, instr->instruct + 4);
     }
 
     // Jump handling
     if (strcmp(jump, "JGT") == 0) {
-        tobin(1, 3, instr->instruct);
+        tobin(1, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JEQ") == 0) {
-        tobin(2, 3, instr->instruct);
+        tobin(2, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JGE") == 0) {
-        tobin(3, 3, instr->instruct);
+        tobin(3, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JLT") == 0) {
-        tobin(4, 3, instr->instruct);
+        tobin(4, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JNE") == 0) {
-        tobin(5, 3, instr->instruct);
+        tobin(5, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JLE") == 0) {
-        tobin(6, 3, instr->instruct);
+        tobin(6, 3, instr->instruct + 13);
     } else if (strcmp(jump, "JMP") == 0) {
-        tobin(7, 3, instr->instruct);
+        tobin(7, 3, instr->instruct + 13);
+    } else {
+        tobin(0, 3, instr->instruct + 13);
     }
 }
 
 void printInstruction(Instruction* instr) {
-    for (int i = 15; i >= 0; --i) {
+    for (int i = 0; i <= 15; ++i) {
         printf("%d", instr->instruct[i]);
     }
     printf("\n");

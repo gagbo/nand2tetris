@@ -14,7 +14,7 @@ struct Instructions {
     Instruction* next;
 
     // Concat these from top to bottom to get
-    // instruction from MSB[15] to LSB[0]
+    // instruction from LSB[15] to MSB[0]
     bool instruct[16];
     // 1 wide
     bool* aOrC;
