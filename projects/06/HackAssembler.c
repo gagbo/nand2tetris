@@ -177,7 +177,7 @@ void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump) {
     } else if (strcmp(comp, "D+1") == 0) {
         tobin(31, 6, instr->instruct + 4);
     } else if (strcmp(comp, "A+1") == 0 || strcmp(comp, "M+1") == 0) {
-        tobin(57, 6, instr->instruct + 4);
+        tobin(55, 6, instr->instruct + 4);
     } else if (strcmp(comp, "D-1") == 0) {
         tobin(14, 6, instr->instruct + 4);
     } else if (strcmp(comp, "A-1") == 0 || strcmp(comp, "M-1") == 0) {
