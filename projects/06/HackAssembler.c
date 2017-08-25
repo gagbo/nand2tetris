@@ -18,17 +18,37 @@ int main(int argc, char** argv) {
     }
     FILE* filestream = NULL;
     char line[256];
-    char str[17];
-    tobinstr(12452, 16, str);
-    printf("%s %s\n", str, filename);
+    uint32_t instructionCount = 0;
     // 1) Translate the line into an Instruction and print it
     filestream = fopen(filename, "r");
     while (fgets(line, 255, filestream) != NULL) {
         // Do stuff to parse the file
         // Strip line from white space
+        char* nextWord;
+        char strippedInstruction[20];
+        strippedInstruction[0] = '\0';
         // See if line[0] is @
+        nextWord = strtok(line, " ");
+        while (nextWord != NULL) {
+            if (strncmp(nextWord, "//", 2) == 0 ||
+                strncmp(nextWord, "{", 1) == 0 ||
+                strncmp(nextWord, "}", 1) == 0) {
+                break;
+            }
+            strcat(strippedInstruction, nextWord);
+            nextWord = strtok(NULL, " ");
+        }
         // a) if it is, then Ainstruction
-        // b) else, parse for C instruction
+        if (strncmp(strippedInstruction, "@", 1) == 0) {
+            Instruction Ainstruction;
+            set_AInstruction(&Ainstruction,
+                             strtol(strippedInstruction + 1, NULL, 10));
+            Ainstruction.lineNumber = instructionCount;
+            fprintf(stderr, "%d ", instructionCount);
+            ++instructionCount;
+            printInstruction(&Ainstruction);
+        } else {  // b) else, parse for C instruction
+        }
     }
     return 0;
 }
