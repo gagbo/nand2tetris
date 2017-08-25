@@ -1,43 +1,4 @@
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-
-#define JGT 1
-#define JEQ 2
-#define JGE 3
-#define JLT 4
-#define JNE 5
-#define JLE 6
-#define JMP 7
-#define M 1
-#define D 2
-#define MD 3
-#define A 4
-#define AM 5
-#define AD 6
-#define AMD 7
-
-typedef struct Instructions Instruction;
-struct Instructions {
-    // line Number or Address of instruction in ROM
-    uint32_t lineNumber;
-    Instruction *next;
-
-    // Concat these from top to bottom to get
-    // instruction from MSB to LSB
-    bool aOrC;
-    bool c1s[2];
-    bool aOrM;
-    bool alu[6];
-    bool destination[3];
-    bool jump[3];
-};
-
-Instruction convertStringToInstruction(char *AssemblyLine);
-// Converts num to it's 16 bit binary representation, and puts it in str
-void getBin(int16_t num, char *str);
-void tobinstr(int16_t value, int bitsCount, char *output);
+#include "HackAssembler.h"
 
 int main(int argc, char **argv) {
     // 1) Open the file or throw error
@@ -62,6 +23,21 @@ int main(int argc, char **argv) {
     //  4) Translate the line into an Instruction and save it for label pass
     return 0;
 }
+
+struct Instructions {
+    // line Number or Address of instruction in ROM
+    uint32_t lineNumber;
+    Instruction *next;
+
+    // Concat these from top to bottom to get
+    // instruction from MSB to LSB
+    bool aOrC;
+    bool c1s[2];
+    bool aOrM;
+    bool alu[6];
+    bool destination[3];
+    bool jump[3];
+};
 
 // Not sure how it works yet, especially the while condition so left aside.
 void getBin(int16_t num, char *str) {
