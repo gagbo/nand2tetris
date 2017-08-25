@@ -16,18 +16,23 @@ int main(int argc, char** argv) {
     } else {
         strcpy(filename, argv[1]);
     }
+
+    // Allocate filestream and parse it
     FILE* filestream = NULL;
     char line[256];
     uint32_t instructionCount = 0;
-    // 1) Translate the line into an Instruction and print it
     filestream = fopen(filename, "r");
+
+    // At this point, filestream is a symbol-less .asm stream
     while (fgets(line, 255, filestream) != NULL) {
         // Do stuff to parse the file
         // Strip line from white space
         char* nextWord;
         char strippedInstruction[20];
         strippedInstruction[0] = '\0';
-        // See if line[0] is @
+        // This loop uses strtok to strip all whitespaces in line.
+        // Also, if a bracket or a comment symbol is found, we skip to
+        // next line
         nextWord = strtok(line, " ");
         while (nextWord != NULL) {
             if (strncmp(nextWord, "//", 2) == 0 ||
@@ -38,6 +43,11 @@ int main(int argc, char** argv) {
             strcat(strippedInstruction, nextWord);
             nextWord = strtok(NULL, " ");
         }
+        // This is to skip comment lines or open/close brackets
+        if (strlen(strippedInstruction) == 0) {
+            continue;
+        }
+        // See if line[0] is @
         // a) if it is, then Ainstruction
         if (strncmp(strippedInstruction, "@", 1) == 0) {
             Instruction Ainstruction;
