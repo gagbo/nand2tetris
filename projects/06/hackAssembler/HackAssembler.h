@@ -6,5 +6,7 @@
 #include <string.h>
 
 #include "HackInstruction.h"
+#include "HackInstructionList.h"
+#include "HackParser.h"
 
 #endif  // HACKASSEMBLER_H_
