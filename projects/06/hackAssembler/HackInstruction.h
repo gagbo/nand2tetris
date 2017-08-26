@@ -17,18 +17,13 @@ struct HackInstruction {
     // Concat these from top to bottom to get
     // instruction from LSB[15] to MSB[0]
     bool instruct[16];
-    // 1 wide
-    bool* aOrC;
-    // 2 wide
-    bool* c1s;
-    // 1 wide
-    bool* aOrM;
-    // 6 wide
-    bool* alu;
-    // 3 wide
-    bool* destination;
-    // 3 wide
-    bool* jump;
+    /* 1 wide : A or C instruction [0]
+     * 2 wide : 1s of C instruction [1-2]
+     * 1 wide : A or M register in ALU [3]
+     * 6 wide : ALU control bits [4-9]
+     * 3 wide : destination bits [10:A ; 11:D ; 12:M]
+     * 3 wide : jump bits [13:<0 ; 14:0 ; 15:>0]
+     */
 };
 typedef HackInstruction* HackInstructions;
 
