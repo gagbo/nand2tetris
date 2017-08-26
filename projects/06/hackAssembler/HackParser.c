@@ -1,8 +1,8 @@
 #include "HackParser.h"
 
 uint32_t symbolless_stream_to_machine_code(FILE* filestream,
-                                           HackInstructions* list,
-                                           HackSymbolTable* table) {
+                                           HackInstructions* p_list,
+                                           HackSymbolTable* p_table) {
     char line[LINE_BUFFERSIZE];
     uint32_t instructionCount = 0;
     uint16_t variableAddress = 16;
@@ -44,7 +44,7 @@ uint32_t symbolless_stream_to_machine_code(FILE* filestream,
                 set_AInstruction(Ainstruction, strtol(label, NULL, 10));
             } else {  // else we have to convert a label
                 // look the label in hash table
-                int64_t labelValue = ST_check_for_key(table, label);
+                int64_t labelValue = ST_check_for_key(p_table, label);
                 if (labelValue != KEY_NOT_FOUND) {
                     // If it exists, set_AInstruction(Ainstr,
                     // symbol_table(label));
@@ -52,17 +52,17 @@ uint32_t symbolless_stream_to_machine_code(FILE* filestream,
                 } else {
                     // If it doesn't, add to the symbol table with label->
                     // variableAddress and increment variableAddress
-                    ST_add_key(table, label, variableAddress);
+                    ST_add_key(p_table, label, variableAddress);
                     set_AInstruction(Ainstruction, variableAddress);
                     variableAddress++;
                 }
             }
             Ainstruction->lineNumber = instructionCount;
-            HI_push_back(list, Ainstruction);
+            HI_push_back(p_list, Ainstruction);
             /* fprintf(stderr, "%d ", instructionCount); */
             ++instructionCount;
             /* fprintf(stderr, "State of the Machine Code : \n"); */
-            /* HI_print_all_instructions(*list); */
+            /* HI_print_all_instructions(*p_list); */
 
         } else {  // b) else, parse for C instruction
             // TODO : make the string uppercase
@@ -80,17 +80,17 @@ uint32_t symbolless_stream_to_machine_code(FILE* filestream,
             HackInstruction* Cinstruction = malloc(sizeof(HackInstruction));
             set_CInstruction(Cinstruction, dest, comp, jump);
             Cinstruction->lineNumber = instructionCount;
-            HI_push_back(list, Cinstruction);
+            HI_push_back(p_list, Cinstruction);
             /* fprintf(stderr, "%d ", instructionCount); */
             ++instructionCount;
             /* fprintf(stderr, "State of the Machine Code : \n"); */
-            /* HI_print_all_instructions(*list); */
+            /* HI_print_all_instructions(*p_list); */
         }
     }
     return instructionCount;
 }
 
-uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* table) {
+uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
     char line[LINE_BUFFERSIZE];
     uint32_t instructionCount = 0;
     int labelsInARow = 0;
@@ -128,7 +128,7 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* table) {
         ++instructionCount;
         if (labelsInARow > 0) {
             for (int i = 0; i < labelsInARow; ++i) {
-                ST_add_key(table, newLabel[i], instructionCount);
+                ST_add_key(p_table, newLabel[i], instructionCount);
             }
             labelsInARow = 0;
         }

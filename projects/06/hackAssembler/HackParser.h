@@ -10,8 +10,8 @@
 #include "HackSymbolTable.h"
 
 uint32_t symbolless_stream_to_machine_code(FILE* filestream,
-                                           HackInstructions* list,
-                                           HackSymbolTable* table);
-uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* table);
+                                           HackInstructions* p_list,
+                                           HackSymbolTable* p_table);
+uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table);
 
 #endif  // HACKPARSER_H_

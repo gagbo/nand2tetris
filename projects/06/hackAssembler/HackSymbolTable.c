@@ -66,55 +66,55 @@ unsigned long ST_hash(const char* str) {
     return (hash % HASHSIZE);
 }
 
-int64_t ST_check_for_key(HackSymbolTable* table, const char* wantedKey) {
+int64_t ST_check_for_key(HackSymbolTable* p_table, const char* wantedKey) {
     unsigned long hashValue = ST_hash(wantedKey);
-    return STP_check_for_key(&table->hash_buckets[hashValue], wantedKey);
+    return STP_check_for_key(&p_table->hash_buckets[hashValue], wantedKey);
 }
 
-void ST_add_key(HackSymbolTable* table, const char* newKey,
+void ST_add_key(HackSymbolTable* p_table, const char* newKey,
                 const uint32_t value) {
     unsigned long hashValue = ST_hash(newKey);
     ST_pair* newPair = malloc(sizeof(ST_pair));
     char* newPairKey = strdup(newKey);
     newPair->key = newPairKey;
     newPair->value = value;
-    STP_push_back(&table->hash_buckets[hashValue], newPair);
+    STP_push_back(&p_table->hash_buckets[hashValue], newPair);
 }
 
-void ST_delete_all_entries(HackSymbolTable* table) {
+void ST_delete_all_entries(HackSymbolTable* p_table) {
     for (int i = 0; i < HASHSIZE; ++i) {
-        STP_delete_list(&table->hash_buckets[i]);
+        STP_delete_list(&p_table->hash_buckets[i]);
     }
 }
 
-void ST_initialise(HackSymbolTable* table) {
+void ST_initialise(HackSymbolTable* p_table) {
     for (int i = 0; i < HASHSIZE; ++i) {
-        table->hash_buckets[i] = NULL;
+        p_table->hash_buckets[i] = NULL;
     }
-    ST_add_key(table, "R0", 0);
-    ST_add_key(table, "R1", 1);
-    ST_add_key(table, "R2", 2);
-    ST_add_key(table, "R3", 3);
-    ST_add_key(table, "R4", 4);
-    ST_add_key(table, "R5", 5);
-    ST_add_key(table, "R6", 6);
-    ST_add_key(table, "R7", 7);
-    ST_add_key(table, "R8", 8);
-    ST_add_key(table, "R9", 9);
-    ST_add_key(table, "R10", 10);
-    ST_add_key(table, "R11", 11);
-    ST_add_key(table, "R12", 12);
-    ST_add_key(table, "R13", 13);
-    ST_add_key(table, "R14", 14);
-    ST_add_key(table, "R15", 15);
-    ST_add_key(table, "SCREEN", 16384);
-    ST_add_key(table, "KBD", 24576);
-    ST_add_key(table, "SP", 0);
-    ST_add_key(table, "LCL", 1);
-    ST_add_key(table, "ARG", 2);
-    ST_add_key(table, "THIS", 3);
-    ST_add_key(table, "THAT", 4);
-    ST_add_key(table, "WRITE", 18);
-    ST_add_key(table, "END", 22);
+    ST_add_key(p_table, "R0", 0);
+    ST_add_key(p_table, "R1", 1);
+    ST_add_key(p_table, "R2", 2);
+    ST_add_key(p_table, "R3", 3);
+    ST_add_key(p_table, "R4", 4);
+    ST_add_key(p_table, "R5", 5);
+    ST_add_key(p_table, "R6", 6);
+    ST_add_key(p_table, "R7", 7);
+    ST_add_key(p_table, "R8", 8);
+    ST_add_key(p_table, "R9", 9);
+    ST_add_key(p_table, "R10", 10);
+    ST_add_key(p_table, "R11", 11);
+    ST_add_key(p_table, "R12", 12);
+    ST_add_key(p_table, "R13", 13);
+    ST_add_key(p_table, "R14", 14);
+    ST_add_key(p_table, "R15", 15);
+    ST_add_key(p_table, "SCREEN", 16384);
+    ST_add_key(p_table, "KBD", 24576);
+    ST_add_key(p_table, "SP", 0);
+    ST_add_key(p_table, "LCL", 1);
+    ST_add_key(p_table, "ARG", 2);
+    ST_add_key(p_table, "THIS", 3);
+    ST_add_key(p_table, "THAT", 4);
+    ST_add_key(p_table, "WRITE", 18);
+    ST_add_key(p_table, "END", 22);
     return;
 }

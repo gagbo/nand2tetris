@@ -41,15 +41,15 @@ struct HackSymbolTable {
 //   [0..HASHSIZE-1]
 unsigned long ST_hash(const char* key);
 
-void ST_initialise(HackSymbolTable* table);
+void ST_initialise(HackSymbolTable* p_table);
 // Should return a negative value if the key does not exist
-int64_t ST_check_for_key(HackSymbolTable* table, const char* wantedKey);
+int64_t ST_check_for_key(HackSymbolTable* p_table, const char* wantedKey);
 // Adds a new pair in the hash table
 // It is the caller's responsibility to check that the key doesn't already
 // exists
-void ST_add_key(HackSymbolTable* table, const char* newKey,
+void ST_add_key(HackSymbolTable* p_table, const char* newKey,
                 const uint32_t value);
 
-void ST_delete_all_entries(HackSymbolTable* table);
+void ST_delete_all_entries(HackSymbolTable* p_table);
 
 #endif  // _HACKSYMBOLTABLE_H_
