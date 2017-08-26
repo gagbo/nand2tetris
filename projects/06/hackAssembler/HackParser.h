@@ -2,6 +2,7 @@
 #define HACKPARSER_H_
 #define LINE_BUFFERSIZE 256
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
