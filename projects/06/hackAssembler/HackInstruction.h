@@ -1,17 +1,18 @@
-#ifndef HACKASSEMBLER_H_
-#define HACKASSEMBLER_H_
+#ifndef HACKINSTRUCTION_H_
+#define HACKINSTRUCTION_H_
 
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-typedef struct Instruction Instruction;
-struct Instruction {
+#include "HackTools.h"
+
+typedef struct HackInstruction HackInstruction;
+struct HackInstruction {
     // line Number or Address of instruction in ROM
     uint32_t lineNumber;
-    Instruction* next;
+    HackInstruction* next;
 
     // Concat these from top to bottom to get
     // instruction from LSB[15] to MSB[0]
@@ -29,21 +30,22 @@ struct Instruction {
     // 3 wide
     bool* jump;
 };
-typedef Instruction* Instructions;
+typedef HackInstruction* HackInstructions;
 
 // Sets the instruction instr to be an A instruction pointing to address
 // Note, address is a 15-bit uint, so an in16_t is perfect to check for
 // errors and there's no need to use a 16-bit unsigned int
-void set_AInstruction(Instruction* instr, int16_t address);
+void set_AInstruction(HackInstruction* instr, int16_t address);
 
 // Sets the instruction instr to be a C instruction using dest(ination),
 // comp(utation) and jump (condition).
 // Any of the strings may be empty, but the caller has to make sure at least
 // one string is not.
 // Also the string in dest, comp and jump must be uppercase without any space
-void set_CInstruction(Instruction* instr, char* dest, char* comp, char* jump);
+void set_CInstruction(HackInstruction* instr, char* dest, char* comp,
+                      char* jump);
 
-void printInstruction(Instruction* instr);
+void printInstruction(HackInstruction* instr);
 
 // TODO : List implementation for Instructions
 // Best abstraction for the list would be a queue
@@ -55,14 +57,13 @@ void printInstruction(Instruction* instr);
 //    Constant time random access (indexed by lineNumber) is a bonus
 // For the time being, we'll just use a linked list
 // Push an Instruction at the end of the instructions list
-Instructions push_back(Instructions list, Instruction instruction);
-Instructions pop_front(void);
-Instruction front(Instructions list);
-Instruction back(Instructions list);
-void print_all_instructions(Instructions list);
-void delete_all_instructions(Instructions list);
+HackInstructions push_back(HackInstructions list, HackInstruction instruction);
+HackInstructions pop_front(void);
+HackInstruction front(HackInstructions list);
+HackInstruction back(HackInstructions list);
+// Iterator
+HackInstructions next(HackInstructions list);
+void print_all_instructions(HackInstructions list);
+void delete_all_instructions(HackInstructions list);
 
-// Converts num to it's 16 bit binary representation, and puts it in str
-void getBin(int16_t num, char* str);
-void tobinstr(int16_t value, int bitsCount, char* output);
-#endif  // HACKASSEMBLER_H_
+#endif  // HACKINSTRUCTION_H_
