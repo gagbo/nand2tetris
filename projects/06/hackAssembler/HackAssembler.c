@@ -20,25 +20,24 @@ int main(int argc, char** argv) {
     // Allocate filestream and parse it
     FILE* filestream = NULL;
     HackInstructions list = NULL;
+    HackSymbolTable table;
+    ST_initialise(&table);
     filestream = fopen(filename, "r");
 
-    // This is where a symbol parser should work to get a symbol-less .asm
-    // The translation should make all (LABEL) disappear, and
-    // replace them in an intermediate filestream with their values.
-    // It should use a map.
-    // TODO : implement a hash table for the symbol table
-    // TODO : make the symbol translator
+    parser_labels_pass(filestream, &table);
 
-    // At this point, filestream is a label-less .asm stream
-    // variables can stay and will be replaced
-    // filestream is read line by line into char* line
+    // At this point, Symbol table is filled, and labels will be
+    // ignored.
+    // Variables can stay and will be replaced
     // Returns the count of read instructions
+    filestream = freopen(NULL, "r", filestream);
     uint32_t instructionCount =
-        symbolless_stream_to_machine_code(filestream, &list);
+        symbolless_stream_to_machine_code(filestream, &list, &table);
     fclose(filestream);
     fprintf(stderr, "Parsing finished, %d instructions total\n",
             instructionCount);
     HI_print_all_instructions(&list);
     HI_delete_all_instructions(&list);
+    ST_delete_all_entries(&table);
     return 0;
 }
