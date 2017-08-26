@@ -16,15 +16,14 @@ typedef HackInstruction* HackInstructions;
 //    Constant time random access (indexed by lineNumber) is a bonus
 // For the time being, we'll just use a linked list
 // Push an Instruction at the end of the instructions list
-HackInstructions HI_push_back(HackInstructions list,
-                              HackInstruction* instruction);
-HackInstructions HI_pop_front(HackInstructions list);
+void HI_push_back(HackInstructions* list, HackInstruction* instruction);
+void HI_pop_front(HackInstructions* list);
 // For the accessors it is better to use pointers since the methods of
 // HackInstruction expect addresses
 HackInstruction* HI_front(HackInstructions list);
 HackInstruction* HI_back(HackInstructions list);
 // Iterator
 HackInstructions HI_next(HackInstructions list);
-void HI_print_all_instructions(HackInstructions list);
-void HI_delete_all_instructions(HackInstructions list);
+void HI_print_all_instructions(HackInstructions* list);
+void HI_delete_all_instructions(HackInstructions* list);
 #endif  // HACKINSTRUCTIONLIST_H_

@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     fclose(filestream);
     fprintf(stderr, "Parsing finished, %d instructions total\n",
             instructionCount);
-    HI_print_all_instructions(list);
-    HI_delete_all_instructions(list);
+    HI_print_all_instructions(&list);
+    HI_delete_all_instructions(&list);
     return 0;
 }

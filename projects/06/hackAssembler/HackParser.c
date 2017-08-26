@@ -47,7 +47,7 @@ uint32_t symbolless_stream_to_machine_code(FILE* filestream,
                 // variableAddress and increment variableAddress
             }
             Ainstruction->lineNumber = instructionCount;
-            *list = HI_push_back(*list, Ainstruction);
+            HI_push_back(list, Ainstruction);
             /* fprintf(stderr, "%d ", instructionCount); */
             ++instructionCount;
             /* fprintf(stderr, "State of the Machine Code : \n"); */
@@ -69,7 +69,7 @@ uint32_t symbolless_stream_to_machine_code(FILE* filestream,
             HackInstruction* Cinstruction = malloc(sizeof(HackInstruction));
             set_CInstruction(Cinstruction, dest, comp, jump);
             Cinstruction->lineNumber = instructionCount;
-            *list = HI_push_back(*list, Cinstruction);
+            HI_push_back(list, Cinstruction);
             /* fprintf(stderr, "%d ", instructionCount); */
             ++instructionCount;
             /* fprintf(stderr, "State of the Machine Code : \n"); */
