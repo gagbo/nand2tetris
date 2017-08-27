@@ -4,14 +4,18 @@
 // free of symbols. Handling files to get to this point will be done in another
 // module
 
+void assembler_print_help();
+
 int main(int argc, char **argv) {
     // 1) Open the file or throw error
     char filename[50];
     if (argc > 2) {
         printf("Too many arguments supplied.\n");
+        assembler_print_help();
         return 1;
     } else if (argc <= 1) {
         printf("One argument expected.\n");
+        assembler_print_help();
         return 1;
     } else {
         strcpy(filename, argv[1]);
@@ -23,6 +27,11 @@ int main(int argc, char **argv) {
     HackSymbolTable table;
     ST_initialise(&table);
     filestream = fopen(filename, "r");
+    if (filestream == NULL) {
+        fprintf(stderr, "Could not open %s\n", filename);
+        assembler_print_help();
+        return 1;
+    }
 
     parser_labels_pass(filestream, &table);
     ST_print_table(&table);
@@ -41,4 +50,13 @@ int main(int argc, char **argv) {
     HI_delete_all_instructions(&list);
     ST_delete_all_entries(&table);
     return 0;
+}
+
+void assembler_print_help() {
+    printf("HackAssembler : Assembler for the Hack machine language\n");
+    printf("Usage : HackAssembler [filename]\n");
+    printf("Prints the assembly code on standard output,\n");
+    printf("prints the symbol table just before on standard ERROR output\n");
+    printf("Also prints other status messages on standard ERROR, before");
+    printf(" the actual machine code");
 }
