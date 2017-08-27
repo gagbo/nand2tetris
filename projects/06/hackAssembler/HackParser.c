@@ -134,6 +134,7 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
                 ST_add_key(p_table, strstrip(newLabel[i]), instructionCount);
             }
             for (int i = 0; i < LABELS_IN_A_ROW_BUFFER; ++i) {
+                free(newLabel[i]);
                 newLabel[i] = NULL;
             }
             labelsInARow = 0;
