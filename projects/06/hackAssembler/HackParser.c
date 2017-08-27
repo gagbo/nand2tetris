@@ -113,7 +113,7 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
             }
             // Otherwise, add the new meaningful symbol, and go the next one
             strcat(strippedInstruction, nextWord);
-            nextWord = strtok(NULL, " ");
+            nextWord = strtok(NULL, " \r\n\t");
         }
         // This is needed to skip comment lines or open/close brackets
         if (strlen(strippedInstruction) == 0) {
