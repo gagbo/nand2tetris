@@ -48,7 +48,7 @@ void ST_print(ST_pair* p_pair) {
 void STP_print_all_elements(ST_pairs* p_list) {
     ST_pairs temp = *p_list;
     if (temp == NULL) {
-        fprintf(stderr, "The list is empty now ??\n");
+        fprintf(stderr, "NULL\n");
     } else {
         while (temp != NULL) {
             ST_print(temp);
