@@ -86,6 +86,7 @@ int64_t STP_check_for_key(ST_pairs* list, const char* wantedKey) {
 /*     return (hash % HASHSIZE); */
 /* } */
 
+// This hash method is sdbm
 unsigned long ST_hash(const char* str) {
     unsigned long hash = 0;
     int c;
