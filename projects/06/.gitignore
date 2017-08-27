@@ -1,0 +1,2 @@
+#Ignore Hack machine code files
+**/*.hack
