@@ -58,5 +58,5 @@ void assembler_print_help() {
     printf("Prints the assembly code on standard output,\n");
     printf("prints the symbol table just before on standard ERROR output\n");
     printf("Also prints other status messages on standard ERROR, before");
-    printf(" the actual machine code");
+    printf(" the actual machine code\n");
 }
