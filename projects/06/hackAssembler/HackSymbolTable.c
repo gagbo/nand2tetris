@@ -4,6 +4,8 @@ void STP_push_back(ST_pairs* list, ST_pair* element) {
     element->next = NULL;
     if (*list == NULL) {
         *list = element;
+        /* fprintf(stderr, "%s, %d : ajoute \n", element->key, element->value);
+         */
         return;
     }
     ST_pairs temp = *list;
@@ -11,6 +13,7 @@ void STP_push_back(ST_pairs* list, ST_pair* element) {
         temp = temp->next;
     }
     temp->next = element;
+    /* fprintf(stderr, "%s, %d : ajoute \n", element->key, element->value); */
     return;
 }
 
@@ -104,7 +107,7 @@ void ST_add_key(HackSymbolTable* p_table, const char* newKey,
     char* newPairKey = strdup(newKey);
     newPair->key = newPairKey;
     newPair->value = value;
-    STP_push_back(&p_table->hash_buckets[hashValue], newPair);
+    STP_push_back(&(p_table->hash_buckets[hashValue]), newPair);
 }
 
 void ST_delete_all_entries(HackSymbolTable* p_table) {
