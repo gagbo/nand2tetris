@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     }
 
     parser_labels_pass(filestream, &table);
-    ST_print_table(&table);
+    /* ST_print_table(&table); */
 
     // At this point, Symbol table is filled, and labels will be
     // ignored.
@@ -46,7 +46,10 @@ int main(int argc, char **argv) {
     fclose(filestream);
     fprintf(stderr, "Parsing finished, %d instructions total\n",
             instructionCount);
+    // HI_print_all prints to stdout
     HI_print_all_instructions(&list);
+
+    // Cleanup
     HI_delete_all_instructions(&list);
     ST_delete_all_entries(&table);
     return 0;
