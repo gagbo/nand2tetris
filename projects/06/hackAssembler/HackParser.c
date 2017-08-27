@@ -129,8 +129,9 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
             // If we're here, this is a real instruction, and we just flush the
             // table of newLabels in the Symbol table
             for (int i = 0; i < labelsInARow; ++i) {
-                fprintf(stderr, "Label to write : %s -> ",
-                        strstrip(newLabel[i]));
+                /* fprintf(stderr, "Label to write : %s -> ",
+                 *       strstrip(newLabel[i]));
+                 */
                 ST_add_key(p_table, strstrip(newLabel[i]), instructionCount);
             }
             for (int i = 0; i < LABELS_IN_A_ROW_BUFFER; ++i) {
