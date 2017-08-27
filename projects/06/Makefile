@@ -1,7 +1,23 @@
-ALL: HackAssembler
+CC=gcc -std=c11
+CFLAGS=-Wall -pedantic -Wextra
 
-HackAssembler: hackAssembler/HackAssembler.c hackAssembler/HackAssembler.h hackAssembler/HackTools.c hackAssembler/HackTools.h hackAssembler/HackInstruction.c hackAssembler/HackInstructionList.c hackAssembler/HackInstruction.h hackAssembler/HackInstructionList.h hackAssembler/HackParser.h hackAssembler/HackParser.c hackAssembler/HackSymbolTable.h hackAssembler/HackSymbolTable.c
-	gcc -std=c11 hackAssembler/HackAssembler.c hackAssembler/HackTools.c hackAssembler/HackInstruction.c hackAssembler/HackInstructionList.c hackAssembler/HackParser.c hackAssembler/HackSymbolTable.c -IhackAssembler -o HackAssembler -Wall -pedantic -Wextra -g
+SRCDIR=hackAssembler
+
+_DEPS=HackAssembler.h HackTools.h HackInstruction.h HackInstructionList.h HackParser.h HackSymbolTable.h
+DEPS=$(patsubst %,$(SRCDIR)/%,$(_DEPS))
+
+_OBJS=HackAssembler.o HackTools.o HackInstruction.o HackInstructionList.o HackParser.o HackSymbolTable.o
+OBJS=$(patsubst %,$(SRCDIR)/%,$(_OBJS))
+
+all: HackAssembler
+
+$(SRCDIR)/%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+HackAssembler: $(OBJS)
+	$(CC) -o $@ $^ $(CFLAGS)
+
+.PHONY: clean
 
 clean:
-	rm -vf HackAssembler
+	rm -f HackAssembler $(SRCDIR)/*.o $(SRCDIR)/*~
