@@ -7,6 +7,8 @@ to tetris).
 The so-called HACK computer that is being built works on a 16-bit
 architecture.
 
+The tests can be ran following the tutorials found on [The course website](http://nand2tetris.org/software.php)
+
 
 ## Transistor count to this point
 ### Week 1 projects : Base chips
