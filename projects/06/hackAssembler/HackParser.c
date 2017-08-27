@@ -100,7 +100,7 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
     }
     while (fgets(line, 255, filestream) != NULL) {
         char* nextWord;
-        char strippedInstruction[20];
+        char strippedInstruction[LINE_BUFFERSIZE];
         strippedInstruction[0] = '\0';
         // This loop uses strtok to remove all whitespaces in line.
         // Also, if a bracket or a comment symbol is found, we skip to
@@ -129,16 +129,19 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
             // If we're here, this is a real instruction, and we just flush the
             // table of newLabels in the Symbol table
             for (int i = 0; i < labelsInARow; ++i) {
+                fprintf(stderr, "Label to write : %s -> ",
+                        strstrip(newLabel[i]));
                 ST_add_key(p_table, strstrip(newLabel[i]), instructionCount);
-                labelsInARow = 0;
-                for (int i = 0; i < LABELS_IN_A_ROW_BUFFER; ++i) {
-                    newLabel[i] = NULL;
-                }
             }
+            for (int i = 0; i < LABELS_IN_A_ROW_BUFFER; ++i) {
+                newLabel[i] = NULL;
+            }
+            labelsInARow = 0;
             ++instructionCount;
         } else {
             ++instructionCount;
         }
+        /* fprintf(stderr, "Instruction count : %d\n", instructionCount); */
     }
     return instructionCount;
 }
