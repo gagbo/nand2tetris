@@ -94,8 +94,8 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
     char line[LINE_BUFFERSIZE];
     uint32_t instructionCount = 0;
     int labelsInARow = 0;
-    char* newLabel[LINE_BUFFERSIZE];
-    for (int i = 0; i < LINE_BUFFERSIZE; ++i) {
+    char* newLabel[LABELS_IN_A_ROW_BUFFER];
+    for (int i = 0; i < LABELS_IN_A_ROW_BUFFER; ++i) {
         newLabel[i] = NULL;
     }
     while (fgets(line, 255, filestream) != NULL) {
@@ -131,7 +131,7 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
             for (int i = 0; i < labelsInARow; ++i) {
                 ST_add_key(p_table, strstrip(newLabel[i]), instructionCount);
                 labelsInARow = 0;
-                for (int i = 0; i < LINE_BUFFERSIZE; ++i) {
+                for (int i = 0; i < LABELS_IN_A_ROW_BUFFER; ++i) {
                     newLabel[i] = NULL;
                 }
             }
