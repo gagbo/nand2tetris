@@ -4,7 +4,7 @@
 // free of symbols. Handling files to get to this point will be done in another
 // module
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     // 1) Open the file or throw error
     char filename[50];
     if (argc > 2) {
@@ -18,13 +18,14 @@ int main(int argc, char** argv) {
     }
 
     // Allocate filestream and parse it
-    FILE* filestream = NULL;
+    FILE *filestream = NULL;
     HackInstructions list = NULL;
     HackSymbolTable table;
     ST_initialise(&table);
     filestream = fopen(filename, "r");
 
     parser_labels_pass(filestream, &table);
+    ST_print_table(&table);
 
     // At this point, Symbol table is filled, and labels will be
     // ignored.

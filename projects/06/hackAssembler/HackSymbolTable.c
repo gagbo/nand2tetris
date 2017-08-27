@@ -38,6 +38,22 @@ ST_pair* STP_back(ST_pairs* list) {
     return temp;
 }
 
+void ST_print(ST_pair* p_pair) {
+    fprintf(stderr, "%s, %d\n", p_pair->key, p_pair->value);
+}
+
+void STP_print_all_elements(ST_pairs* p_list) {
+    ST_pairs temp = *p_list;
+    if (temp == NULL) {
+        fprintf(stderr, "The list is empty now ??\n");
+    } else {
+        while (temp != NULL) {
+            ST_print(temp);
+            temp = temp->next;
+        }
+    }
+}
+
 void STP_delete_list(ST_pairs* list) {
     while (*list != NULL) {
         STP_pop_front(list);
@@ -57,11 +73,21 @@ int64_t STP_check_for_key(ST_pairs* list, const char* wantedKey) {
 
 // The hash is done using djb2 algorithm
 // http://www.cse.yorku.ca/~oz/hash.html
+/* unsigned long ST_hash(const char* str) { */
+/*     unsigned long hash = 5381; */
+/*     int c; */
+
+/*     while ((c = *str++)) hash = ((hash << 5) + hash) + c; /1* hash * 33 + c
+ * *1/ */
+
+/*     return (hash % HASHSIZE); */
+/* } */
+
 unsigned long ST_hash(const char* str) {
-    unsigned long hash = 5381;
+    unsigned long hash = 0;
     int c;
 
-    while ((c = *str++)) hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+    while ((c = *(str++))) hash = c + (hash << 6) + (hash << 16) - hash;
 
     return (hash % HASHSIZE);
 }
@@ -117,4 +143,10 @@ void ST_initialise(HackSymbolTable* p_table) {
     ST_add_key(p_table, "WRITE", 18);
     ST_add_key(p_table, "END", 22);
     return;
+}
+
+void ST_print_table(HackSymbolTable* p_table) {
+    for (int i = 0; i < HASHSIZE; ++i) {
+        STP_print_all_elements(&(p_table->hash_buckets[i]));
+    }
 }

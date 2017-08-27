@@ -5,11 +5,12 @@
 #define __STDC_WANT_LIB_EXT2__ 1
 #endif  // __STDC_WANT_LIB_EXT2__
 
-#define HASHSIZE 40
+#define HASHSIZE 33
 #define KEY_NOT_FOUND -9999999999
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,7 +27,9 @@ void STP_push_back(ST_pairs* list, ST_pair* element);
 void STP_pop_front(ST_pairs* list);
 ST_pair* STP_front(ST_pairs* list);
 ST_pair* STP_back(ST_pairs* list);
+void STP_print_all_elements(ST_pairs* p_list);
 void STP_delete_list(ST_pairs* list);
+void ST_print(ST_pair* p_pair);
 // We also need a checker to see if the key is already in the list
 int64_t STP_check_for_key(ST_pairs* list, const char* wantedKey);
 
@@ -50,6 +53,7 @@ int64_t ST_check_for_key(HackSymbolTable* p_table, const char* wantedKey);
 void ST_add_key(HackSymbolTable* p_table, const char* newKey,
                 const uint32_t value);
 
+void ST_print_table(HackSymbolTable* p_table);
 void ST_delete_all_entries(HackSymbolTable* p_table);
 
 #endif  // _HACKSYMBOLTABLE_H_
