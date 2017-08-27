@@ -95,6 +95,9 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
     uint32_t instructionCount = 0;
     int labelsInARow = 0;
     char* newLabel[LINE_BUFFERSIZE];
+    for (int i = 0; i < LINE_BUFFERSIZE; ++i) {
+        newLabel[i] = NULL;
+    }
     while (fgets(line, 255, filestream) != NULL) {
         char* nextWord;
         char strippedInstruction[20];
@@ -119,19 +122,40 @@ uint32_t parser_labels_pass(FILE* filestream, HackSymbolTable* p_table) {
 
         // If this is a label, save it for next line.
         if (strncmp(strippedInstruction, "(", 1) == 0) {
-            newLabel[labelsInARow++] = strtok(strippedInstruction, "()");
-            continue;
-        }
-
-        // If we're here, this is a real instruction, and we just flush the
-        // table of newLabels in the Symbol table
-        ++instructionCount;
-        if (labelsInARow > 0) {
+            newLabel[labelsInARow] =
+                strdup(strtok(strippedInstruction, "()\n"));
+            ++labelsInARow;
+        } else if (labelsInARow > 0) {
+            // If we're here, this is a real instruction, and we just flush the
+            // table of newLabels in the Symbol table
             for (int i = 0; i < labelsInARow; ++i) {
-                ST_add_key(p_table, newLabel[i], instructionCount);
+                ST_add_key(p_table, strstrip(newLabel[i]), instructionCount);
+                labelsInARow = 0;
+                for (int i = 0; i < LINE_BUFFERSIZE; ++i) {
+                    newLabel[i] = NULL;
+                }
             }
-            labelsInARow = 0;
+            ++instructionCount;
+        } else {
+            ++instructionCount;
         }
     }
     return instructionCount;
+}
+
+char* strstrip(char* s) {
+    size_t size;
+    char* end;
+
+    size = strlen(s);
+
+    if (!size) return s;
+
+    end = s + size - 1;
+    while (end >= s && isspace(*end)) end--;
+    *(end + 1) = '\0';
+
+    while (*s && isspace(*s)) s++;
+
+    return s;
 }
