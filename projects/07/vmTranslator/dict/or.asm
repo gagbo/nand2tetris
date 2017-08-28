@@ -1,0 +1,22 @@
+// or
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D+M
+@TRUE
+D+1;JGE
+D=-1
+@END_OR
+0;JMP
+(TRUE)
+D=0
+(END_OR)
+@SP
+A=M
+M=D
+@SP
+M=M+1

@@ -1,0 +1,18 @@
+// not
+@SP
+M=M-1
+A=M
+D=M
+@GOTOFALSE
+D;JEQ
+D=0
+@END_NOT
+0;JMP
+(GOTOFALSE)
+D=-1
+(END_NOT)
+@SP
+A=M
+M=D
+@SP
+M=M+1
