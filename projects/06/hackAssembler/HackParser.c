@@ -7,7 +7,7 @@ uint32_t symbolless_stream_to_machine_code(FILE* filestream,
     uint32_t instructionCount = 0;
     uint16_t variableAddress = 16;
     while (fgets(line, 255, filestream) != NULL) {
-        char* nextWord;
+        char* nextWord = NULL;
         char strippedInstruction[LINE_BUFFERSIZE];
         strippedInstruction[0] = '\0';
         // This loop uses strtok to remove all whitespaces in line.
