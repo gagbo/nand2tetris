@@ -30,9 +30,11 @@ const unsigned char* choose_asm_dict_file(const char** command,
 
 /* Main writer function :
  * filestream : output filestream
- * command : originally parsed command
+ * command : originally parsed command, used to get command[2]
  * p_labelCounter : pointer to LabelCounter struct to make unique labels
- * dict_filename : the name of the dict file to read then write to output
+ * asm_stub : COPY (caller responsiblity) of the XXX_asm string in vmTDictFiles
+ * asm_stub_number : int version of command[2] when applicable, negative
+ * otherwise
  * basename : basename of the vm file to produce unique static labels
  */
 void write_to_file(FILE* filestream, const char** command,
