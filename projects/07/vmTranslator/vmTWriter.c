@@ -1,28 +1,76 @@
 #include "vmTWriter.h"
 
-void choose_asm_dict_file(char* filename, const char** command, int wordCount) {
-    if (wordCount == 1) {
-        strcat(filename, command[0]);
-        strcat(filename, ".asm");
-    } else if (wordCount == 3) {
-        // First part of filename :
-        // For the time being, only push or pop
-        if (strcmp(command[0], "push") == 0) {
-            strcat(filename, "push_");
-        } else if (strcmp(command[0], "pop") == 0) {
-            strcat(filename, "pop_");
+const unsigned char* choose_asm_dict_file(const char** command,
+                                          int command_len) {
+    if (command_len == 1) {
+        if (strcmp(command[0], "add") == 0) {
+            return add_asm;
+        } else if (strcmp(command[0], "and") == 0) {
+            return and_asm;
+        } else if (strcmp(command[0], "eq") == 0) {
+            return eq_asm;
+        } else if (strcmp(command[0], "gt") == 0) {
+            return gt_asm;
+        } else if (strcmp(command[0], "lt") == 0) {
+            return lt_asm;
+        } else if (strcmp(command[0], "neg") == 0) {
+            return neg_asm;
+        } else if (strcmp(command[0], "not") == 0) {
+            return not_asm;
+        } else if (strcmp(command[0], "or") == 0) {
+            return or_asm;
+        } else if (strcmp(command[0], "sub") == 0) {
+            return sub_asm;
         }
 
-        // Second part of filename :
-        // pointer, constant, static or classic
-        if (strcmp(command[1], "pointer") == 0) {
-            strcat(filename, "pointer_b.asm");
-        } else if (strcmp(command[1], "constant") == 0) {
-            strcat(filename, "constant_i.asm");
-        } else if (strcmp(command[1], "static") == 0) {
-            strcat(filename, "static_i.asm");
-        } else {
-            strcat(filename, "classic_i.asm");
+    } else if (command_len == 3) {
+        // Big old string switch
+        if (strcmp(command[0], "push") == 0 &&
+            strcmp(command[1], "pointer") == 0) {
+            return push_pointer_b_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "pointer") == 0) {
+            return pop_pointer_b_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "constant") == 0) {
+            return push_constant_i_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "static") == 0) {
+            return pop_static_i_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "static") == 0) {
+            return push_static_i_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "local") == 0) {
+            return pop_classic_i_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "argument") == 0) {
+            return pop_classic_i_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "this") == 0) {
+            return pop_classic_i_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "that") == 0) {
+            return pop_classic_i_asm;
+        } else if (strcmp(command[0], "pop") == 0 &&
+                   strcmp(command[1], "temp") == 0) {
+            return pop_classic_i_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "local") == 0) {
+            return push_classic_i_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "argument") == 0) {
+            return push_classic_i_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "this") == 0) {
+            return push_classic_i_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "that") == 0) {
+            return push_classic_i_asm;
+        } else if (strcmp(command[0], "push") == 0 &&
+                   strcmp(command[1], "temp") == 0) {
+            return push_classic_i_asm;
         }
     }
+    return NULL;
 }

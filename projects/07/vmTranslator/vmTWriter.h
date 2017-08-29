@@ -5,6 +5,7 @@
 #endif  // __STDC_WANT_LIB_EXT2__
 #include <stdio.h>
 #include <string.h>
+#include "dict/vmTDictFiles.h"
 
 // Struct that keeps the count of label-powered translations to
 // produce unique labels during one file translation.
@@ -21,10 +22,11 @@ typedef struct LabelCounter {
  * this function is neither responsible for malloc nor freeing memory
  * for command[i] arrays.
  * Giving the number of words in the command helps the choosing
- * It's the caller responsibility to allocate and free the memory allocated for
- * the return value of the function
+ * The returned string should NOT be modified, and is ine of the strings in
+ * vmTDictFiles.h
  */
-void choose_asm_dict_file(char* filename, const char** command, int wordCount);
+const unsigned char* choose_asm_dict_file(const char** command,
+                                          int command_len);
 
 /* Main writer function :
  * filestream : output filestream
@@ -34,7 +36,7 @@ void choose_asm_dict_file(char* filename, const char** command, int wordCount);
  * basename : basename of the vm file to produce unique static labels
  */
 void write_to_file(FILE* filestream, const char** command,
-                   LabelCounter* p_labelCounter, char* dict_filename,
-                   char* basename);
+                   LabelCounter* p_labelCounter, char* asm_stub,
+                   int asm_stub_number, char* basename);
 
 #endif  // _VMTWRITER_H_
