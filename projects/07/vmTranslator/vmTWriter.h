@@ -3,7 +3,9 @@
 #ifndef __STDC_WANT_LIB_EXT2__
 #define __STDC_WANT_LIB_EXT2__ 1
 #endif  // __STDC_WANT_LIB_EXT2__
+#define ASM_LINE_BUFFER_SIZE 33
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "dict/vmTDictFiles.h"
 
