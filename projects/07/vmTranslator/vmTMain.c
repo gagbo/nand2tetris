@@ -2,6 +2,7 @@
 
 int main(int argc, char **argv) {
     char filename[50];
+    char *filename_copy = NULL;
     if (argc > 2) {
         printf("Too many arguments supplied.\n");
         return 1;
@@ -10,6 +11,10 @@ int main(int argc, char **argv) {
         return 1;
     } else {
         strcpy(filename, argv[1]);
+        filename_copy = strdup(filename);
+        char *file_basename = basename(filename_copy);
+        char *file_label = strtok(file_basename, ".");
+        fprintf(stderr, "Basename for labels : %s\n", file_label);
     }
 
     // Allocate filestream and parse it
@@ -18,6 +23,7 @@ int main(int argc, char **argv) {
     filestream = fopen(filename, "r");
     if (filestream == NULL) {
         fprintf(stderr, "Could not open %s\n", filename);
+        free(filename_copy);
         return 1;
     }
 
@@ -45,6 +51,7 @@ int main(int argc, char **argv) {
 
     free(command);
     fclose(filestream);
+    free(filename_copy);
 
     return 0;
 }

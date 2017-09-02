@@ -5,6 +5,7 @@
 #endif  // __STDC_WANT_LIB_EXT2__
 #define LINE_BUFFERSIZE 256
 
+#include <libgen.h>  // basename
 #include <stdio.h>
 #include <string.h>
 
