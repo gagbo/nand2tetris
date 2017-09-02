@@ -1,5 +1,5 @@
 CC=gcc -std=c11
-CFLAGS=-Wall -pedantic -Wextra
+CFLAGS=-Wall -pedantic -Wextra -g
 
 SRCDIR=vmTranslator
 DICTDIR=vmTranslator/dict
@@ -33,7 +33,10 @@ $(SRCDIR)/%.o: %.c $(DEPS)
 VMTranslator: $(OBJS)
 	$(CC) -o $@ $^ -I$(SRCDIR) $(CFLAGS)
 
-.PHONY: clean
+.PHONY: clean valgrind
 
 clean:
 	rm -f VMTranslator $(SRCDIR)/*.o $(SRCDIR)/*~
+
+valgrind: VMTranslator
+	valgrind --leak-check=full --show-leak-kinds=all  ./VMTranslator StackArithmetic/StackTest/StackTest.vm
