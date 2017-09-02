@@ -12,6 +12,6 @@
  * go the the next line in main
  * command has to be malloc'd to be size MAX_COMMAND_WORDS
  */
-int parse_line(char* line, char** command);
+int parse_line(const char* line, char** command);
 
 #endif  // _VMTPARSER_H_
