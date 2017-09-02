@@ -3,6 +3,7 @@
 #ifndef __STDC_WANT_LIB_EXT2__
 #define __STDC_WANT_LIB_EXT2__ 1
 #endif  // __STDC_WANT_LIB_EXT2__
+#define LINE_BUFFERSIZE 256
 
 #include <stdio.h>
 #include <string.h>
