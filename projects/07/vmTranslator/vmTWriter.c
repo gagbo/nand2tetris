@@ -49,6 +49,7 @@ void write_to_file(FILE* filestream, const char** command,
         fputs(asm_line_buffer, filestream);
         line = strtok(asm_stub_copy, "\n");
     }
+    free(asm_stub_copy);
 }
 
 const unsigned char* choose_asm_dict_file(const char** command,
