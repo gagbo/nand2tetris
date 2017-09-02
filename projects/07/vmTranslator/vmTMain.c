@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
         int command_length = parse_line(line, command);
         fprintf(stderr, "%d : ", command_length);
         if (command_length == 0) {
-            fprintf(stderr, "%s\n", line);
+            fprintf(stderr, "%s", line);
             continue;
         } else {
             // This is where we should call the writing functions
