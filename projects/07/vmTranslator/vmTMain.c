@@ -36,6 +36,11 @@ int main(int argc, char **argv) {
             }
             fprintf(stderr, "\n");
         }
+        // Free the memory allocated by parse_line
+        // TODO : have alloc and free at the same place
+        for (int i = 0; i < command_length; ++i) {
+            free(command[i]);
+        }
     }
 
     free(command);
