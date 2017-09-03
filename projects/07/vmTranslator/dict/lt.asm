@@ -1,5 +1,4 @@
 // lt
-// Label issue with the goto
 @SP
 M=M-1
 A=M
