@@ -4,50 +4,72 @@ void write_to_file(FILE* filestream, const char** command,
                    LabelCounter* p_labelCounter, const char* asm_stub,
                    int asm_stub_number, char* basename) {
     char* asm_stub_copy = strdup(asm_stub);
+    const char* sep = " .=";
     /* Keywords to change :
      * BASENAME -> basename
      * I -> asm_stub_number
      * CLASSIC -> LCL or ARG or THIS or THAT or TEMP
      * B -> THIS if asm_sub_number == 0; THAT if asm_stub_number == 1
      */
+    // TODO : Use strtok bc it replaces
     char* line = strtok(asm_stub_copy, "\n");
     while (line != NULL) {
+        fprintf(stderr, "%s", line);
         char asm_line_buffer[ASM_LINE_BUFFER_SIZE];
         asm_line_buffer[0] = '\0';
-        char* significant_word = strtok(line, " \n\r\t.=@;");
-        while (significant_word != NULL) {
-            if (strcmp(significant_word, "BASENAME") == 0) {
+        // TODO : Do not use strtok because we won't replace
+        char* significant_word = line;
+        // Take out the '@' special case
+        if (strncmp(line, "@", 1) == 0) {
+            strcat(asm_line_buffer, "@");
+            line += 1;
+        }
+        size_t s_word_length = strcspn(line, sep);
+        while (s_word_length != 0) {
+            if (strncmp(significant_word, "BASENAME", s_word_length) == 0) {
                 strcat(asm_line_buffer, basename);
-            } else if (strcmp(significant_word, "I") == 0) {
+                strcat(asm_line_buffer, " ");
+            } else if (strncmp(significant_word, "I", s_word_length) == 0) {
                 strcat(asm_line_buffer, command[2]);
-            } else if (strcmp(significant_word, "CLASSIC") == 0) {
+                strcat(asm_line_buffer, " ");
+            } else if (strncmp(significant_word, "CLASSIC", s_word_length) ==
+                       0) {
                 if (strcmp(command[1], "local") == 0) {
-                    strcat(asm_line_buffer, "LCL");
+                    strcat(asm_line_buffer, "LCL ");
                 } else if (strcmp(command[1], "argument") == 0) {
-                    strcat(asm_line_buffer, "ARG");
+                    strcat(asm_line_buffer, "ARG ");
                 } else if (strcmp(command[1], "this") == 0) {
-                    strcat(asm_line_buffer, "THIS");
+                    strcat(asm_line_buffer, "THIS ");
                 } else if (strcmp(command[1], "that") == 0) {
-                    strcat(asm_line_buffer, "THAT");
+                    strcat(asm_line_buffer, "THAT ");
                 } else if (strcmp(command[1], "temp") == 0) {
-                    strcat(asm_line_buffer, "TEMP");
+                    strcat(asm_line_buffer, "TEMP ");
                 }
-            } else if (strcmp(significant_word, "B") == 0) {
+            } else if (strncmp(significant_word, "B", s_word_length) == 0) {
                 if (asm_stub_number == 0) {
-                    strcat(asm_line_buffer, "THIS");
+                    strcat(asm_line_buffer, "THIS ");
                 } else if (asm_stub_number == 0) {
-                    strcat(asm_line_buffer, "THAT");
+                    strcat(asm_line_buffer, "THAT ");
                 } else {
                     fprintf(stderr, "Number not recognised in pointer command");
                     exit(1);
                 }
             } else {
-                strcat(asm_line_buffer, significant_word);
+                strncat(asm_line_buffer, significant_word, s_word_length);
+                strcat(asm_line_buffer, " ");
             }
-            significant_word = strtok(line, " \n\r\t.=@;");
+            // Advance the significant_word pointer
+            significant_word += s_word_length;
+            // Write all the separator characters and then skip them
+            size_t number_of_sep_to_write = strspn(significant_word, sep);
+            strncat(asm_line_buffer, significant_word, number_of_sep_to_write);
+            significant_word += number_of_sep_to_write;
+            // Find the next significant word to advance the loop
+            s_word_length = strcspn(significant_word, sep);
         }
         fputs(asm_line_buffer, filestream);
-        line = strtok(asm_stub_copy, "\n");
+        fputs("\n", filestream);
+        line = strtok(NULL, "\n");
     }
     free(asm_stub_copy);
 }
