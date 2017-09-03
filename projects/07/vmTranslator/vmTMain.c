@@ -15,7 +15,6 @@ int main(int argc, char **argv) {
         filename_copy = strdup(filename);
         char *file_basename = basename(filename_copy);
         file_label = strtok(file_basename, ".");
-        fprintf(stderr, "Basename for labels : %s\n", file_label);
     }
 
     // Allocate filestream and parse it
@@ -32,16 +31,10 @@ int main(int argc, char **argv) {
     char **command = calloc(MAX_COMMAND_WORDS, sizeof(char *));
     while (fgets(line, LINE_BUFFERSIZE - 1, filestream) != NULL) {
         int command_length = parse_line(line, command);
-        fprintf(stderr, "%d : ", command_length);
         if (command_length == 0) {
-            fprintf(stderr, "%s", line);
             continue;
         } else {
             // This is where we should call the writing functions
-            for (int i = 0; i < command_length; ++i) {
-                fprintf(stderr, "%s-", command[i]);
-            }
-            fprintf(stderr, "\n");
             const char *asm_dict_file =
                 choose_asm_dict_file(command, command_length);
             write_to_file(stdout, command, p_LabelCounter, asm_dict_file, 0,
