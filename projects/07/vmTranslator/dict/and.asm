@@ -7,10 +7,10 @@ D=M
 M=M-1
 A=M
 D=D+M
-@TRUE
+@TRUE.J
 D;JEQ
 D=-1
-(TRUE)
+(TRUE.J)
 @SP
 A=M
 M=D

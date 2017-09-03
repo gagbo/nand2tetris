@@ -8,6 +8,7 @@ void write_to_file(FILE* filestream, const char** command,
     /* Keywords to change :
      * BASENAME -> basename
      * I -> asm_stub_number
+     * J -> Label Counter
      * CLASSIC -> LCL or ARG or THIS or THAT or TEMP
      * B -> THIS if asm_sub_number == 0; THAT if asm_stub_number == 1
      */
@@ -28,10 +29,13 @@ void write_to_file(FILE* filestream, const char** command,
         while (significant_word && *significant_word) {
             if (strncmp(significant_word, "BASENAME", s_word_length) == 0) {
                 strcat(asm_line_buffer, basename);
-                strcat(asm_line_buffer, " ");
             } else if (strncmp(significant_word, "I", s_word_length) == 0) {
                 strcat(asm_line_buffer, command[2]);
                 strcat(asm_line_buffer, " ");
+            } else if (strncmp(significant_word, "J", s_word_length) == 0) {
+                char nb_all_string[15];
+                sprintf(nb_all_string, "%d", p_labelCounter->nb_all);
+                strcat(asm_line_buffer, nb_all_string);
             } else if (strncmp(significant_word, "CLASSIC", s_word_length) ==
                        0) {
                 if (strcmp(command[1], "local") == 0) {
@@ -71,6 +75,7 @@ void write_to_file(FILE* filestream, const char** command,
         fputs("\n", filestream);
         line = strtok(NULL, "\n");
     }
+    p_labelCounter->nb_all++;
     free(asm_stub_copy);
 }
 

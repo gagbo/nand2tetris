@@ -8,10 +8,10 @@ D=M
 M=M-1
 A=M
 M=D-M
-@END_EQ
+@END_EQ.J
 D;JEQ
 D=-1
-(END_EQ)
+(END_EQ.J)
 @SP
 A=M
 M=D
