@@ -38,10 +38,22 @@ $(DICTDIR)/vmTDictFiles.c: $(DICT)
 VMTranslator: $(OBJS)
 	$(CC) -o $@ $^ -I$(SRCDIR) $(CFLAGS)
 
-.PHONY: clean valgrind
+.PHONY: clean valgrind test
 
 clean:
 	rm -f VMTranslator $(SRCDIR)/*.o $(SRCDIR)/*~
 
 valgrind: VMTranslator
 	valgrind --leak-check=full --show-leak-kinds=all  ./VMTranslator StackArithmetic/StackTest/StackTest.vm
+
+test: VMTranslator
+	./VMTranslator StackArithmetic/SimpleAdd/SimpleAdd.vm
+	../../tools/CPUEmulator.sh StackArithmetic/SimpleAdd/SimpleAdd.tst
+	./VMTranslator StackArithmetic/StackTest/StackTest.vm
+	../../tools/CPUEmulator.sh StackArithmetic/StackTest/StackTest.tst
+	./VMTranslator MemoryAccess/BasicTest/BasicTest.vm
+	../../tools/CPUEmulator.sh MemoryAccess/BasicTest/BasicTest.tst
+	./VMTranslator MemoryAccess/PointerTest/PointerTest.vm
+	../../tools/CPUEmulator.sh MemoryAccess/PointerTest/PointerTest.tst
+	./VMTranslator MemoryAccess/StaticTest/StaticTest.vm
+	../../tools/CPUEmulator.sh MemoryAccess/StaticTest/StaticTest.tst
