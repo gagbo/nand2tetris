@@ -36,7 +36,7 @@ $(DICTDIR)/vmTDictFiles.c: $(DICT)
 
 
 VMTranslator: $(OBJS)
-	$(CC) -o $@ $^ -I$(SRCDIR) $(CFLAGS)
+	$(CC) -o $@ $^ -I$(SRCDIR)
 
 .PHONY: clean valgrind test
 
