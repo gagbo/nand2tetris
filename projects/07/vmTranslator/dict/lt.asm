@@ -10,11 +10,11 @@ M=M-D
 D=M
 @LT_TRUE.J
 D;JLT
-D=-1
+D=0
 @END_LT.J
 0;JMP
 (LT_TRUE.J)
-D=0
+D=-1
 (END_LT.J)
 @SP
 A=M

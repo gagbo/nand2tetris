@@ -1,5 +1,4 @@
 // eq
-// Label issue with the goto
 @SP
 M=M-1
 A=M
@@ -9,8 +8,12 @@ M=M-1
 A=M
 M=D-M
 D=M
-@END_EQ.J
+@TRUE_EQ.J
 D;JEQ
+D=0
+@END_EQ.J
+0;JMP
+(TRUE_EQ.J)
 D=-1
 (END_EQ.J)
 @SP
