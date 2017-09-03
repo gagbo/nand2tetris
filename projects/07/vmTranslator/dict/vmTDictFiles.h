@@ -34,6 +34,9 @@ extern unsigned int pop_pointer_b_asm_len;
 extern const char pop_static_i_asm[];
 extern unsigned int pop_static_i_asm_len;
 
+extern const char pop_temp_i_asm[];
+extern unsigned int pop_temp_i_asm_len;
+
 extern const char push_classic_i_asm[];
 extern unsigned int push_classic_i_asm_len;
 
@@ -45,6 +48,9 @@ extern unsigned int push_pointer_b_asm_len;
 
 extern const char push_static_i_asm[];
 extern unsigned int push_static_i_asm_len;
+
+extern const char push_temp_i_asm[];
+extern unsigned int push_temp_i_asm_len;
 
 extern const char sub_asm[];
 extern unsigned int sub_asm_len;

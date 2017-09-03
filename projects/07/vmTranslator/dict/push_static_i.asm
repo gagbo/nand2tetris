@@ -1,4 +1,4 @@
-// push static I : needs also BASENAME, and '.' as a token separator
+// push static I
 @BASENAME.I
 D=M
 @SP

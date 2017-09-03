@@ -6,7 +6,8 @@ D=M
 @SP
 M=M-1
 A=M
-M=D-M
+M=M-D
+D=M
 @LT_TRUE.J
 D;JLT
 D=-1

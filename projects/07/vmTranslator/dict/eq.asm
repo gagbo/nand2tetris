@@ -8,6 +8,7 @@ D=M
 M=M-1
 A=M
 M=D-M
+D=M
 @END_EQ.J
 D;JEQ
 D=-1

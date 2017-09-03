@@ -1,7 +1,7 @@
-// Pop pointer B
+// Pop pointer K
 @SP
 M=M-1
 A=M
 D=M
-@B
+@K
 M=D

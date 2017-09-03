@@ -1,5 +1,5 @@
-// Push pointer B
-@B
+// Push pointer K
+@K
 D=M
 @SP
 A=M

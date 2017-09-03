@@ -6,7 +6,8 @@ D=M
 @SP
 M=M-1
 A=M
-M=D-M
+M=M-D
+D=M
 @GT_TRUE.J
 D;JGT
 D=-1
