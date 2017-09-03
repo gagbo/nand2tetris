@@ -23,6 +23,10 @@ int main(int argc, char **argv) {
 
     // Allocation of resources for the translation
     char line[LINE_BUFFERSIZE];
+    // TODO : create a VmCommand struct that contains the 3
+    // char[MAX_COMMAND_WORD_LENGTH] arrays and a char** to give access to each
+    // array through VmCommand.word[i] parse_line and choose_asm_dict_file and
+    // write_to_file will need to be modified
     char **command = calloc(MAX_COMMAND_WORDS, sizeof(char *));
     // .vm file parsing loop
     while (fgets(line, LINE_BUFFERSIZE - 1, ioFiles.input) != NULL) {
