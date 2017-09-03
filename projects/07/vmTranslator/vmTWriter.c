@@ -35,7 +35,6 @@ void write_to_file(FILE* filestream, const char** command,
                 strcat(asm_line_buffer, basename);
             } else if (strncmp(significant_word, "I", s_word_length) == 0) {
                 strcat(asm_line_buffer, command[2]);
-                strcat(asm_line_buffer, " ");
             } else if (strncmp(significant_word, "J", s_word_length) == 0) {
                 char nb_all_string[15];
                 sprintf(nb_all_string, "%d", p_labelCounter->nb_all);
@@ -43,21 +42,21 @@ void write_to_file(FILE* filestream, const char** command,
             } else if (strncmp(significant_word, "CLASSIC", s_word_length) ==
                        0) {
                 if (strcmp(command[1], "local") == 0) {
-                    strcat(asm_line_buffer, "LCL ");
+                    strcat(asm_line_buffer, "LCL");
                 } else if (strcmp(command[1], "argument") == 0) {
-                    strcat(asm_line_buffer, "ARG ");
+                    strcat(asm_line_buffer, "ARG");
                 } else if (strcmp(command[1], "this") == 0) {
-                    strcat(asm_line_buffer, "THIS ");
+                    strcat(asm_line_buffer, "THIS");
                 } else if (strcmp(command[1], "that") == 0) {
-                    strcat(asm_line_buffer, "THAT ");
+                    strcat(asm_line_buffer, "THAT");
                 } else if (strcmp(command[1], "temp") == 0) {
-                    strcat(asm_line_buffer, "TEMP ");
+                    strcat(asm_line_buffer, "5");
                 }
-            } else if (strncmp(significant_word, "B", s_word_length) == 0) {
-                if (asm_stub_number == 0) {
-                    strcat(asm_line_buffer, "THIS ");
-                } else if (asm_stub_number == 0) {
-                    strcat(asm_line_buffer, "THAT ");
+            } else if (strncmp(significant_word, "K", s_word_length) == 0) {
+                if (atoi(command[2]) == 0) {
+                    strcat(asm_line_buffer, "THIS");
+                } else if (atoi(command[2]) == 1) {
+                    strcat(asm_line_buffer, "THAT");
                 } else {
                     fprintf(stderr, "Number not recognised in pointer command");
                     exit(1);
@@ -136,7 +135,7 @@ const char* choose_asm_dict_file(const char** command, int command_len) {
             return pop_classic_i_asm;
         } else if (strcmp(command[0], "pop") == 0 &&
                    strcmp(command[1], "temp") == 0) {
-            return pop_classic_i_asm;
+            return pop_temp_i_asm;
         } else if (strcmp(command[0], "push") == 0 &&
                    strcmp(command[1], "local") == 0) {
             return push_classic_i_asm;
@@ -151,7 +150,7 @@ const char* choose_asm_dict_file(const char** command, int command_len) {
             return push_classic_i_asm;
         } else if (strcmp(command[0], "push") == 0 &&
                    strcmp(command[1], "temp") == 0) {
-            return push_classic_i_asm;
+            return push_temp_i_asm;
         }
     }
     return NULL;
