@@ -1,0 +1,12 @@
+// Push TEMP I
+@I
+D=A
+@CLASSIC
+D=A+D
+A=D
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
