@@ -1,4 +1,4 @@
-// Push pointer B : B=0 -> B=THIS and B=1 -> B=THAT
+// Push pointer B
 @B
 D=M
 @SP

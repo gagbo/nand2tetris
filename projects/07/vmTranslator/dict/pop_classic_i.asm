@@ -1,5 +1,4 @@
-// Pop CLASSIC I : CLASSIC = LCL or ARG or THIS or THAT or TEMP
-// R13 = address = CLASSIC + I
+// pop CLASSIC I
 @I
 D=A
 @CLASSIC

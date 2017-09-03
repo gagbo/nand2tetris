@@ -1,4 +1,4 @@
-// Pop pointer B : B=0 -> B=THIS else B=THAT
+// Pop pointer B
 @SP
 M=M-1
 A=M
