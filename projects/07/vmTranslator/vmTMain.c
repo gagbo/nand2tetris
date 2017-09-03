@@ -41,10 +41,13 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Allocation of resources for the translation
     char line[LINE_BUFFERSIZE];
     char **command = calloc(MAX_COMMAND_WORDS, sizeof(char *));
+    // .vm file parsing loop
     while (fgets(line, LINE_BUFFERSIZE - 1, filestream) != NULL) {
         int command_length = parse_line(line, command);
+        // Skip the line if it is a comment
         if (command_length == 0) {
             continue;
         } else {
@@ -61,6 +64,7 @@ int main(int argc, char **argv) {
         }
     }
 
+    // Cleanup
     free(command);
     fclose(filestream);
     fclose(outputstream);
