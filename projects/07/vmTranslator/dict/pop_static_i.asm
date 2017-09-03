@@ -1,6 +1,6 @@
-// pop static i : needs BASENAME and '.' as token separator
+// pop static i
 @SP
-M=M1
+M=M+1
 A=M
 D=M
 @BASENAME.I
