@@ -25,9 +25,14 @@ $(SRCDIR)/%.o: %.c $(DEPS)
 
 # First method implied perl manip, I prefer xxd method
 # TODO: Use Makefile to create properly vmTDictFiles from .asm folder
-# $(DICTDIR)/vmTDictFiles.h: $(DICT)
-# 	 cat $< | perl -pe 's/^/"/mg; s/$/\n"/mg' > $@
-# ###xxd -i %.asm
+$(DICTDIR)/vmTDictFiles.c: $(DICT)
+	echo "#include \"vmTDictFiles.h\"" > $@
+	for file in $(DICT); do \
+	    xxd -i $$file >> $@; \
+	done
+	sed -i 's/unsigned char/const char/' $@
+	sed -i 's/};/, 0x00};/' $@
+	sed -i 's/vmTranslator_dict_//' $@
 
 
 VMTranslator: $(OBJS)
