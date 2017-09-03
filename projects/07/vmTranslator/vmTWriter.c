@@ -1,7 +1,7 @@
 #include "vmTWriter.h"
 
 void write_to_file(FILE* filestream, const char** command,
-                   LabelCounter* p_labelCounter, char* asm_stub,
+                   LabelCounter* p_labelCounter, const char* asm_stub,
                    int asm_stub_number, char* basename) {
     char* asm_stub_copy = strdup(asm_stub);
     /* Keywords to change :
@@ -52,8 +52,7 @@ void write_to_file(FILE* filestream, const char** command,
     free(asm_stub_copy);
 }
 
-const unsigned char* choose_asm_dict_file(const char** command,
-                                          int command_len) {
+const char* choose_asm_dict_file(const char** command, int command_len) {
     if (command_len == 1) {
         if (strcmp(command[0], "add") == 0) {
             return add_asm;

@@ -27,8 +27,7 @@ typedef struct LabelCounter {
  * The returned string should NOT be modified, and is ine of the strings in
  * vmTDictFiles.h
  */
-const unsigned char* choose_asm_dict_file(const char** command,
-                                          int command_len);
+const char* choose_asm_dict_file(const char** command, int command_len);
 
 /* Main writer function :
  * filestream : output filestream
@@ -40,7 +39,7 @@ const unsigned char* choose_asm_dict_file(const char** command,
  * basename : basename of the vm file to produce unique static labels
  */
 void write_to_file(FILE* filestream, const char** command,
-                   LabelCounter* p_labelCounter, char* asm_stub,
+                   LabelCounter* p_labelCounter, const char* asm_stub,
                    int asm_stub_number, char* basename);
 
 #endif  // _VMTWRITER_H_
