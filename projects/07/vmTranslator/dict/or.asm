@@ -6,6 +6,6 @@ D=M
 @SP
 M=M-1
 A=M
-D=D|M
+M=D|M
 @SP
 M=M+1
