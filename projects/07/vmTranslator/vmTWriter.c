@@ -2,7 +2,7 @@
 
 void write_to_file(FILE* filestream, const char** command,
                    LabelCounter* p_labelCounter, const char* asm_stub,
-                   int asm_stub_number, char* basename) {
+                   char* basename) {
     char* asm_stub_copy = strdup(asm_stub);
     const char* sep = " .=@()";
     /* Keywords to change :

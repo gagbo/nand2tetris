@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
             const char *asm_dict_file =
                 choose_asm_dict_file(command, command_length);
             write_to_file(outputstream, command, &LabelCounter, asm_dict_file,
-                          0, file_label);
+                          file_label);
         }
         // Free the memory allocated by parse_line
         // TODO : have alloc and free at the same place

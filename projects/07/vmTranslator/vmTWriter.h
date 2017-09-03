@@ -33,6 +33,6 @@ const char* choose_asm_dict_file(const char** command, int command_len);
  */
 void write_to_file(FILE* filestream, const char** command,
                    LabelCounter* p_labelCounter, const char* asm_stub,
-                   int asm_stub_number, char* basename);
+                   char* basename);
 
 #endif  // _VMTWRITER_H_
