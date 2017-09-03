@@ -4,7 +4,7 @@ void write_to_file(FILE* filestream, const char** command,
                    LabelCounter* p_labelCounter, const char* asm_stub,
                    int asm_stub_number, char* basename) {
     char* asm_stub_copy = strdup(asm_stub);
-    const char* sep = " .=@";
+    const char* sep = " .=@()";
     /* Keywords to change :
      * BASENAME -> basename
      * I -> asm_stub_number
@@ -19,9 +19,13 @@ void write_to_file(FILE* filestream, const char** command,
         asm_line_buffer[0] = '\0';
         // TODO : Do not use strtok because we won't replace
         char* significant_word = line;
-        // Take out the '@' special case
+        // Take out the '@' special case and the '(' one
         if (strncmp(line, "@", 1) == 0) {
             strcat(asm_line_buffer, "@");
+            line += 1;
+            significant_word += 1;
+        } else if (strncmp(line, "(", 1) == 0) {
+            strcat(asm_line_buffer, "(");
             line += 1;
             significant_word += 1;
         }

@@ -19,7 +19,8 @@ int main(int argc, char **argv) {
 
     // Allocate filestream and parse it
     FILE *filestream = NULL;
-    LabelCounter *p_LabelCounter = NULL;
+    LabelCounter LabelCounter;
+    LabelCounter.nb_all = 0;
     filestream = fopen(filename, "r");
     if (filestream == NULL) {
         fprintf(stderr, "Could not open %s\n", filename);
@@ -37,7 +38,7 @@ int main(int argc, char **argv) {
             // This is where we should call the writing functions
             const char *asm_dict_file =
                 choose_asm_dict_file(command, command_length);
-            write_to_file(stdout, command, p_LabelCounter, asm_dict_file, 0,
+            write_to_file(stdout, command, &LabelCounter, asm_dict_file, 0,
                           file_label);
         }
         // Free the memory allocated by parse_line
