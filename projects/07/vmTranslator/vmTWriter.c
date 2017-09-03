@@ -4,7 +4,7 @@ void write_to_file(FILE* filestream, const char** command,
                    LabelCounter* p_labelCounter, const char* asm_stub,
                    int asm_stub_number, char* basename) {
     char* asm_stub_copy = strdup(asm_stub);
-    const char* sep = " .=";
+    const char* sep = " .=@";
     /* Keywords to change :
      * BASENAME -> basename
      * I -> asm_stub_number
@@ -12,9 +12,8 @@ void write_to_file(FILE* filestream, const char** command,
      * B -> THIS if asm_sub_number == 0; THAT if asm_stub_number == 1
      */
     // TODO : Use strtok bc it replaces
-    char* line = strtok(asm_stub_copy, "\n");
+    char* line = strtok(asm_stub_copy, "\r\n");
     while (line != NULL) {
-        fprintf(stderr, "%s", line);
         char asm_line_buffer[ASM_LINE_BUFFER_SIZE];
         asm_line_buffer[0] = '\0';
         // TODO : Do not use strtok because we won't replace
@@ -23,9 +22,10 @@ void write_to_file(FILE* filestream, const char** command,
         if (strncmp(line, "@", 1) == 0) {
             strcat(asm_line_buffer, "@");
             line += 1;
+            significant_word += 1;
         }
         size_t s_word_length = strcspn(line, sep);
-        while (s_word_length != 0) {
+        while (significant_word && *significant_word) {
             if (strncmp(significant_word, "BASENAME", s_word_length) == 0) {
                 strcat(asm_line_buffer, basename);
                 strcat(asm_line_buffer, " ");
@@ -56,7 +56,7 @@ void write_to_file(FILE* filestream, const char** command,
                 }
             } else {
                 strncat(asm_line_buffer, significant_word, s_word_length);
-                strcat(asm_line_buffer, " ");
+                /* strcat(asm_line_buffer, " "); */
             }
             // Advance the significant_word pointer
             significant_word += s_word_length;
