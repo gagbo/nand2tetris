@@ -3,6 +3,7 @@
 int main(int argc, char **argv) {
     char filename[50];
     char *filename_copy = NULL;
+    char *file_label = NULL;
     if (argc > 2) {
         printf("Too many arguments supplied.\n");
         return 1;
@@ -13,7 +14,7 @@ int main(int argc, char **argv) {
         strcpy(filename, argv[1]);
         filename_copy = strdup(filename);
         char *file_basename = basename(filename_copy);
-        char *file_label = strtok(file_basename, ".");
+        file_label = strtok(file_basename, ".");
         fprintf(stderr, "Basename for labels : %s\n", file_label);
     }
 
@@ -41,6 +42,10 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "%s-", command[i]);
             }
             fprintf(stderr, "\n");
+            const char *asm_dict_file =
+                choose_asm_dict_file(command, command_length);
+            write_to_file(stdout, command, p_LabelCounter, asm_dict_file, 0,
+                          file_label);
         }
         // Free the memory allocated by parse_line
         // TODO : have alloc and free at the same place
