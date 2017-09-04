@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "dict/vmTDictFiles.h"
+#include "vmTTools.h"
 
 // Struct that keeps the count of label-powered translations to
 // produce unique labels during one file translation.
@@ -20,7 +21,7 @@ typedef struct LabelCounter { int nb_all; } LabelCounter;
  * The returned string should NOT be modified, and is ine of the strings in
  * vmTDictFiles.h
  */
-const char* choose_asm_dict_file(const char** command, int command_len);
+const char* choose_asm_dict_file(const VMCommand* p_cmd, int command_len);
 
 /* Main writer function :
  * filestream : output filestream
@@ -31,7 +32,7 @@ const char* choose_asm_dict_file(const char** command, int command_len);
  * otherwise
  * basename : basename of the vm file to produce unique static labels
  */
-void write_to_file(FILE* filestream, const char** command,
+void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                    LabelCounter* p_labelCounter, const char* asm_stub,
                    char* basename);
 

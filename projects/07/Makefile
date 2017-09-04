@@ -4,10 +4,10 @@ CFLAGS=-Wall -pedantic -Wextra -g
 SRCDIR=vmTranslator
 DICTDIR=vmTranslator/dict
 
-_DEPS=vmTMain.h vmTParser.h vmTWriter.h
+_DEPS=vmTMain.h vmTParser.h vmTWriter.h vmTTools.h
 DEPS=$(patsubst %,$(SRCDIR)/%,$(_DEPS))
 
-_OBJS=vmTMain.o vmTParser.o vmTWriter.o dict/vmTDictFiles.o
+_OBJS=vmTMain.o vmTParser.o vmTWriter.o vmTTools.o dict/vmTDictFiles.o
 OBJS=$(patsubst %,$(SRCDIR)/%,$(_OBJS))
 
 _DICT=add.asm and.asm eq.asm gt.asm lt.asm neg.asm not.asm \

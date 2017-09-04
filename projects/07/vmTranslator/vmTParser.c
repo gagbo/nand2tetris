@@ -1,6 +1,6 @@
 #include "vmTParser.h"
 
-int parse_line(const char* line, char** command) {
+int parse_line(const char* line, VMCommand* p_cmd) {
     int wordCount = 0;
     char* nextWord = NULL;
     char* line_copy = strdup(line);
@@ -11,7 +11,7 @@ int parse_line(const char* line, char** command) {
         if (strncmp(nextWord, "//", 2) == 0) {
             break;
         }
-        command[wordCount] = strdup(nextWord);
+        strcpy(p_cmd->command[wordCount], nextWord);
         ++wordCount;
         nextWord = strtok(NULL, " \n\r\t");
     }
