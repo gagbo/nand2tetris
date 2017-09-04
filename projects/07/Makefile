@@ -41,7 +41,7 @@ VMTranslator: $(OBJS)
 .PHONY: clean valgrind test
 
 clean:
-	rm -f VMTranslator $(SRCDIR)/*.o $(SRCDIR)/*~
+	rm -f VMTranslator $(SRCDIR)/*.o $(SRCDIR)/*~ **/*.asm
 
 valgrind: VMTranslator
 	valgrind --leak-check=full --show-leak-kinds=all  ./VMTranslator StackArithmetic/StackTest/StackTest.vm
