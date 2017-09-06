@@ -69,5 +69,6 @@ void VMC_clear(VMCommand *p_vmc) {
 }
 
 void VMC_set_function_name(VMCommand *p_vmc, char *newFunctionName) {
+    free(p_vmc->functionName);
     p_vmc->functionName = strdup(newFunctionName);
 }
