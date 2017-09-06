@@ -12,7 +12,10 @@
 
 // Struct that keeps the count of label-powered translations to
 // produce unique labels during one file translation.
-typedef struct LabelCounter { int nb_all; } LabelCounter;
+typedef struct LabelCounter {
+    int nb_all;
+    int nb_return;
+} LabelCounter;
 
 /* Choose the correct asm file for the translation
  * this function is neither responsible for malloc nor freeing memory

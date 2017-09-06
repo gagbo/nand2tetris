@@ -56,6 +56,8 @@ void VMC_init(VMCommand *p_vmc) {
     for (int i = 0; i < MAX_COMMAND_WORDS; ++i) {
         p_vmc->command[i] = calloc(MAX_COMMAND_WORD_LENGTH, sizeof(char *));
     }
+
+    p_vmc->functionName = NULL;
 }
 
 void VMC_clear(VMCommand *p_vmc) {
@@ -63,4 +65,9 @@ void VMC_clear(VMCommand *p_vmc) {
         free(p_vmc->command[i]);
     }
     free(p_vmc->command);
+    free(p_vmc->functionName);
+}
+
+void VMC_set_function_name(VMCommand *p_vmc, char *newFunctionName) {
+    p_vmc->functionName = strdup(newFunctionName);
 }

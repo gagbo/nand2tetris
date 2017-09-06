@@ -23,8 +23,12 @@ void IOF_clear(IOFiles *p_ioFiles);
 void IOF_init(IOFiles *p_ioFiles);
 bool IOF_check(IOFiles *p_ioFiles);
 
-typedef struct VMCommand { char **command; } VMCommand;
+typedef struct VMCommand {
+    char **command;
+    char *functionName;
+} VMCommand;
 void VMC_init(VMCommand *p_vmc);
 void VMC_clear(VMCommand *p_vmc);
+void VMC_set_function_name(VMCommand *p_vmc, char *newFunctionName);
 
 #endif  // _VMTTOOLS_H_
