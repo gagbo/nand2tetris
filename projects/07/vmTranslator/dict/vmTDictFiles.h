@@ -64,4 +64,13 @@ extern unsigned int if_goto_asm_len;
 extern const char label_asm[];
 extern unsigned int label_asm_len;
 
+extern const char function_asm[];
+extern unsigned int function_asm_len;
+
+extern const char call_asm[];
+extern unsigned int call_asm_len;
+
+extern const char return_asm[];
+extern unsigned int return_asm_len;
+
 #endif  // _DICT_VMTDICTFILES_H_

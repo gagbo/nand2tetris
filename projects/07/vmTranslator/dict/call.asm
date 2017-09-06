@@ -1,0 +1,65 @@
+// call CALLEENAME I
+// push return address
+@BASENAME.FUNCTIONNAME$ret.K
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// push the rest of caller frame
+@LCL
+A=M
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@ARG
+A=M
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THIS
+A=M
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THAT
+A=M
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// set ARG = SP - 5 - I
+@5
+D=A
+@R13
+M=D
+@I
+D=A
+@R13
+M=M+D
+@SP
+D=M
+@R13
+D=D-M
+@ARG
+M=D
+// LCL = SP
+@SP
+D=M
+@LCL
+M=D
+@BASENAME.CALLEENAME
+0;JMP
+(BASENAME.FUNCTIONNAME$ret.K)
