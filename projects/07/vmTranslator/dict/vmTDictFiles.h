@@ -55,4 +55,13 @@ extern unsigned int push_temp_i_asm_len;
 extern const char sub_asm[];
 extern unsigned int sub_asm_len;
 
+extern const char goto_asm[];
+extern unsigned int goto_asm_len;
+
+extern const char if_goto_asm[];
+extern unsigned int if_goto_asm_len;
+
+extern const char label_asm[];
+extern unsigned int label_asm_len;
+
 #endif  // _DICT_VMTDICTFILES_H_
