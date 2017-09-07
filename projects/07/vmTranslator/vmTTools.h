@@ -21,6 +21,9 @@ typedef struct IOFiles {
 } IOFiles;
 
 IOFiles open_filestreams(const char *filename);
+FILE *IOF_open_outputstream_set_basename(IOFiles *p_ioFiles,
+                                         const char *filename);
+int IOF_open_inputstream(IOFiles *p_ioFiles, const char *filename);
 void IOF_clear(IOFiles *p_ioFiles);
 void IOF_init(IOFiles *p_ioFiles);
 bool IOF_check(IOFiles *p_ioFiles);

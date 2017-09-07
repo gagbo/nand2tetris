@@ -3,6 +3,26 @@
 IOFiles open_filestreams(const char *filename) {
     IOFiles ioFiles;
     IOF_init(&ioFiles);
+
+    // Input file stream
+    ioFiles.fileCount = IOF_open_inputstream(&ioFiles, filename);
+
+    // Output file stream and sets basename
+    IOF_open_outputstream_set_basename(&ioFiles, filename);
+
+    return ioFiles;
+}
+
+int IOF_open_inputstream(IOFiles *p_ioFiles, const char *filename) {
+    int opened_files = 0;
+
+    p_ioFiles->input[opened_files++] = fopen(filename, "r");
+
+    return opened_files;
+}
+
+FILE *IOF_open_outputstream_set_basename(IOFiles *p_ioFiles,
+                                         const char *filename) {
     char *filename_copy = NULL;
     char *filename_copy2 = NULL;
     char output_filename[50];
@@ -10,22 +30,20 @@ IOFiles open_filestreams(const char *filename) {
     filename_copy = strdup(filename);
     filename_copy2 = strdup(filename);
     char *file_basename = basename(filename_copy);
-    ioFiles.basename = strdup(strtok(file_basename, "."));
-    // strtok modified definitely file_basename
-    // so we can just use file_label or file_basename indifferently
+    p_ioFiles->basename = strdup(strtok(file_basename, "."));
+    // strtok modified file_basename
     char *file_dirname = dirname(filename_copy2);
     strcat(output_filename, file_dirname);
     strcat(output_filename, "/");
-    strcat(output_filename, ioFiles.basename);
+    strcat(output_filename, p_ioFiles->basename);
     strcat(output_filename, ".asm");
 
-    // Allocate filestream and parse it
-    ioFiles.input[0] = fopen(filename, "r");
-    ioFiles.output = fopen(output_filename, "w");
+    p_ioFiles->output = fopen(output_filename, "w");
 
     free(filename_copy);
     free(filename_copy2);
-    return ioFiles;
+
+    return p_ioFiles->output;
 }
 
 void IOF_clear(IOFiles *p_ioFiles) {
@@ -40,7 +58,7 @@ void IOF_init(IOFiles *p_ioFiles) {
     p_ioFiles->basename = NULL;
     p_ioFiles->output = NULL;
     p_ioFiles->input = calloc(MAX_NUMBER_OF_FILES, sizeof(FILE *));
-    p_ioFiles->fileCount = 1;
+    p_ioFiles->fileCount = 0;
 }
 
 bool IOF_check(IOFiles *p_ioFiles) {
