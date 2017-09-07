@@ -22,31 +22,33 @@ M=D
 @ARG
 D=M+1
 @SP
-A=M
 M=D
 // Restore caller frame
 @R13
 M=M-1
+A=M
 D=M
 @THAT
 M=D
 @R13
 M=M-1
+A=M
 D=M
 @THIS
 M=D
 @R13
 M=M-1
+A=M
 D=M
 @ARG
 M=D
 @R13
 M=M-1
+A=M
 D=M
 @LCL
 M=D
 // Jump to the saved return address
-@R13
-M=M-1
+@R14
 A=M
 0;JMP
