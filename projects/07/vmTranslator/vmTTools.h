@@ -5,6 +5,7 @@
 #endif  // __STDC_WANT_LIB_EXT2__
 #define MAX_COMMAND_WORDS 3
 #define MAX_COMMAND_WORD_LENGTH 256
+#define MAX_NUMBER_OF_FILES 30
 
 #include <libgen.h>  // basename
 #include <stdbool.h>
@@ -13,9 +14,10 @@
 #include <string.h>
 
 typedef struct IOFiles {
-    FILE *input;
+    FILE **input;
     FILE *output;
     char *basename;
+    int fileCount;
 } IOFiles;
 
 IOFiles open_filestreams(const char *filename);

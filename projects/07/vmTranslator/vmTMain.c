@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     // Allocation of resources for the translation
     char line[LINE_BUFFERSIZE];
     // .vm file parsing loop
-    while (fgets(line, LINE_BUFFERSIZE - 1, ioFiles.input) != NULL) {
+    while (fgets(line, LINE_BUFFERSIZE - 1, ioFiles.input[0]) != NULL) {
         int command_length = parse_line(line, &cmd);
         // Skip the line if it is a comment
         if (command_length == 0) {

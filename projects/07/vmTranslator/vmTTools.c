@@ -20,7 +20,7 @@ IOFiles open_filestreams(const char *filename) {
     strcat(output_filename, ".asm");
 
     // Allocate filestream and parse it
-    ioFiles.input = fopen(filename, "r");
+    ioFiles.input[0] = fopen(filename, "r");
     ioFiles.output = fopen(output_filename, "w");
 
     free(filename_copy);
@@ -31,13 +31,16 @@ IOFiles open_filestreams(const char *filename) {
 void IOF_clear(IOFiles *p_ioFiles) {
     free(p_ioFiles->basename);
     fclose(p_ioFiles->output);
-    fclose(p_ioFiles->input);
+    for (int i = 0; i < p_ioFiles->fileCount; ++i) {
+        fclose(p_ioFiles->input[i]);
+    }
 }
 
 void IOF_init(IOFiles *p_ioFiles) {
     p_ioFiles->basename = NULL;
     p_ioFiles->output = NULL;
-    p_ioFiles->input = NULL;
+    p_ioFiles->input = calloc(MAX_NUMBER_OF_FILES, sizeof(FILE *));
+    p_ioFiles->fileCount = 1;
 }
 
 bool IOF_check(IOFiles *p_ioFiles) {
