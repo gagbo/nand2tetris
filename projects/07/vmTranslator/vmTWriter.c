@@ -43,6 +43,8 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
             } else if (strncmp(significant_word, "CALLEENAME", s_word_length) ==
                        0) {
                 strcat(asm_line_buffer, p_cmd->command[1]);
+            } else if (strncmp(significant_word, "LABEL", s_word_length) == 0) {
+                strcat(asm_line_buffer, p_cmd->command[1]);
             } else if (strncmp(significant_word, "FUNCTIONNAME",
                                s_word_length) == 0) {
                 strcat(asm_line_buffer, p_cmd->functionName);
@@ -180,6 +182,14 @@ const char* choose_asm_dict_file(VMCommand* p_cmd, int command_len) {
             return function_asm;
         } else if (strcmp(p_cmd->command[0], "call") == 0) {
             return call_asm;
+        }
+    } else if (command_len == 2) {
+        if (strcmp(p_cmd->command[0], "label") == 0) {
+            return label_asm;
+        } else if (strcmp(p_cmd->command[0], "goto") == 0) {
+            return goto_asm;
+        } else if (strcmp(p_cmd->command[0], "if-goto") == 0) {
+            return if_goto_asm;
         }
     }
     return NULL;
