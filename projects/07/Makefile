@@ -14,7 +14,8 @@ _DICT=add.asm and.asm eq.asm gt.asm lt.asm neg.asm not.asm \
       or.asm pop_classic_i.asm pop_pointer_b.asm \
       pop_static_i.asm pop_temp_i.asm push_classic_i.asm push_constant_i.asm \
       push_pointer_b.asm push_static_i.asm push_temp_i.asm sub.asm \
-      if_goto.asm label.asm goto.asm function.asm call.asm return.asm
+      if_goto.asm label.asm goto.asm function.asm call.asm return.asm \
+      init.asm
 DICT=$(patsubst %,$(DICTDIR)/%,$(_DICT))
 
 # DEPS += $(patsubst %.asm,%.h,$(DICT))

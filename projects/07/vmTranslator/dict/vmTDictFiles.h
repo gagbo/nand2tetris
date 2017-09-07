@@ -73,4 +73,6 @@ extern unsigned int call_asm_len;
 extern const char return_asm[];
 extern unsigned int return_asm_len;
 
+extern const char init_asm[];
+extern unsigned int init_asm_len;
 #endif  // _DICT_VMTDICTFILES_H_
