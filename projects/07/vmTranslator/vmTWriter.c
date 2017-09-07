@@ -76,9 +76,10 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                     fprintf(stderr, "Number not recognised in pointer command");
                     exit(1);
                 }
-            } else if (strncmp(significant_word, "L", s_word_length) == 0) {
+            } else if (strncmp(significant_word, "RET_ID", s_word_length) ==
+                       0) {
                 char nb_ret_string[15];
-                sprintf(nb_ret_string, "%d", p_labelCounter->nb_return++);
+                sprintf(nb_ret_string, "%d", p_labelCounter->nb_return);
                 strcat(asm_line_buffer, nb_ret_string);
             } else {
                 strncat(asm_line_buffer, significant_word, s_word_length);
@@ -96,11 +97,13 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
         fputs(asm_line_buffer, filestream);
         fputs("\n", filestream);
         line = strtok(NULL, "\n");
-        if (strncmp(p_cmd->command[0], "return", s_word_length) == 0) {
-            LC_reset_return_counter(p_labelCounter);
-        }
     }
 
+    if (asm_stub == return_asm) {
+        LC_reset_return_counter(p_labelCounter);
+    } else if (asm_stub == call_asm) {
+        p_labelCounter->nb_return++;
+    }
     p_labelCounter->nb_all++;
     free(asm_stub_copy);
 }
