@@ -1,7 +1,7 @@
-// pop static i
+// pop static I
 @SP
 M=M-1
 A=M
 D=M
-@BASENAME.I
+@STATICNAME.I
 M=D

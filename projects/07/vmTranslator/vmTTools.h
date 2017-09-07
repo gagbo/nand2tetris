@@ -21,6 +21,7 @@ typedef struct IOFiles {
     FILE *output;
     char *basename;
     int fileCount;
+    char *staticName;
 } IOFiles;
 
 IOFiles open_filestreams(const char *filename);

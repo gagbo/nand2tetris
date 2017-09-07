@@ -47,6 +47,6 @@ const char* choose_asm_dict_file(VMCommand* p_cmd, int command_len);
  */
 void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                    LabelCounter* p_labelCounter, const char* asm_stub,
-                   char* basename);
+                   char* basename, char* staticName);
 
 #endif  // _VMTWRITER_H_

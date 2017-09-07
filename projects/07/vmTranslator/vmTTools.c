@@ -58,6 +58,7 @@ FILE *IOF_open_outputstream(IOFiles *p_ioFiles, const char *filename) {
     char *file_basename = basename(filename_copy);
     strtok(file_basename, ".");
     // strtok modified file_basename
+    p_ioFiles->staticName = strdup(file_basename);
     char *file_dirname = dirname(filename_copy2);
     strcat(output_filename, file_dirname);
     strcat(output_filename, "/");
@@ -99,6 +100,7 @@ void IOF_clear(IOFiles *p_ioFiles) {
         free(p_ioFiles->input_filenames[i]);
         fclose(p_ioFiles->input[i]);
     }
+    free(p_ioFiles->staticName);
 }
 
 void IOF_init(IOFiles *p_ioFiles) {
@@ -107,6 +109,7 @@ void IOF_init(IOFiles *p_ioFiles) {
     p_ioFiles->input = calloc(MAX_NUMBER_OF_FILES, sizeof(FILE *));
     p_ioFiles->input_filenames = calloc(MAX_NUMBER_OF_FILES, sizeof(char *));
     p_ioFiles->fileCount = 0;
+    p_ioFiles->staticName = NULL;
 }
 
 bool IOF_check(IOFiles *p_ioFiles) {

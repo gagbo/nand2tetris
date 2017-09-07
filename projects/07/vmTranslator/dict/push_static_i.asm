@@ -1,5 +1,5 @@
 // push static I
-@BASENAME.I
+@STATICNAME.I
 D=M
 @SP
 A=M

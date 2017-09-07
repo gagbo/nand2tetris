@@ -9,7 +9,7 @@ void LC_reset_return_counter(LabelCounter* p_lc) { p_lc->nb_return = 0; }
 
 void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                    LabelCounter* p_labelCounter, const char* asm_stub,
-                   char* basename) {
+                   char* basename, char* staticName) {
     char* asm_stub_copy = strdup(asm_stub);
     const char* sep = " .=@()$";
     /* Keywords to change :
@@ -40,6 +40,9 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
         while (significant_word && *significant_word) {
             if (strncmp(significant_word, "BASENAME", s_word_length) == 0) {
                 strcat(asm_line_buffer, basename);
+            } else if (strncmp(significant_word, "STATICNAME", s_word_length) ==
+                       0) {
+                strcat(asm_line_buffer, staticName);
             } else if (strncmp(significant_word, "CALLEENAME", s_word_length) ==
                        0) {
                 strcat(asm_line_buffer, p_cmd->command[1]);
