@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 
     // Allocate filestream and parse it
     LabelCounter LabelCounter;
-    LabelCounter.nb_all = 0;
+    LC_init(&LabelCounter);
     VMCommand cmd;
     VMC_init(&cmd);
 
