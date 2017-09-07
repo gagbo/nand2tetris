@@ -27,9 +27,13 @@ int IOF_open_inputstream(IOFiles *p_ioFiles, const char *filename) {
         if (dp != NULL) {
             while ((ep = readdir(dp))) {
                 if (strstr(ep->d_name, ".vm") != NULL) {
-                    p_ioFiles->input_filenames[opened_files] =
+                    char totalFilename[256];
+                    strcpy(totalFilename, filename);
+                    strcat(totalFilename, "/");
+                    strcat(totalFilename, ep->d_name);
+                    p_ioFiles->input[opened_files] = fopen(totalFilename, "r");
+                    p_ioFiles->input_filenames[opened_files++] =
                         strdup(ep->d_name);
-                    p_ioFiles->input[opened_files++] = fopen(ep->d_name, "r");
                 }
             }
 
@@ -58,6 +62,15 @@ FILE *IOF_open_outputstream(IOFiles *p_ioFiles, const char *filename) {
     strcat(output_filename, file_dirname);
     strcat(output_filename, "/");
     strcat(output_filename, file_basename);
+
+    // Add another /DIRNAME if it's a dir.
+    struct stat statbuf;
+    stat(filename, &statbuf);
+    if (S_ISDIR(statbuf.st_mode)) {
+        strcat(output_filename, "/");
+        strcat(output_filename, file_basename);
+    }
+
     strcat(output_filename, ".asm");
 
     p_ioFiles->output = fopen(output_filename, "w");
