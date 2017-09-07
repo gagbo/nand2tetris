@@ -26,6 +26,11 @@ int main(int argc, char **argv) {
     // Allocation of resources for the translation
     char line[LINE_BUFFERSIZE];
 
+    // Add init only if there are multiple files
+    if (ioFiles.fileCount > 1) {
+        fprintf(ioFiles.output, "%s", init_asm);
+    }
+
     // .vm file parsing loop
     for (int i = 0; i < ioFiles.fileCount; i++) {
         IOF_set_basename(&ioFiles, ioFiles.input_filenames[i]);
