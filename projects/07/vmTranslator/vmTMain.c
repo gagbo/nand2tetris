@@ -43,6 +43,15 @@ int main(int argc, char **argv) {
                 // This is where we should call the writing functions
                 const char *asm_dict_file =
                     choose_asm_dict_file(&cmd, command_length);
+                if (asm_dict_file == NULL) {
+                    fprintf(stderr, "No stub found ! Command : %s\n", line);
+
+                    for (int j = 0; j < command_length; ++j) {
+                        fprintf(stderr, "%s ", cmd.command[j]);
+                    }
+                    fprintf(stderr, "\n");
+                    exit(1);
+                }
                 write_to_file(ioFiles.output, &cmd, &LabelCounter,
                               asm_dict_file, ioFiles.basename);
             }
