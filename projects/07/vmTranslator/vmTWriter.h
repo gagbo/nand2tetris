@@ -17,6 +17,9 @@ typedef struct LabelCounter {
     int nb_return;
 } LabelCounter;
 
+void LC_reset_return_counter(LabelCounter* p_lc);
+void LC_init(LabelCounter* p_lc);
+
 /* Choose the correct asm file for the translation
  * this function is neither responsible for malloc nor freeing memory
  * for command[i] arrays.
@@ -34,6 +37,13 @@ const char* choose_asm_dict_file(const VMCommand* p_cmd, int command_len);
  * asm_stub_number : int version of command[2] when applicable, negative
  * otherwise
  * basename : basename of the vm file to produce unique static labels
+ *
+ * I = replaced by command[2]
+ * J = replaced by p_labelCounter->nb_all
+ * K = replaced by THIS or THAT if command[2] is 0 or 1
+ * L = replaced by p_labelCounter->nb_return
+ *
+ * Also resets the nb_return counter if command[0] is return
  */
 void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                    LabelCounter* p_labelCounter, const char* asm_stub,

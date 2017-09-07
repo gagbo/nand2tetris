@@ -1,5 +1,12 @@
 #include "vmTWriter.h"
 
+void LC_init(LabelCounter* p_lc) {
+    p_lc->nb_all = 0;
+    p_lc->nb_return = 0;
+}
+
+void LC_reset_return_counter(LabelCounter* p_lc) { p_lc->nb_return = 0; }
+
 void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                    LabelCounter* p_labelCounter, const char* asm_stub,
                    char* basename) {
@@ -33,6 +40,9 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
         while (significant_word && *significant_word) {
             if (strncmp(significant_word, "BASENAME", s_word_length) == 0) {
                 strcat(asm_line_buffer, basename);
+            } else if (strncmp(significant_word, "CALLEENAME", s_word_length) ==
+                       0) {
+                strcat(asm_line_buffer, p_cmd->command[1]);
             } else if (strncmp(significant_word, "I", s_word_length) == 0) {
                 strcat(asm_line_buffer, p_cmd->command[2]);
             } else if (strncmp(significant_word, "J", s_word_length) == 0) {
@@ -61,6 +71,10 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                     fprintf(stderr, "Number not recognised in pointer command");
                     exit(1);
                 }
+            } else if (strncmp(significant_word, "L", s_word_length) == 0) {
+                char nb_ret_string[15];
+                sprintf(nb_ret_string, "%d", p_labelCounter->nb_return++);
+                strcat(asm_line_buffer, nb_ret_string);
             } else {
                 strncat(asm_line_buffer, significant_word, s_word_length);
                 /* strcat(asm_line_buffer, " "); */
@@ -77,7 +91,11 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
         fputs(asm_line_buffer, filestream);
         fputs("\n", filestream);
         line = strtok(NULL, "\n");
+        if (strncmp(p_cmd->command[0], "return", s_word_length) == 0) {
+            LC_reset_return_counter(p_labelCounter);
+        }
     }
+
     p_labelCounter->nb_all++;
     free(asm_stub_copy);
 }
