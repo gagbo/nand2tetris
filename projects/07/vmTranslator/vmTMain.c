@@ -25,18 +25,22 @@ int main(int argc, char **argv) {
 
     // Allocation of resources for the translation
     char line[LINE_BUFFERSIZE];
+
     // .vm file parsing loop
-    while (fgets(line, LINE_BUFFERSIZE - 1, ioFiles.input[0]) != NULL) {
-        int command_length = parse_line(line, &cmd);
-        // Skip the line if it is a comment
-        if (command_length == 0) {
-            continue;
-        } else {
-            // This is where we should call the writing functions
-            const char *asm_dict_file =
-                choose_asm_dict_file(&cmd, command_length);
-            write_to_file(ioFiles.output, &cmd, &LabelCounter, asm_dict_file,
-                          ioFiles.basename);
+    for (int i = 0; i < ioFiles.fileCount; i++) {
+        IOF_set_basename(&ioFiles, ioFiles.input_filenames[i]);
+        while (fgets(line, LINE_BUFFERSIZE - 1, ioFiles.input[i]) != NULL) {
+            int command_length = parse_line(line, &cmd);
+            // Skip the line if it is a comment
+            if (command_length == 0) {
+                continue;
+            } else {
+                // This is where we should call the writing functions
+                const char *asm_dict_file =
+                    choose_asm_dict_file(&cmd, command_length);
+                write_to_file(ioFiles.output, &cmd, &LabelCounter,
+                              asm_dict_file, ioFiles.basename);
+            }
         }
     }
 
