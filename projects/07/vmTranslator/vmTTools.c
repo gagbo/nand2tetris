@@ -57,7 +57,7 @@ FILE *IOF_open_outputstream(IOFiles *p_ioFiles, const char *filename) {
     char *file_dirname = dirname(filename_copy2);
     strcat(output_filename, file_dirname);
     strcat(output_filename, "/");
-    strcat(output_filename, p_ioFiles->basename);
+    strcat(output_filename, file_basename);
     strcat(output_filename, ".asm");
 
     p_ioFiles->output = fopen(output_filename, "w");
