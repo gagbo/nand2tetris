@@ -34,6 +34,7 @@ bool IOF_check(IOFiles *p_ioFiles);
 
 typedef struct VMCommand {
     char **command;
+    // Current function name.
     char *functionName;
 } VMCommand;
 void VMC_init(VMCommand *p_vmc);

@@ -11,7 +11,7 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
                    LabelCounter* p_labelCounter, const char* asm_stub,
                    char* basename) {
     char* asm_stub_copy = strdup(asm_stub);
-    const char* sep = " .=@()";
+    const char* sep = " .=@()$";
     /* Keywords to change :
      * BASENAME -> basename
      * I -> asm_stub_number
@@ -43,6 +43,9 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
             } else if (strncmp(significant_word, "CALLEENAME", s_word_length) ==
                        0) {
                 strcat(asm_line_buffer, p_cmd->command[1]);
+            } else if (strncmp(significant_word, "FUNCTIONNAME",
+                               s_word_length) == 0) {
+                strcat(asm_line_buffer, p_cmd->functionName);
             } else if (strncmp(significant_word, "I", s_word_length) == 0) {
                 strcat(asm_line_buffer, p_cmd->command[2]);
             } else if (strncmp(significant_word, "J", s_word_length) == 0) {
@@ -100,7 +103,7 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
     free(asm_stub_copy);
 }
 
-const char* choose_asm_dict_file(const VMCommand* p_cmd, int command_len) {
+const char* choose_asm_dict_file(VMCommand* p_cmd, int command_len) {
     if (command_len == 1) {
         if (strcmp(p_cmd->command[0], "add") == 0) {
             return add_asm;
@@ -120,6 +123,8 @@ const char* choose_asm_dict_file(const VMCommand* p_cmd, int command_len) {
             return or_asm;
         } else if (strcmp(p_cmd->command[0], "sub") == 0) {
             return sub_asm;
+        } else if (strcmp(p_cmd->command[0], "return") == 0) {
+            return return_asm;
         }
 
     } else if (command_len == 3) {
@@ -169,6 +174,12 @@ const char* choose_asm_dict_file(const VMCommand* p_cmd, int command_len) {
         } else if (strcmp(p_cmd->command[0], "push") == 0 &&
                    strcmp(p_cmd->command[1], "temp") == 0) {
             return push_temp_i_asm;
+        } else if (strcmp(p_cmd->command[0], "function") == 0) {
+            free(p_cmd->functionName);
+            p_cmd->functionName = strdup(p_cmd->command[1]);
+            return function_asm;
+        } else if (strcmp(p_cmd->command[0], "call") == 0) {
+            return call_asm;
         }
     }
     return NULL;

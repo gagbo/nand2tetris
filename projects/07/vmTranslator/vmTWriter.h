@@ -27,7 +27,7 @@ void LC_init(LabelCounter* p_lc);
  * The returned string should NOT be modified, and is ine of the strings in
  * vmTDictFiles.h
  */
-const char* choose_asm_dict_file(const VMCommand* p_cmd, int command_len);
+const char* choose_asm_dict_file(VMCommand* p_cmd, int command_len);
 
 /* Main writer function :
  * filestream : output filestream
