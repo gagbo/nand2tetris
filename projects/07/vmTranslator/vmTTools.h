@@ -7,11 +7,13 @@
 #define MAX_COMMAND_WORD_LENGTH 256
 #define MAX_NUMBER_OF_FILES 30
 
+#include <dirent.h>
 #include <libgen.h>  // basename
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 typedef struct IOFiles {
     FILE **input;

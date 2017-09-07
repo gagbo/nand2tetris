@@ -16,7 +16,27 @@ IOFiles open_filestreams(const char *filename) {
 int IOF_open_inputstream(IOFiles *p_ioFiles, const char *filename) {
     int opened_files = 0;
 
-    p_ioFiles->input[opened_files++] = fopen(filename, "r");
+    if
+        S_ISDIR(filename) {
+            DIR *dp;
+            struct dirent *ep;
+            dp = opendir(filename);
+
+            if (dp != NULL) {
+                while (ep = readdir(dp)) {
+                    if (strstr(ep->d_name, ".vm") != NULL) {
+                        p_ioFiles->input[opened_files++] =
+                            fopen(ep->d_name, "r");
+                    }
+                }
+
+                (void)closedir(dp);
+            } else
+                perror("Couldn't open the directory");
+        }
+    else {
+        p_ioFiles->input[opened_files++] = fopen(filename, "r");
+    }
 
     return opened_files;
 }
