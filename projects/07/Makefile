@@ -61,9 +61,9 @@ test: VMTranslator
 	../../tools/CPUEmulator.sh MemoryAccess/StaticTest/StaticTest.tst
 	./VMTranslator ../08/FunctionCalls/SimpleFunction/SimpleFunction.vm
 	../../tools/CPUEmulator.sh ../08/FunctionCalls/SimpleFunction/SimpleFunction.tst
-	./VMTranslator ../08/FunctionCalls/StaticsTest
-	../../tools/CPUEmulator.sh ../08/FunctionCalls/StaticsTest/StaticsTest.tst
-	./VMTranslator ../08/FunctionCalls/FibonacciElement
-	../../tools/CPUEmulator.sh ../08/FunctionCalls/FibonacciElement/FibonacciElement.tst
 	./VMTranslator ../08/FunctionCalls/NestedCall
 	../../tools/CPUEmulator.sh ../08/FunctionCalls/NestedCall/NestedCall.tst
+	./VMTranslator ../08/FunctionCalls/FibonacciElement
+	../../tools/CPUEmulator.sh ../08/FunctionCalls/FibonacciElement/FibonacciElement.tst
+	./VMTranslator ../08/FunctionCalls/StaticsTest
+	../../tools/CPUEmulator.sh ../08/FunctionCalls/StaticsTest/StaticsTest.tst

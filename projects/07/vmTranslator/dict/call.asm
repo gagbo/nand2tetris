@@ -9,7 +9,6 @@ M=D
 M=M+1
 // push the rest of caller frame
 @LCL
-A=M
 D=M
 @SP
 A=M
@@ -17,7 +16,6 @@ M=D
 @SP
 M=M+1
 @ARG
-A=M
 D=M
 @SP
 A=M
@@ -25,7 +23,6 @@ M=D
 @SP
 M=M+1
 @THIS
-A=M
 D=M
 @SP
 A=M
@@ -33,7 +30,6 @@ M=D
 @SP
 M=M+1
 @THAT
-A=M
 D=M
 @SP
 A=M

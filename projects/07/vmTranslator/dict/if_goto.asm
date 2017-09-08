@@ -1,4 +1,4 @@
-// if-goto BASENAME.LABEL
+// if-goto FUNCTIONNAME.LABEL
 @SP
 M=M-1
 A=M
