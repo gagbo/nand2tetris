@@ -44,7 +44,8 @@ int main(int argc, char **argv) {
                 const char *asm_dict_file =
                     choose_asm_dict_file(&cmd, command_length);
                 if (asm_dict_file == NULL) {
-                    fprintf(stderr, "No stub found ! Command : %s\n", line);
+                    fprintf(stderr, "No stub found ! File : %s Command : %s\n",
+                            ioFiles.input_filenames[i], line);
 
                     for (int j = 0; j < command_length; ++j) {
                         fprintf(stderr, "%s ", cmd.command[j]);
