@@ -101,6 +101,8 @@ void IOF_clear(IOFiles *p_ioFiles) {
         free(p_ioFiles->input_filenames[i]);
         fclose(p_ioFiles->input[i]);
     }
+    free(p_ioFiles->input);
+    free(p_ioFiles->input_filenames);
     free(p_ioFiles->staticName);
 }
 

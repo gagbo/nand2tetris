@@ -67,3 +67,7 @@ test: VMTranslator
 	../../tools/CPUEmulator.sh ../08/FunctionCalls/FibonacciElement/FibonacciElement.tst
 	./VMTranslator ../08/FunctionCalls/StaticsTest
 	../../tools/CPUEmulator.sh ../08/FunctionCalls/StaticsTest/StaticsTest.tst
+	./VMTranslator ../08/ProgramFlow/BasicLoop/BasicLoop.vm
+	../../tools/CPUEmulator.sh ../08/ProgramFlow/BasicLoop/BasicLoop.tst
+	./VMTranslator ../08/ProgramFlow/FibonacciSeries/FibonacciSeries.vm
+	../../tools/CPUEmulator.sh ../08/ProgramFlow/FibonacciSeries/FibonacciSeries.tst
