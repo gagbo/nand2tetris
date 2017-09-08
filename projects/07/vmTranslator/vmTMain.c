@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
                 }
                 write_to_file(ioFiles.output, &cmd, &LabelCounter,
                               asm_dict_file, ioFiles.basename,
-                              ioFiles.staticName);
+                              ioFiles.basename);
             }
         }
     }
