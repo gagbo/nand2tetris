@@ -2,7 +2,6 @@
 
 int main(int argc, char **argv) {
     IOFiles ioFiles;
-    IOF_init(&ioFiles);
     if (argc > 2) {
         printf("Too many arguments supplied.\n");
         return 1;
