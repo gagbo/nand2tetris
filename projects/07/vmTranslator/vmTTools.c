@@ -26,7 +26,8 @@ int IOF_open_inputstream(IOFiles *p_ioFiles, const char *filename) {
 
         if (dp != NULL) {
             while ((ep = readdir(dp))) {
-                if (strstr(ep->d_name, ".vm") != NULL) {
+                if (strstr(ep->d_name, ".vm") != NULL &&
+                    strncmp(ep->d_name, ".", 1) != 0) {
                     char totalFilename[256];
                     strcpy(totalFilename, filename);
                     strcat(totalFilename, "/");
