@@ -183,8 +183,7 @@ const char* choose_asm_dict_file(VMCommand* p_cmd, int command_len) {
                    strcmp(p_cmd->command[1], "temp") == 0) {
             return push_temp_i_asm;
         } else if (strcmp(p_cmd->command[0], "function") == 0) {
-            free(p_cmd->functionName);
-            p_cmd->functionName = strdup(p_cmd->command[1]);
+            VMC_set_function_name(p_cmd, p_cmd->command[1]);
             return function_asm;
         } else if (strcmp(p_cmd->command[0], "call") == 0) {
             return call_asm;
