@@ -3,5 +3,64 @@
 D=A
 @SP
 M=D
+// call Sys.Init 0
+// push return address
+@bootstrap$ret.0
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// push the rest of caller frame
+@LCL
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@ARG
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THIS
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@THAT
+D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+// set ARG = SP - 5
+@5
+D=A
+@R13
+M=D
+@I
+D=A
+@R13
+M=M+D
+@SP
+D=M
+@R13
+D=D-M
+@ARG
+M=D
+// LCL = SP
+@SP
+D=M
+@LCL
+M=D
 @Sys.init
 0;JMP
+(bootstrap$ret.0)
