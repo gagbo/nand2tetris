@@ -34,6 +34,9 @@ int main(int argc, char **argv) {
     // .vm file parsing loop
     for (int i = 0; i < ioFiles.fileCount; i++) {
         IOF_set_basename(&ioFiles, ioFiles.input_filenames[i]);
+        // This initialisation is overridden if 'function' keyword exists in
+        // .vm file
+        cmd.functionName = strdup(ioFiles.basename);
         while (fgets(line, LINE_BUFFERSIZE - 1, ioFiles.input[i]) != NULL) {
             int command_length = parse_line(line, &cmd);
             // Skip the line if it is a comment
