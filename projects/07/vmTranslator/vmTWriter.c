@@ -14,8 +14,12 @@ void write_to_file(FILE* filestream, const VMCommand* p_cmd,
     const char* sep = " .=@()$";
     /* Keywords to change :
      * BASENAME -> basename
+     * STATICNAME -> staticName
+     * CALLEENAME -> p_cmd->command[1] for call XX y commands
+     * FUNCTIONNAME -> current function name stored in p_cmd->functionName
      * I -> asm_stub_number
-     * J -> Label Counter
+     * J -> Label Counter. nb_all
+     * RET_ID -> Label Counter . nb_return
      * CLASSIC -> LCL or ARG or THIS or THAT or TEMP
      * B -> THIS if asm_sub_number == 0; THAT if asm_stub_number == 1
      */
