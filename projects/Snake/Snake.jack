@@ -2,7 +2,7 @@
 class Snake {
     field int x, y, length;
     static int X_PIX, Y_PIX;
-    field Snake next;
+    field Snake next, prev;
 
     /** Constructor for the first Snake head */
     constructor Snake new(int S_CoorX, int S_CoorY, int S_length) {
@@ -12,6 +12,7 @@ class Snake {
         let y = S_CoorY;
         let length = S_length;
         let next = null;
+        let prev = null;
 
         do draw();
 
@@ -24,6 +25,7 @@ class Snake {
         let y = S_CoorY;
         let length = previous.getLength() - 1;
         let next = null;
+        let prev = previous;
 
         if (~(length < 0)) {
             do draw();
@@ -54,6 +56,7 @@ class Snake {
 
    /** Draws the snake sprite on the screen. */
    method void draw() {
+      // Check for prev = null to know if it's the head or a body part
       do Screen.setColor(true);
       do Screen.drawRectangle(x * X_PIX, y * Y_PIX, (x+1) * X_PIX - 1, (y+1) * Y_PIX - 1);
       return;
