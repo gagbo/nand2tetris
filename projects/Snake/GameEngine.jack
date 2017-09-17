@@ -1,0 +1,95 @@
+/** Handle game rules and engine */
+class GameEngine {
+    field int speed, direction, length;
+    static int X_PIX, Y_PIX;
+    static int WALL_XM, WALL_XP, WALL_YM, WALL_YP;
+    static Snake snake;
+
+    /** Constructor with the initial wait delay */
+    constructor GameEngine new(int init_speed) {
+        let length = 1;
+        let snake = Snake.new(16, 8, length);
+        let speed = init_speed;
+        let X_PIX = Main.getXPX();
+        let Y_PIX = Main.getYPX();
+        let WALL_XM = Main.getWXM();
+        let WALL_XP = Main.getWXP();
+        let WALL_YM = Main.getWYM();
+        let WALL_YP = Main.getWYP();
+
+        do drawWalls(WALL_XM, WALL_YM, WALL_XP, WALL_YP);
+        return this;
+    }
+
+    /** Desctructor */
+    method void dispose() {
+        do snake.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+   /** Moves the snake in the current direction. */
+   method int moveSnake() {
+      var int gameState;
+      if (direction = 1) { let gameState = snake.moveUp(); }
+      if (direction = 2) { let gameState = snake.moveDown(); }
+      if (direction = 3) { let gameState = snake.moveLeft(); }
+      if (direction = 4) { let gameState = snake.moveRight(); }
+      do Sys.wait(speed);  // delays the next movement
+      return gameState;
+   }
+
+   /** Draws the walls of the game */
+   method void drawWalls (int Ax, int Ay, int Bx, int By) {
+       var int i;
+       var int j;
+       let i = Ax;
+       let j = Ay;
+       while (~(i > Bx)) {
+            while (~(j > By)) {
+                if ((i = Ax) | (i = Bx) | (j = Ay) | (j = By)) {
+                    // The wall sprite is a rectangle for now
+                    do Screen.drawRectangle(i*X_PIX, j*Y_PIX, (i+1) * X_PIX - 1, (j+1) * Y_PIX - 1);
+                }
+                let j = j+1;
+            }
+            let i = i+1;
+            let j = Ay;
+        }
+        return;
+   }
+
+   /** Runs the game: handles the user's inputs and moves the snake accordingly */
+    method void run () {
+      var char key;  // the key currently pressed by the user
+      var boolean exit;
+      var int gameState;
+      let exit = false;
+      let gameState = 0;
+
+      while (~exit & ~(gameState < 0)) {
+         // waits for a key to be pressed
+         while (key = 0) {
+            let key = Keyboard.keyPressed();
+            let gameState = moveSnake();
+         }
+         if (key = 81)  { let exit = true; }     // q key
+         // Those 2 key presses are there for debug purposes, it should 
+         // be handled by Apples later within the moveSnake() method
+         if (key = 90)  { do snake.decSize(); }  // z key
+         if (key = 88)  { do snake.incSize(); }  // x key
+         if (key = 131) { let direction = 1; }   // up arrow
+         if (key = 133) { let direction = 2; }   // down arrow
+         if (key = 130) { let direction = 3; }   // left arrow
+         if (key = 132) { let direction = 4; }   // right arrow
+
+         // waits for the key to be released while checking for loss condition
+         while (~(key = 0) & ~(gameState < 0)) {
+            let key = Keyboard.keyPressed();
+            let gameState = moveSnake();
+         }
+     } // while
+     return;
+   }
+
+}

@@ -1,0 +1,48 @@
+/** Initializes a new Snake game and starts it. */
+class Main {
+    static int X_PIX, Y_PIX, INIT_SPEED;
+    static int WALL_XM, WALL_XP, WALL_YM, WALL_YP;
+
+    /** Settings initilisation and Showrunner */
+    function void main() {
+        var GameEngine game;
+        let X_PIX = 16;
+        let Y_PIX = 16;
+        let WALL_XM = 0;
+        let WALL_XP = 31;
+        let WALL_YM = 0;
+        let WALL_YP = 15;
+        let INIT_SPEED = 300;
+
+        let game = GameEngine.new(INIT_SPEED);
+        do game.run();
+        do game.dispose();
+        return;
+    }
+
+    /** Accessors */
+    function int getXPX() {
+        return X_PIX;
+    }
+
+    function int getYPX() {
+        return Y_PIX;
+    }
+
+    function int getWXM() {
+        return WALL_XM;
+    }
+
+    function int getWXP() {
+        return WALL_XP;
+    }
+
+    function int getWYM() {
+        return WALL_YM;
+    }
+
+    function int getWYP() {
+        return WALL_YP;
+    }
+
+}

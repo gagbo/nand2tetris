@@ -1,0 +1,130 @@
+/** Implement the snake */
+class Snake {
+    field int x, y, length;
+    static int X_PIX, Y_PIX;
+    field Snake next;
+
+    /** Constructor for the first Snake head */
+    constructor Snake new(int S_CoorX, int S_CoorY, int S_length) {
+        let X_PIX = Main.getXPX();
+        let Y_PIX = Main.getYPX();
+        let x = S_CoorX;
+        let y = S_CoorY;
+        let length = S_length;
+        let next = null;
+
+        do draw();
+
+        return this;
+    }
+
+    /** Constructs a body after a previous Snake cell */
+    constructor Snake newBody(int S_CoorX, int S_CoorY, Snake previous) {
+        let x = S_CoorX;
+        let y = S_CoorY;
+        let length = previous.getLength() - 1;
+        let next = null;
+
+        if (~(length < 0)) {
+            do draw();
+            return this;
+        }
+        return this;
+    }
+
+    /** Recursive destructor to free the whole snake */
+    method void dispose() {
+        if (~(next = null)) {
+            do next.dispose();
+        }
+        do erase();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Find the last part of the Snake and erases it */
+    method void killQueue() {
+        if(~(length < 0) & ~(next = null)) {
+            do next.killQueue();
+            return;
+        }
+        do dispose();
+        return;
+    }
+
+   /** Draws the snake sprite on the screen. */
+   method void draw() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x * X_PIX, y * Y_PIX, (x+1) * X_PIX - 1, (y+1) * Y_PIX - 1);
+      return;
+   }
+
+   /** Erase the X_PIX*Y_PIX pixel on the screen. */
+   method void erase() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x * X_PIX, y * Y_PIX, (x+1) * X_PIX - 1, (y+1) * Y_PIX - 1);
+      return;
+   }
+
+
+    // The move Methods should return the gameState :
+    // 0 if nothing special happens
+    // -1 if the Snake hits a wall (get wall values from GameEngine)
+    // 1 if we're on an Apple
+   method int moveUp() {
+        if (y = (Main.getWYM() + 1)) {
+            return -1;
+        }
+        let next = Snake.newBody(x, y, this);
+        let y = y - 1;
+        do draw();
+        do killQueue();
+        return 0;
+   }
+   method int moveDown() {
+        if (y = (Main.getWYP() - 1)) {
+            return -1;
+        }
+        let next = Snake.newBody(x, y, this);
+        let y = y +1;
+        do draw();
+        do killQueue();
+        return 0;
+   }
+   method int moveLeft() {
+        if (x = (Main.getWXM() + 1)) {
+            return -1;
+        }
+        let next = Snake.newBody(x, y, this);
+        let x = x-1;
+        do draw();
+        do killQueue();
+        return 0;
+   }
+   method int moveRight() {
+        if (x = (Main.getWXP() - 1)) {
+            return -1;
+        }
+        let next = Snake.newBody(x, y, this);
+        let x = x+1;
+        do draw();
+        do killQueue();
+        return 0;
+   }
+
+    /** Size handlers */
+   method void decSize() {
+        let length = length - 1;
+        return;
+   }
+   method void incSize() {
+        let length = length + 1;
+        return;
+   }
+
+    /** Accessor */
+   method int getLength() {
+        return length;
+    }
+
+}
