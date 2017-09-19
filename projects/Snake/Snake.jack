@@ -1,8 +1,8 @@
 /** Implement the snake */
 class Snake {
     field int x, y, length;
-    static int X_PIX, Y_PIX;
     field Snake next, prev;
+    static int X_PIX, Y_PIX;
 
     /** Constructor for the first Snake head */
     constructor Snake new(int S_CoorX, int S_CoorY, int S_length) {
@@ -39,6 +39,7 @@ class Snake {
         if (~(next = null)) {
             do next.dispose();
         }
+        do prev.setNextToNull();
         do erase();
         do Memory.deAlloc(this);
         return;
@@ -46,8 +47,11 @@ class Snake {
 
     /** Find the last part of the Snake and erases it */
     method void killQueue() {
-        if(~(length < 0) & ~(next = null)) {
-            do next.killQueue();
+        if(length > 0) {
+            let length = length - 1;
+            if (~(next = null)) {
+                do next.killQueue();
+            }
             return;
         }
         do dispose();
@@ -128,6 +132,12 @@ class Snake {
     /** Accessor */
    method int getLength() {
         return length;
+    }
+
+    /** Setter */
+    method void setNextToNull() {
+        let next = null;
+        return;
     }
 
 }

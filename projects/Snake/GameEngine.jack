@@ -7,8 +7,9 @@ class GameEngine {
 
     /** Constructor with the initial wait delay */
     constructor GameEngine new(int init_speed) {
+        var int start_x;
+        var int start_y;
         let length = 1;
-        let snake = Snake.new(16, 8, length);
         let speed = init_speed;
         let X_PIX = Main.getXPX();
         let Y_PIX = Main.getYPX();
@@ -16,6 +17,10 @@ class GameEngine {
         let WALL_XP = Main.getWXP();
         let WALL_YM = Main.getWYM();
         let WALL_YP = Main.getWYP();
+        let start_x = (WALL_XP-WALL_XM)/2;
+        let start_y = (WALL_YP-WALL_YM)/2;
+
+        let snake = Snake.new(start_x, start_y, length);
 
         do drawWalls(WALL_XM, WALL_YM, WALL_XP, WALL_YP);
         return this;
