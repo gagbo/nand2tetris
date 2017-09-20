@@ -1,6 +1,7 @@
 #ifndef _TOKENISER_TOKENISER_H
 #define _TOKENISER_TOKENISER_H
 
+#define TOKEN_BUFFER_SIZE 100
 #include <fstream>
 #include <iostream>
 
@@ -29,13 +30,25 @@ class JackTokeniser {
     ~JackTokeniser();
 
     /** String containing every delimiter for the tokeniser */
-    static std::string delimiterList;
+    static std::string symbolList;
 
     /** String containing Space separated comment delimiters for the tokeniser
      */
     static std::string commentList;
 
-    /** Advance to the next token */
+    /** String containing all possible delimiters for tokens */
+    static std::string delimiterList;
+
+    /** Reads the next input line into current_line
+     * Side effect : advances in_stream one line in the stream
+     * Side effect : resets line_cursor to the first non whitespace
+     * Side effect : updates the value ot is_last_line
+     */
+    void readNewLine();
+
+    /** Advance to the next meaningful token
+     * Side effect : updates the value of is_end_of_input
+     */
     void advance();
 
     /** Return next token and come back to current position
@@ -67,12 +80,18 @@ class JackTokeniser {
  protected:
     /** input file stream associated to the tokeniser */
     std::ifstream* in_stream;
+    /** current line */
+    std::string current_line;
+    /** cursor in current line */
+    size_t line_cursor;
     /** current token */
     std::string token;
     /** current token type */
-    JackTokenType tokenType;
+    JackTokenType token_type;
     /** Are we at the end ? */
-    bool isEOInput;
+    bool is_end_of_input;
+    /** Are we parsing the last line ? */
+    bool is_last_line;
 };
 
 #endif /* ifndef _TOKENISER_TOKENISER_H */
