@@ -1,4 +1,7 @@
 # Nand to Tetris
+This course is done with the OSSU curriculum in mind.
+[![Open Source Society University - Computer Science](https://img.shields.io/badge/OSSU-computer--science-blue.svg)](https://github.com/ossu/computer-science)
+
 The goal of this course is to design a computer from the bottom up.
 First 6 weeks projects are about the hardware layers (from NAND gate
 to Assembly), the other are about software layers (from Compiler
