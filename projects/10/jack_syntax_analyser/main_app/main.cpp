@@ -13,6 +13,12 @@ int main(int argc, char** argv) {
     parse_arguments(argc, argv, files_list);
 
     for (size_t i = 0; i < files_list.size(); ++i) {
+        std::string output_filename = files_list[i];
+        output_filename.replace(output_filename.end() - 4,
+                                output_filename.end(), "xml");
+
+        std::cerr << "Converting " << files_list[i] << " into "
+                  << output_filename << "\n";
         JackTokeniser token_machine(files_list[i].c_str());
         while (token_machine.hasMoreTokens()) {
             std::cout << "Token found : " << token_machine.getToken() << " - "
@@ -59,6 +65,9 @@ void parse_arguments(int argc, char** argv,
                 std::cerr << *it << " : ";
                 std::string filename = it->generic_string();
                 std::cerr << filename << "\n";
+                if (it->extension() == ".jack") {
+                    files_list.push_back(filename);
+                }
                 ++it;
             }
         }
