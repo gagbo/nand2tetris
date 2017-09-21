@@ -144,9 +144,10 @@ std::string JackTokeniser::getToken() const { return token; }
 
 void JackTokeniser::showState() const {
     std::cerr << "State of Tokenizer : "
-              << "line : " << current_line << "\n"
+              << "line : '" << current_line << "'\n"
               << "cursor : " << line_cursor << "\n"
-              << "char under cursor : " << current_line.at(line_cursor) << "\n"
+              << "char under cursor : '" << current_line.at(line_cursor)
+              << "'\n"
               << "-----------------------------------\n";
     return;
 }

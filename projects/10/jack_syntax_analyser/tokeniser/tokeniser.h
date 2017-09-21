@@ -1,7 +1,6 @@
 #ifndef _TOKENISER_TOKENISER_H
 #define _TOKENISER_TOKENISER_H
 
-#define TOKEN_BUFFER_SIZE 100
 #include <fstream>
 #include <iostream>
 #include <limits>
