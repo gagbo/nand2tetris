@@ -17,7 +17,7 @@ set(CMAKE_VERBOSE_MAKEFILE false)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(BUILD_SHARED_LIBS true)
 
-set(CMAKE_CXX_FLAGS "--std=c++14 -Wall -pedantic -Wextra -Werror")
+set(CMAKE_CXX_FLAGS "--std=c++14 -g -Wall -pedantic -Wextra -Werror")
 
 add_subdirectory(tokeniser)
 add_subdirectory(grammar_engine)

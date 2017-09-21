@@ -4,6 +4,7 @@
 #define TOKEN_BUFFER_SIZE 100
 #include <fstream>
 #include <iostream>
+#include <limits>
 
 /** enum for the Jack token types */
 enum struct JackTokenType : int {
@@ -17,24 +18,27 @@ enum struct JackTokenType : int {
 /** enum for the different Jack Keywords */
 enum struct JackKeyword : int {
     NOT_KEYWORD,
-    DO_,
-    WHILE_,
-    LET_,
     CLASS_,
+    CONSTRUCTOR_,
     FUNCTION_,
     METHOD_,
-    CONSTRUCTOR_,
-    VAR_,
-    STATIC_,
     FIELD_,
-    BOOLEAN_,
+    STATIC_,
+    VAR_,
     INT_,
-    STRING_,
-    ARRAY_,
+    CHAR_,
+    BOOLEAN_,
     VOID_,
-    NULL_,
     TRUE_,
-    FALSE_
+    FALSE_,
+    NULL_,
+    THIS_,
+    LET_,
+    DO_,
+    IF_,
+    ELSE_,
+    WHILE_,
+    RETURN_
 };
 
 /** Tokeniser objects for Jack files */
@@ -43,7 +47,7 @@ class JackTokeniser {
     /** Default constructor */
     JackTokeniser();
     /** Constructor with only the file name */
-    JackTokeniser(std::string filename);
+    JackTokeniser(char* filename);
     /** Constructor giving directly the input file stream to use */
     JackTokeniser(std::ifstream* input_stream);
 
@@ -92,6 +96,10 @@ class JackTokeniser {
     /** Tell the current token type */
     JackTokenType getTokenType();
 
+    std::string getToken();
+
+    void showState();
+
     /** Return the value of the token if it is the right type */
     JackKeyword keyWord();
 
@@ -112,7 +120,10 @@ class JackTokeniser {
     std::ifstream* in_stream;
     /** current line */
     std::string current_line;
-    /** cursor in current line */
+    /** cursor in current line
+     * It is always placed at the char starting the next token
+     * in a line. If current_line.at(line_cursor) is \r or \n, EOL
+     * This behaviour (handled by advance() enables peek() */
     size_t line_cursor;
     /** current token */
     std::string token;
@@ -124,6 +135,95 @@ class JackTokeniser {
     bool is_end_of_input;
     /** Are we parsing the last line ? */
     bool is_last_line;
+
+ private:
+    void init();
+    /** Checks if token is a keyword */
+    bool isKeyword();
+    /** Checks if token is keyword CLASS
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isCLASS();
+    /** Checks if token is keyword CONSTRUCTOR
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isCONSTRUCTOR();
+    /** Checks if token is keyword FUNCTION
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isFUNCTION();
+    /** Checks if token is keyword METHOD
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isMETHOD();
+    /** Checks if token is keyword FIELD
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isFIELD();
+    /** Checks if token is keyword STATIC
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isSTATIC();
+    /** Checks if token is keyword VAR
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isVAR();
+    /** Checks if token is keyword INT
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isINT();
+    /** Checks if token is keyword CHAR
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isCHAR();
+    /** Checks if token is keyword BOOLEAN
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isBOOLEAN();
+    /** Checks if token is keyword VOID
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isVOID();
+    /** Checks if token is keyword TRUE
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isTRUE();
+    /** Checks if token is keyword FALSE
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isFALSE();
+    /** Checks if token is keyword NULL
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isNULL();
+    /** Checks if token is keyword THIS
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isTHIS();
+    /** Checks if token is keyword LET
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isLET();
+    /** Checks if token is keyword DO
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isDO();
+    /** Checks if token is keyword IF
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isIF();
+    /** Checks if token is keyword ELSE
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isELSE();
+    /** Checks if token is keyword WHILE
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isWHILE();
+    /** Checks if token is keyword RETURN
+     * Side effect : Sets JackKeyword if true
+     */
+    bool isRETURN();
 };
 
 #endif /* ifndef _TOKENISER_TOKENISER_H */
