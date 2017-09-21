@@ -47,7 +47,20 @@ void parse_arguments(int argc, char** argv,
             std::cerr << "Unique file mode\n";
             files_list.push_back(argument);
         } else if (boost::filesystem::is_directory(p)) {
-            std::cerr << "Directory input detected but not implemented\n";
+            boost::filesystem::directory_iterator dir_iter(p);
+            typedef std::vector<boost::filesystem::path> vec;
+            vec p_dir_listing;  // so we can sort thelater
+
+            copy(boost::filesystem::directory_iterator(p),
+                 boost::filesystem::directory_iterator(),
+                 back_inserter(p_dir_listing));
+            auto it = p_dir_listing.begin();
+            while (it != p_dir_listing.end()) {
+                std::cerr << *it << " : ";
+                std::string filename = it->generic_string();
+                std::cerr << filename << "\n";
+                ++it;
+            }
         }
     } else {
         std::cerr << p << " does not exist\n";
