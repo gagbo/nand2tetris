@@ -134,13 +134,15 @@ void JackTokeniser::advance() {
     return;
 }
 
-bool JackTokeniser::hasMoreTokens() { return !is_end_of_input; }
+char JackTokeniser::peek() const { return current_line.at(line_cursor); }
 
-JackTokenType JackTokeniser::getTokenType() { return token_type; }
+bool JackTokeniser::hasMoreTokens() const { return !is_end_of_input; }
 
-std::string JackTokeniser::getToken() { return token; }
+JackTokenType JackTokeniser::getTokenType() const { return token_type; }
 
-void JackTokeniser::showState() {
+std::string JackTokeniser::getToken() const { return token; }
+
+void JackTokeniser::showState() const {
     std::cerr << "State of Tokenizer : "
               << "line : " << current_line << "\n"
               << "cursor : " << line_cursor << "\n"
@@ -149,7 +151,7 @@ void JackTokeniser::showState() {
     return;
 }
 
-JackKeyword JackTokeniser::keyWord() {
+JackKeyword JackTokeniser::keyWord() const {
     if (token_type != JackTokenType::KEYWORD) {
         return JackKeyword::NOT_KEYWORD;
     } else {
@@ -157,7 +159,7 @@ JackKeyword JackTokeniser::keyWord() {
     }
 }
 
-char JackTokeniser::symbol() {
+char JackTokeniser::symbol() const {
     if (token_type != JackTokenType::SYMBOL) {
         return '\0';
     } else {
@@ -165,7 +167,7 @@ char JackTokeniser::symbol() {
     }
 }
 
-std::string JackTokeniser::identifier() {
+std::string JackTokeniser::identifier() const {
     if (token_type != JackTokenType::IDENT) {
         return "";
     } else {
@@ -173,7 +175,7 @@ std::string JackTokeniser::identifier() {
     }
 }
 
-int JackTokeniser::intVal() {
+int JackTokeniser::intVal() const {
     if (token_type != JackTokenType::INT_CONST) {
         return std::numeric_limits<int>::min();
     } else {
@@ -181,7 +183,7 @@ int JackTokeniser::intVal() {
     }
 }
 
-std::string JackTokeniser::stringVal() {
+std::string JackTokeniser::stringVal() const {
     if (token_type != JackTokenType::STRING_CONST) {
         return "";
     } else {

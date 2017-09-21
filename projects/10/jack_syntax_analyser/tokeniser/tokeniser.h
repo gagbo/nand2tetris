@@ -85,35 +85,35 @@ class JackTokeniser {
      */
     void advance();
 
-    /** Return next token and come back to current position
+    /** Return next token's first char without moving the token
      * It is useful for the LL(2) exception in the Jack Grammar
      */
-    std::string peek();
+    char peek() const;
 
     /** Tell if there are tokens left */
-    bool hasMoreTokens();
+    bool hasMoreTokens() const;
 
     /** Tell the current token type */
-    JackTokenType getTokenType();
+    JackTokenType getTokenType() const;
 
-    std::string getToken();
+    std::string getToken() const;
 
-    void showState();
-
-    /** Return the value of the token if it is the right type */
-    JackKeyword keyWord();
+    void showState() const;
 
     /** Return the value of the token if it is the right type */
-    char symbol();
+    JackKeyword keyWord() const;
 
     /** Return the value of the token if it is the right type */
-    std::string identifier();
+    char symbol() const;
 
     /** Return the value of the token if it is the right type */
-    int intVal();
+    std::string identifier() const;
 
     /** Return the value of the token if it is the right type */
-    std::string stringVal();
+    int intVal() const;
+
+    /** Return the value of the token if it is the right type */
+    std::string stringVal() const;
 
  protected:
     /** input file stream associated to the tokeniser */
