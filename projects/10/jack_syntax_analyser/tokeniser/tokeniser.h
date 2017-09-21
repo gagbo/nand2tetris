@@ -14,6 +14,29 @@ enum struct JackTokenType : int {
     STRING_CONST
 };
 
+/** enum for the different Jack Keywords */
+enum struct JackKeyword : int {
+    NOT_KEYWORD,
+    DO_,
+    WHILE_,
+    LET_,
+    CLASS_,
+    FUNCTION_,
+    METHOD_,
+    CONSTRUCTOR_,
+    VAR_,
+    STATIC_,
+    FIELD_,
+    BOOLEAN_,
+    INT_,
+    STRING_,
+    ARRAY_,
+    VOID_,
+    NULL_,
+    TRUE_,
+    FALSE_
+};
+
 /** Tokeniser objects for Jack files */
 class JackTokeniser {
  public:
@@ -29,15 +52,22 @@ class JackTokeniser {
      */
     ~JackTokeniser();
 
-    /** String containing every delimiter for the tokeniser */
-    static std::string symbolList;
+    /** String containing every symbol for the tokeniser */
+    static std::string st_symbol_list;
 
-    /** String containing Space separated comment delimiters for the tokeniser
+    /** String containing every possible char to start an identifier */
+    static std::string st_ident_start_list;
+
+    /** String containing every possible char inside an identifier */
+    static std::string st_ident_char_list;
+
+    /** String containing Space separated comment delimiters for the
+     * tokeniser
      */
-    static std::string commentList;
+    static std::string st_comment_list;
 
     /** String containing all possible delimiters for tokens */
-    static std::string delimiterList;
+    static std::string st_delimiter_list;
 
     /** Reads the next input line into current_line
      * Side effect : advances in_stream one line in the stream
@@ -63,7 +93,7 @@ class JackTokeniser {
     JackTokenType getTokenType();
 
     /** Return the value of the token if it is the right type */
-    std::string keyWord();
+    JackKeyword keyWord();
 
     /** Return the value of the token if it is the right type */
     char symbol();
@@ -88,6 +118,8 @@ class JackTokeniser {
     std::string token;
     /** current token type */
     JackTokenType token_type;
+    /** keyword type specialisation */
+    JackKeyword token_keyword;
     /** Are we at the end ? */
     bool is_end_of_input;
     /** Are we parsing the last line ? */

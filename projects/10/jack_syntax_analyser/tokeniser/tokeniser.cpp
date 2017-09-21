@@ -1,8 +1,25 @@
 #include "tokeniser.h"
 
-std::string JackTokeniser::symbolList = "(){};.=+-*/\"";
-std::string JackTokeniser::commentList = "// /*";
-std::string JackTokeniser::delimiterList = "(){};.=+-*/\" \r\t\n";
+std::string JackTokeniser::st_symbol_list = "(){}[];.=+-*/";
+std::string JackTokeniser::st_ident_start_list =
+    "abcedefg"
+    "hijklmno"
+    "pqrstuvw"
+    "xyzABCDE"
+    "FGHIJKLM"
+    "NOPQRSTU"
+    "VWXYZ_";
+std::string JackTokeniser::st_ident_char_list =
+    "abcedefg"
+    "hijklmno"
+    "pqrstuvw"
+    "xyzABCDE"
+    "FGHIJKLM"
+    "NOPQRSTU"
+    "VWXYZ_"
+    "1234567890";
+std::string JackTokeniser::st_comment_list = "//\n/*";
+std::string JackTokeniser::st_delimiter_list = "(){};.=+-*/\" \r\t\n";
 
 JackTokeniser::JackTokeniser() {
     in_stream = 0;
@@ -46,15 +63,61 @@ void JackTokeniser::advance() {
         readNewLine();
         advance();
     } else {  // Otherwise parse the token
-        // Cas ou on a un chiffre (forcement INT_CONST)
-        // Cas ou on a un symbole (find_first_of(symbolList) - line_cursor = 1)
-        /* Cas ou on a une lettre ou un _ (refaire un token avec tous les
-         * delimiteurs - DONE delimiterList)
-         */
+              /* This is the zone where a State Machine implementation could be
+               * helpful, for now we'll just run the cases without higher level
+               * designs
+               * in mind
+               */
+        // TODO : Put these if blocks in private methods
+        // If the first char is a digit (forcement INT_CONST)
+        if (std::isdigit(current_line.at(line_cursor))) {
+            size_t next =
+                current_line.find_first_not_of("0123456789", line_cursor);
+            size_t offset = (next == std::string::npos) ? std::string::npos
+                                                        : (next - line_cursor);
+            token = current_line.substr(line_cursor, offset);
+            token_type = JackTokenType::INT_CONST;
+            line_cursor = next;
+        } else if (current_line.at(line_cursor) == '"') {
+            // STRING_CONST handling
+            line_cursor++;  // Eat the opening "
+            size_t next = current_line.find("\"", line_cursor);
+            size_t offset = (next == std::string::npos)
+                                ? std::string::npos
+                                : (next - line_cursor - 1);
+            token = current_line.substr(line_cursor, offset);
+            token_type = JackTokenType::STRING_CONST;
+            line_cursor = next;
+            line_cursor++;  // Eat the closing "
+        } else if (st_symbol_list.find(current_line.at(line_cursor)) !=
+                   std::string::npos) {
+            // SYMBOL Handling
+            token = current_line.substr(line_cursor++, 1);
+            token_type = JackTokenType::SYMBOL;
+        } else if (st_ident_start_list.find(current_line.at(line_cursor)) !=
+                   std::string::npos) {
+            size_t next =
+                current_line.find_first_not_of(st_ident_char_list, line_cursor);
+            size_t offset = (next == std::string::npos) ? std::string::npos
+                                                        : (next - line_cursor);
+            token = current_line.substr(line_cursor, offset);
+            // TODO: Analyse token to give KEYWORD or IDENT JackTokenType
+            // TODO: Create private methods to check for each keyword type
+            /* TODO: Nest all call to individual KEYWORD check in a bigger
+             * private method
+             */
+            line_cursor = next;
+        } else {
+            std::cerr << "Could not handle character : "
+                      << current_line.at(line_cursor)
+                      << " in : " << current_line << "\n";
+            exit(1);
+        }
     }
 
     // At this point, the line_cursor should be set on the char after the token
-    if (is_last_line && line_cursor >= current_line.size()) {
+    if (is_last_line && (line_cursor == std::string::npos ||
+                         line_cursor >= current_line.size())) {
         is_end_of_input = true;
     }
 }
@@ -63,11 +126,11 @@ bool JackTokeniser::hasMoreTokens() { return !is_end_of_input; }
 
 JackTokenType JackTokeniser::getTokenType() { return token_type; }
 
-std::string JackTokeniser::keyWord() {
+JackKeyword JackTokeniser::keyWord() {
     if (token_type != JackTokenType::KEYWORD) {
-        return "";
+        return JackKeyword::NOT_KEYWORD;
     } else {
-        return token;
+        return token_keyword;
     }
 }
 
