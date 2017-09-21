@@ -32,7 +32,7 @@ void JackTokeniser::init() {
 
 JackTokeniser::JackTokeniser() { init(); }
 
-JackTokeniser::JackTokeniser(char* filename) {
+JackTokeniser::JackTokeniser(const char* filename) {
     init();
     in_stream = new std::ifstream();
     in_stream->open(filename);

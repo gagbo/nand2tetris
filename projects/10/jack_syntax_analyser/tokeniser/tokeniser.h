@@ -46,7 +46,7 @@ class JackTokeniser {
     /** Default constructor */
     JackTokeniser();
     /** Constructor with only the file name */
-    JackTokeniser(char* filename);
+    JackTokeniser(const char* filename);
     /** Constructor giving directly the input file stream to use */
     JackTokeniser(std::ifstream* input_stream);
 
