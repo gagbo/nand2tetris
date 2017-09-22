@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "grammar_engine/grammar_engine.h"
 #include "tokeniser/tokeniser.h"
 
 void parse_arguments(int argc, char** argv,
@@ -12,6 +13,8 @@ int main(int argc, char** argv) {
     std::vector<std::string> files_list;
     parse_arguments(argc, argv, files_list);
 
+    std::cerr << "We found " << files_list.size() << " files to compile.\n";
+
     for (size_t i = 0; i < files_list.size(); ++i) {
         std::string output_filename = files_list[i];
         output_filename.replace(output_filename.end() - 4,
@@ -19,15 +22,20 @@ int main(int argc, char** argv) {
 
         std::cerr << "Converting " << files_list[i] << " into "
                   << output_filename << "\n";
-        JackTokeniser token_machine(files_list[i].c_str());
-        while (token_machine.hasMoreTokens()) {
-            std::cout << "Token found : " << token_machine.getToken() << " - "
-                      << static_cast<int>(token_machine.getTokenType()) << "\n";
-            token_machine.showState();
-            token_machine.advance();
+        JackGrammarEngine* file_compiler = new JackGrammarEngine(files_list[i]);
+
+        // TODO : Change this once the debugging phase is over
+        JackTokeniser* token_machine = file_compiler->getTokeniser();
+        while (token_machine->hasMoreTokens()) {
+            std::cout << "Token found : " << token_machine->getToken() << " - "
+                      << static_cast<int>(token_machine->getTokenType())
+                      << "\n";
+            token_machine->showState();
+            token_machine->advance();
         }
 
         std::cerr << "The rest is to be implemented by us \n";
+        delete file_compiler;
     }
 
     return 0;
@@ -53,6 +61,7 @@ void parse_arguments(int argc, char** argv,
             std::cerr << "Unique file mode\n";
             files_list.push_back(argument);
         } else if (boost::filesystem::is_directory(p)) {
+            std::cerr << p.generic_string() << "is a folder containing :\n";
             boost::filesystem::directory_iterator dir_iter(p);
             typedef std::vector<boost::filesystem::path> vec;
             vec p_dir_listing;  // so we can sort thelater
@@ -62,7 +71,6 @@ void parse_arguments(int argc, char** argv,
                  back_inserter(p_dir_listing));
             auto it = p_dir_listing.begin();
             while (it != p_dir_listing.end()) {
-                std::cerr << *it << " : ";
                 std::string filename = it->generic_string();
                 std::cerr << filename << "\n";
                 if (it->extension() == ".jack") {

@@ -14,6 +14,9 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
     ${${PROJECT_NAME}_SRCS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ../)
+
+target_link_libraries(${PROJECT_NAME} jack_tokeniser)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER grammar_engine)
 

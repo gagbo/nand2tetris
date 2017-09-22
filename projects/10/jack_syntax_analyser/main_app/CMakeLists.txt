@@ -16,7 +16,7 @@ if(Boost_FOUND)
     target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 endif()
 target_link_libraries(${PROJECT_NAME} jack_tokeniser)
-# target_link_libraries(${PROJECT_NAME} jack_grammar_engine)
+target_link_libraries(${PROJECT_NAME} jack_grammar_engine)
 
 ## #################################################################
 ## Installation
