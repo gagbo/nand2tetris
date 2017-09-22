@@ -120,8 +120,13 @@ void JackTokeniser::advance() {
             size_t offset = (next == std::string::npos) ? std::string::npos
                                                         : (next - line_cursor);
             token = current_line.substr(line_cursor, offset);
-            token_type =
-                isKeyword() ? JackTokenType::KEYWORD : JackTokenType::IDENT;
+            if (isKeyword()) {
+                token_type = JackTokenType::KEYWORD;
+            } else {
+                token_type = JackTokenType::IDENT;
+                token_keyword = JackKeyword::NOT_KEYWORD;
+            }
+
             line_cursor = current_line.find_first_not_of(" \t", next);
         } else {
             std::cerr << "Could not handle character : "
