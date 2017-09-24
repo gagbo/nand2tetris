@@ -208,9 +208,7 @@ bool JackGrammarEngine::compileVarDec() {
         testAndEatIdent();
     }
 
-    if (!testAndEatSymbol(';')) {
-        return false;
-    }
+    return testAndEatSymbol(';');
 }
 
 bool JackGrammarEngine::compileStatements() {
@@ -267,3 +265,11 @@ bool JackGrammarEngine::compileDo() {
 
     return testAndEatSymbol(';');
 }
+
+bool JackGrammarEngine::compileWhile() { return false; }
+bool JackGrammarEngine::compileLet() { return false; }
+bool JackGrammarEngine::compileIf() { return false; }
+bool JackGrammarEngine::compileReturn() { return false; }
+bool JackGrammarEngine::compileTerm() { return false; }
+bool JackGrammarEngine::compileExpression() { return false; }
+bool JackGrammarEngine::compileExpressionList() { return false; }
