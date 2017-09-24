@@ -20,14 +20,56 @@ JackGrammarEngine::JackGrammarEngine(std::string input_filename) {
 
 JackGrammarEngine::~JackGrammarEngine() {
     delete tokeniser;
-    if (!out_stream && out_stream->is_open()) out_stream->close();
+    if (!out_stream && out_stream->is_open()) {
+        // TODO : syn the ofstream to file
+        out_stream->close();
+    }
     delete out_stream;
 }
 
-void JackGrammarEngine::compileClass() {
+bool JackGrammarEngine::compileClass() {
     if (tokeniser->keyWord() != JackKeyword::CLASS_) {
-        return;
+        return false;
     } else {
+        *out_stream << "<class>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+        if (!testAndEatIdent()) {
+            return false;
+        }
+        if (!testAndEatSymbol('{')) {
+            return false;
+        }
+        // TODO: Missing classVarDec* avec while
+        // TODO: Missing subroutineDec* with while
+        if (!testAndEatSymbol('}')) {
+            return false;
+        }
+        *out_stream << "</class>\n";
+        return true;
     }
-    return;
+}
+
+bool JackGrammarEngine::testAndEatIdent() {
+    if (tokeniser->getTokenType() != JackTokenType::IDENT) {
+        std::cerr << "Expected Identifier :\n";
+        tokeniser->showState();
+        return false;
+    } else {
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+        return true;
+    }
+}
+
+bool JackGrammarEngine::testAndEatSymbol(char expected_char) {
+    if (tokeniser->symbol() != expected_char) {
+        std::cerr << "Expected " << expected_char << "\n";
+        tokeniser->showState();
+        return false;
+    } else {
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+        return true;
+    }
 }

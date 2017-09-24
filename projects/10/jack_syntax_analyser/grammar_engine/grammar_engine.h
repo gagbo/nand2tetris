@@ -1,5 +1,6 @@
 #ifndef _GRAMMARENGINE_GRAMMARENGINE_H_
 #define _GRAMMARENGINE_GRAMMARENGINE_H_ value
+#include <vector>
 #include "tokeniser/tokeniser.h"
 
 class JackGrammarEngine {
@@ -20,33 +21,42 @@ class JackGrammarEngine {
     std::ofstream* out_stream;
 
  private:
+    /** Use the tokeniser to test for Ident and output it on out_stream */
+    bool testAndEatIdent();
+    /** Use the tokeniser to test for Symbol and output it on out_stream */
+    bool testAndEatSymbol(char expected_char);
+    /** Use the tokeniser to test for particular keyword and output it on
+     * out_stream */
+    bool testAndEatKeyword(std::vector<JackKeyword> expected_keywords);
+    /** Use the tokeniser to test for Ident and output it on out_stream */
+    bool testAndEatType();
     /** compileClass Method */
-    void compileClass();
+    bool compileClass();
     /** compileClassVarDec Method */
-    void compileClassVarDec();
+    bool compileClassVarDec();
     /** compileSubroutine Method */
-    void compileSubroutine();
+    bool compileSubroutine();
     /** compileParameterList Method */
-    void compileParameterList();
+    bool compileParameterList();
     /** compileVarDec Method */
-    void compileVarDec();
+    bool compileVarDec();
     /** compileStatements Method */
-    void compileStatements();
+    bool compileStatements();
     /** compileDo Method */
-    void compileDo();
+    bool compileDo();
     /** compileLet Method */
-    void compileLet();
+    bool compileLet();
     /** compileWhile Method */
-    void compileWhile();
+    bool compileWhile();
     /** compileReturn Method */
-    void compileReturn();
+    bool compileReturn();
     /** compileIf Method */
-    void compileIf();
+    bool compileIf();
     /** compileExpression Method */
-    void compileExpression();
+    bool compileExpression();
     /** compileTerm Method */
-    void compileTerm();
+    bool compileTerm();
     /** compileExpressionList Method */
-    void compileExpressionList();
+    bool compileExpressionList();
 };
 #endif /* ifndef _GRAMMARENGINE_GRAMMARENGINE_H_ */
