@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
         /*     token_machine->advance(); */
         /* } */
 
-        std::cerr << "The rest is to be implemented by us \n";
+        std::cout << "Done !\n";
         delete file_compiler;
     }
 
