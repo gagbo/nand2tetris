@@ -143,8 +143,7 @@ JackTokenType JackTokeniser::getTokenType() const { return token_type; }
 std::string JackTokeniser::getToken() const { return token; }
 
 std::string JackTokeniser::xmlOutput() const {
-    std::string return_string = "";
-    std::ostringstream return_stream(return_string);
+    std::ostringstream return_stream;
 
     switch (token_type) {
         case JackTokenType::KEYWORD: {
@@ -183,15 +182,13 @@ std::string JackTokeniser::xmlOutput() const {
             exit(1);
         }
     }
-    // TODO: Debug line here
-    // TODO: sync return_stream and return_string
-    std::cerr << return_string;
-    return return_string;
+    return return_stream.str();
 }
 
 void JackTokeniser::showState() const {
     std::cerr << "State of Tokenizer : "
               << "line : '" << current_line << "'\n"
+              << "token : '" << token << "'\n"
               << "cursor : " << line_cursor << "\n"
               << "char under cursor : '" << current_line.at(line_cursor)
               << "'\n"

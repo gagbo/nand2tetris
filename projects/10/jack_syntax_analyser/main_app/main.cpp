@@ -24,15 +24,18 @@ int main(int argc, char** argv) {
                   << output_filename << "\n";
         JackGrammarEngine* file_compiler = new JackGrammarEngine(files_list[i]);
 
+        file_compiler->start();
+
         // TODO : Change this once the debugging phase is over
-        JackTokeniser* token_machine = file_compiler->getTokeniser();
-        while (token_machine->hasMoreTokens()) {
-            std::cout << "Token found : " << token_machine->getToken() << " - "
-                      << static_cast<int>(token_machine->getTokenType())
-                      << "\n";
-            token_machine->showState();
-            token_machine->advance();
-        }
+        /* JackTokeniser* token_machine = file_compiler->getTokeniser(); */
+        /* while (token_machine->hasMoreTokens()) { */
+        /*     std::cout << "Token found : " << token_machine->getToken() << " -
+         * " */
+        /*               << static_cast<int>(token_machine->getTokenType()) */
+        /*               << "\n"; */
+        /*     token_machine->showState(); */
+        /*     token_machine->advance(); */
+        /* } */
 
         std::cerr << "The rest is to be implemented by us \n";
         delete file_compiler;

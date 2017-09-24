@@ -13,6 +13,9 @@ class JackGrammarEngine {
      */
     JackGrammarEngine(std::string input_filename);
 
+    /* Starts the file parsing for the given instance */
+    bool start();
+
     ~JackGrammarEngine();
 
     JackTokeniser* getTokeniser() { return tokeniser; }

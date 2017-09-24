@@ -15,7 +15,6 @@ JackGrammarEngine::JackGrammarEngine(std::string input_filename) {
     tokeniser = new JackTokeniser(input_filename.c_str());
     out_stream = new std::ofstream(output_filename.c_str());
     std::cerr << "Grammar Engine instantiated for " << input_filename << "\n";
-    tokeniser->advance();
 }
 
 JackGrammarEngine::~JackGrammarEngine() {
@@ -26,6 +25,8 @@ JackGrammarEngine::~JackGrammarEngine() {
     }
     delete out_stream;
 }
+
+bool JackGrammarEngine::start() { return compileClass(); }
 
 bool JackGrammarEngine::testAndEatIdent() {
     if (tokeniser->getTokenType() != JackTokenType::IDENT) {
@@ -81,6 +82,8 @@ bool JackGrammarEngine::testAndEatType() {
 
 bool JackGrammarEngine::compileClass() {
     if (tokeniser->keyWord() != JackKeyword::CLASS_) {
+        std::cerr << "Expected class keyword\n";
+        tokeniser->showState();
         return false;
     } else {
         *out_stream << "<class>\n";
@@ -107,69 +110,85 @@ bool JackGrammarEngine::compileClass() {
 }
 
 bool JackGrammarEngine::compileClassVarDec() {
-    if (!testAndEatKeyword({JackKeyword::STATIC_, JackKeyword::FIELD_})) {
+    if (tokeniser->keyWord() != JackKeyword::STATIC_ &&
+        tokeniser->keyWord() != JackKeyword::FIELD_) {
         return false;
-    }
-    if (!testAndEatType()) {
-        return false;
-    }
-    if (!testAndEatIdent()) {
-        return false;
-    }
-    // Read the remaining varNames
-    while (testAndEatSymbol(',')) {
-        testAndEatIdent();
-    }
+    } else {
+        *out_stream << "<classVarDec>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+        if (!testAndEatType()) {
+            return false;
+        }
+        if (!testAndEatIdent()) {
+            return false;
+        }
+        // Read the remaining varNames
+        while (testAndEatSymbol(',')) {
+            testAndEatIdent();
+        }
 
-    if (!testAndEatSymbol(';')) {
-        return false;
+        if (!testAndEatSymbol(';')) {
+            return false;
+        }
+        *out_stream << "</classVarDec>\n";
+        return true;
     }
-    return true;
 }
 
 bool JackGrammarEngine::compileSubroutine() {
     // constructor;function;method
-    if (!testAndEatKeyword({JackKeyword::CONSTRUCTOR_, JackKeyword::FUNCTION_,
-                            JackKeyword::METHOD_})) {
+    if (tokeniser->keyWord() != JackKeyword::CONSTRUCTOR_ &&
+        tokeniser->keyWord() != JackKeyword::FUNCTION_ &&
+        tokeniser->keyWord() != JackKeyword::METHOD_) {
         return false;
-    }
-    // void or type
-    if (!testAndEatKeyword({JackKeyword::VOID_})) {
-        if (!testAndEatType()) {
+    } else {
+        *out_stream << "<subroutineDec>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+        // void or type
+        if (!testAndEatKeyword({JackKeyword::VOID_})) {
+            if (!testAndEatType()) {
+                return false;
+            }
+        }
+        // subroutineName
+        if (!testAndEatIdent()) {
             return false;
         }
-    }
-    // subroutineName
-    if (!testAndEatIdent()) {
-        return false;
-    }
-    // Symbol and parameter list
-    if (!testAndEatSymbol('(')) {
-        return false;
-    }
-    compileParameterList();
-    if (!testAndEatSymbol(')')) {
-        return false;
-    }
+        // Symbol and parameter list
+        if (!testAndEatSymbol('(')) {
+            return false;
+        }
+        compileParameterList();
+        if (!testAndEatSymbol(')')) {
+            return false;
+        }
 
-    if (!testAndEatSymbol('{')) {
-        return false;
+        *out_stream << "<subroutineBody>\n";
+
+        if (!testAndEatSymbol('{')) {
+            return false;
+        }
+
+        while (compileVarDec()) {
+            compileVarDec();
+        }
+
+        compileStatements();
+
+        if (!testAndEatSymbol('}')) {
+            return false;
+        }
+
+        *out_stream << "</subroutineBody>\n";
+        *out_stream << "</subroutineDec>\n";
+        return true;
     }
-
-    while (compileVarDec()) {
-        compileVarDec();
-    }
-
-    compileStatements();
-
-    if (!testAndEatSymbol('}')) {
-        return false;
-    }
-
-    return true;
 }
 
 bool JackGrammarEngine::compileParameterList() {
+    *out_stream << "<parameterList>\n";
     if (testAndEatType()) {
         if (!testAndEatIdent()) {
             return false;
@@ -186,33 +205,44 @@ bool JackGrammarEngine::compileParameterList() {
             return false;
         }
     }
+    *out_stream << "</parameterList>\n";
 
     return true;
 }
 
 bool JackGrammarEngine::compileVarDec() {
-    if (!testAndEatKeyword({JackKeyword::VAR_})) {
+    if (tokeniser->keyWord() != JackKeyword::VAR_) {
         return false;
-    }
+    } else {
+        *out_stream << "<varDec>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
 
-    if (!testAndEatType()) {
-        return false;
-    }
+        if (!testAndEatType()) {
+            return false;
+        }
 
-    if (!testAndEatIdent()) {
-        return false;
-    }
+        if (!testAndEatIdent()) {
+            return false;
+        }
 
-    // Read the remaining varNames
-    while (testAndEatSymbol(',')) {
-        testAndEatIdent();
-    }
+        // Read the remaining varNames
+        while (testAndEatSymbol(',')) {
+            testAndEatIdent();
+        }
 
-    return testAndEatSymbol(';');
+        if (!testAndEatSymbol(';')) {
+            return false;
+        }
+
+        *out_stream << "</varDec>\n";
+        return true;
+    }
 }
 
 bool JackGrammarEngine::compileStatements() {
     bool foundStatement = false;
+    *out_stream << "<statements>\n";
     do {
         foundStatement = false;
         if (compileLet()) {
@@ -232,44 +262,195 @@ bool JackGrammarEngine::compileStatements() {
             continue;
         }
     } while (foundStatement);
+
+    *out_stream << "</statements>\n";
     return true;
 }
 
 bool JackGrammarEngine::compileDo() {
-    if (!testAndEatKeyword({JackKeyword::DO_})) {
+    if (tokeniser->keyWord() != JackKeyword::DO_) {
         return false;
-    }
+    } else {
+        *out_stream << "<doStatement>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
 
-    if (!testAndEatIdent()) {
-        return false;
-    }
-
-    // Test if it's a class.subRoutine call
-    if (testAndEatSymbol('.')) {
         if (!testAndEatIdent()) {
             return false;
         }
-    }
 
-    if (!testAndEatSymbol('(')) {
-        return false;
-    }
+        // Test if it's a class.subRoutine call
+        if (testAndEatSymbol('.')) {
+            if (!testAndEatIdent()) {
+                return false;
+            }
+        }
 
-    if (!compileExpressionList()) {
-        return false;
-    }
+        if (!testAndEatSymbol('(')) {
+            return false;
+        }
 
-    if (!testAndEatSymbol(')')) {
-        return false;
-    }
+        if (!compileExpressionList()) {
+            return false;
+        }
 
-    return testAndEatSymbol(';');
+        if (!testAndEatSymbol(')')) {
+            return false;
+        }
+
+        if (!testAndEatSymbol(';')) {
+            return false;
+        }
+
+        *out_stream << "</doStatement>\n";
+        return true;
+    }
 }
 
-bool JackGrammarEngine::compileWhile() { return false; }
-bool JackGrammarEngine::compileLet() { return false; }
-bool JackGrammarEngine::compileIf() { return false; }
-bool JackGrammarEngine::compileReturn() { return false; }
+bool JackGrammarEngine::compileWhile() {
+    if (tokeniser->keyWord() != JackKeyword::WHILE_) {
+        return false;
+    } else {
+        *out_stream << "<whileStatement>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+
+        if (!testAndEatSymbol('(')) {
+            return false;
+        }
+
+        if (!compileExpression()) {
+            return false;
+        }
+
+        if (!testAndEatSymbol(')')) {
+            return false;
+        }
+
+        if (!testAndEatSymbol('{')) {
+            return false;
+        }
+
+        compileStatements();
+
+        if (!testAndEatSymbol('}')) {
+            return false;
+        }
+
+        *out_stream << "</whileStatement>\n";
+        return true;
+    }
+}
+
+bool JackGrammarEngine::compileLet() {
+    if (tokeniser->keyWord() != JackKeyword::LET_) {
+        return false;
+    } else {
+        *out_stream << "<letStatement>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+
+        if (!testAndEatIdent()) {
+            return false;
+        }
+
+        // Test if it's an Array call
+        if (testAndEatSymbol('[')) {
+            if (!testAndEatIdent()) {
+                return false;
+            }
+            if (!compileExpression()) {
+                return false;
+            }
+            if (!testAndEatSymbol(']')) {
+                return false;
+            }
+        }
+
+        if (!testAndEatSymbol('=')) {
+            return false;
+        }
+
+        if (!compileExpression()) {
+            return false;
+        }
+
+        if (!testAndEatSymbol(';')) {
+            return false;
+        }
+
+        *out_stream << "</letStatement>\n";
+        return true;
+    }
+}
+
+bool JackGrammarEngine::compileIf() {
+    if (tokeniser->keyWord() != JackKeyword::IF_) {
+        return false;
+    } else {
+        *out_stream << "<ifStatement>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+
+        if (!testAndEatSymbol('(')) {
+            return false;
+        }
+
+        if (!compileExpression()) {
+            return false;
+        }
+
+        if (!testAndEatSymbol(')')) {
+            return false;
+        }
+
+        if (!testAndEatSymbol('{')) {
+            return false;
+        }
+
+        compileStatements();
+
+        if (!testAndEatSymbol('}')) {
+            return false;
+        }
+
+        // Test if there's an else bloc :
+        if (testAndEatKeyword({JackKeyword::ELSE_})) {
+            if (!testAndEatSymbol('{')) {
+                return false;
+            }
+
+            compileStatements();
+
+            if (!testAndEatSymbol('}')) {
+                return false;
+            }
+        }
+
+        *out_stream << "</ifStatement>\n";
+        return true;
+    }
+}
+
+bool JackGrammarEngine::compileReturn() {
+    if (tokeniser->keyWord() != JackKeyword::RETURN_) {
+        return false;
+    } else {
+        *out_stream << "<returnStatement>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+
+        compileExpression();
+
+        if (!testAndEatSymbol(';')) {
+            return false;
+        }
+
+        *out_stream << "</returnStatement>\n";
+        return true;
+    }
+}
+
 bool JackGrammarEngine::compileTerm() { return false; }
 bool JackGrammarEngine::compileExpression() { return false; }
 bool JackGrammarEngine::compileExpressionList() { return false; }
