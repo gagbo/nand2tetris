@@ -142,6 +142,53 @@ JackTokenType JackTokeniser::getTokenType() const { return token_type; }
 
 std::string JackTokeniser::getToken() const { return token; }
 
+std::string JackTokeniser::xmlOutput() const {
+    std::string return_string = "";
+    std::ostringstream return_stream(return_string);
+
+    switch (token_type) {
+        case JackTokenType::KEYWORD: {
+            return_stream << "<keyword> ";
+            return_stream << token;
+            return_stream << " </keyword>\n";
+            break;
+        }
+        case JackTokenType::SYMBOL: {
+            return_stream << "<symbol> ";
+            return_stream << token;
+            return_stream << " </symbol>\n";
+            break;
+        }
+        case JackTokenType::IDENT: {
+            return_stream << "<identifier> ";
+            return_stream << token;
+            return_stream << " </identifier>\n";
+            break;
+        }
+        case JackTokenType::INT_CONST: {
+            return_stream << "<integerConstant> ";
+            return_stream << token;
+            return_stream << " </integerConstant>\n";
+            break;
+        }
+        case JackTokenType::STRING_CONST: {
+            return_stream << "<stringConstant> ";
+            return_stream << token;
+            return_stream << " </stringConstant>\n";
+            break;
+        }
+        default: {
+            std::cerr << "xmlOutput error : doesn't know this "
+                         "JackTokenType !!\n";
+            exit(1);
+        }
+    }
+    // TODO: Debug line here
+    // TODO: sync return_stream and return_string
+    std::cerr << return_string;
+    return return_string;
+}
+
 void JackTokeniser::showState() const {
     std::cerr << "State of Tokenizer : "
               << "line : '" << current_line << "'\n"

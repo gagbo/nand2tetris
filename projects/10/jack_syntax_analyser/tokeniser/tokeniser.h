@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 /** enum for the Jack token types */
 enum struct JackTokenType : int {
@@ -98,6 +99,9 @@ class JackTokeniser {
     std::string getToken() const;
 
     void showState() const;
+
+    /** Return the string to output in xml format */
+    std::string xmlOutput() const;
 
     /** Return the value of the token if it is the right type */
     JackKeyword keyWord() const;
