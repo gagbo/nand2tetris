@@ -20,7 +20,7 @@ JackGrammarEngine::JackGrammarEngine(std::string input_filename) {
 JackGrammarEngine::~JackGrammarEngine() {
     delete tokeniser;
     if (!out_stream && out_stream->is_open()) {
-        // TODO : syn the ofstream to file
+        out_stream->flush();
         out_stream->close();
     }
     delete out_stream;
@@ -531,14 +531,17 @@ bool JackGrammarEngine::compileTerm() {
         } else if (tokeniser->symbol() == '(') {  // (expr)
             *out_stream << "<term>\n";
             *out_stream << tokeniser->xmlOutput();
+            tokeniser->advance();
             if (!compileExpression()) {
                 return false;
             }
             if (!testAndEatSymbol(')')) {
-                return false;
+                std::cerr << "Term -> ( -> expr -> expecting )\n";
+                tokeniser->showState();
+                *out_stream << std::endl;
+                exit(1);
             }
             *out_stream << "</term>\n";
-            tokeniser->advance();
             return true;
         }
     }
@@ -546,29 +549,49 @@ bool JackGrammarEngine::compileTerm() {
 }
 
 bool JackGrammarEngine::compileExpression() {
+    auto back_from_empty_expression = out_stream->tellp();
+    *out_stream << "<expression>\n";
+    auto empty_expression = out_stream->tellp();
     if (!compileTerm()) {
+        out_stream->seekp(back_from_empty_expression);
         return false;
     }
 
-    while (testAndEatSymbol('+') || testAndEatSymbol('-') ||
-           testAndEatSymbol('*') || testAndEatSymbol('/') ||
-           testAndEatSymbol('&') || testAndEatSymbol('|') ||
-           testAndEatSymbol('<') || testAndEatSymbol('>') ||
-           testAndEatSymbol('=')) {
+    while (std::string("-*/&|<>=+").find(tokeniser->symbol()) !=
+           std::string::npos) {
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
         if (!compileTerm()) {
-            return false;
+            std::cerr << "Term -> op -> expecting term\n";
+            tokeniser->showState();
+            *out_stream << std::endl;
+            exit(1);
         }
+    }
+    bool erase_expr_tag = (out_stream->tellp() == empty_expression);
+    *out_stream << "</expression>\n";
+    if (erase_expr_tag) {
+        out_stream->seekp(back_from_empty_expression);
     }
     return true;
 }
 
 bool JackGrammarEngine::compileExpressionList() {
+    *out_stream << "<expressionList>\n";
+    if (tokeniser->symbol() == ')') {
+        *out_stream << "</expressionList>\n";
+        return true;
+    }
+
     while (compileExpression()) {
-        if (testAndEatSymbol(',')) {
-            if (!compileExpression()) {
+        if (!testAndEatSymbol(',')) {
+            if (tokeniser->symbol() == ')') {
+                *out_stream << "</expressionList>\n";
+                return true;
+            } else {
                 return false;
             }
         }
     }
-    return true;
+    return false;
 }

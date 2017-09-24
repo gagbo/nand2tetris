@@ -1,6 +1,7 @@
 #ifndef _GRAMMARENGINE_GRAMMARENGINE_H_
 #define _GRAMMARENGINE_GRAMMARENGINE_H_ value
 #include <algorithm>
+#include <string>
 #include <vector>
 #include "tokeniser/tokeniser.h"
 
