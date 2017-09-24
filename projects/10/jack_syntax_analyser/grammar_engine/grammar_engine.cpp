@@ -30,8 +30,8 @@ bool JackGrammarEngine::start() { return compileClass(); }
 
 bool JackGrammarEngine::testAndEatIdent() {
     if (tokeniser->getTokenType() != JackTokenType::IDENT) {
-        std::cerr << "Expected Identifier :\n";
-        tokeniser->showState();
+        /* std::cerr << "Expected Identifier :\n"; */
+        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << tokeniser->xmlOutput();
@@ -42,8 +42,8 @@ bool JackGrammarEngine::testAndEatIdent() {
 
 bool JackGrammarEngine::testAndEatSymbol(char expected_char) {
     if (tokeniser->symbol() != expected_char) {
-        std::cerr << "Expected " << expected_char << "\n";
-        tokeniser->showState();
+        /* std::cerr << "Expected " << expected_char << "\n"; */
+        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << tokeniser->xmlOutput();
@@ -57,8 +57,8 @@ bool JackGrammarEngine::testAndEatKeyword(
     auto result = std::find(expected_keywords.begin(), expected_keywords.end(),
                             tokeniser->keyWord());
     if (result == expected_keywords.end()) {
-        std::cerr << "Expected another keyword\n";
-        tokeniser->showState();
+        /* std::cerr << "Expected another keyword\n"; */
+        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << tokeniser->xmlOutput();
@@ -82,8 +82,8 @@ bool JackGrammarEngine::testAndEatType() {
 
 bool JackGrammarEngine::compileClass() {
     if (tokeniser->keyWord() != JackKeyword::CLASS_) {
-        std::cerr << "Expected class keyword\n";
-        tokeniser->showState();
+        /* std::cerr << "Expected class keyword\n"; */
+        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << "<class>\n";
@@ -356,9 +356,6 @@ bool JackGrammarEngine::compileLet() {
 
         // Test if it's an Array call
         if (testAndEatSymbol('[')) {
-            if (!testAndEatIdent()) {
-                return false;
-            }
             if (!compileExpression()) {
                 return false;
             }
@@ -451,6 +448,127 @@ bool JackGrammarEngine::compileReturn() {
     }
 }
 
-bool JackGrammarEngine::compileTerm() { return false; }
-bool JackGrammarEngine::compileExpression() { return false; }
-bool JackGrammarEngine::compileExpressionList() { return false; }
+bool JackGrammarEngine::compileTerm() {
+    // Using the || operator means the evaluation for unaryOp will stop if
+    // the first one is good
+    if (tokeniser->symbol() == '-' || tokeniser->symbol() == '~') {
+        *out_stream << "<term>\n";
+        *out_stream << tokeniser->xmlOutput();
+        tokeniser->advance();
+        if (!compileTerm()) {
+            return false;
+        }
+        *out_stream << "</term>\n";
+        return true;
+    } else {
+        if (tokeniser->getTokenType() == JackTokenType::INT_CONST) {
+            *out_stream << "<term>\n";
+            *out_stream << tokeniser->xmlOutput();
+            tokeniser->advance();
+            *out_stream << "</term>\n";
+            return true;
+        } else if (tokeniser->getTokenType() == JackTokenType::STRING_CONST) {
+            *out_stream << "<term>\n";
+            *out_stream << tokeniser->xmlOutput();
+            tokeniser->advance();
+            *out_stream << "</term>\n";
+            return true;
+        } else if (tokeniser->keyWord() == JackKeyword::TRUE_ ||
+                   tokeniser->keyWord() == JackKeyword::FALSE_ ||
+                   tokeniser->keyWord() == JackKeyword::NULL_ ||
+                   tokeniser->keyWord() == JackKeyword::THIS_) {
+            *out_stream << "<term>\n";
+            *out_stream << tokeniser->xmlOutput();
+            tokeniser->advance();
+            *out_stream << "</term>\n";
+            return true;
+        } else if (tokeniser->getTokenType() == JackTokenType::IDENT) {
+            /* This case should handle :
+             *   - varName
+             *   - varName[expr]
+             *   - subroutineCall
+             */
+            *out_stream << "<term>\n";
+            *out_stream << tokeniser->xmlOutput();
+            tokeniser->advance();
+            if (testAndEatSymbol('[')) {  // varName[expr]
+                if (!compileExpression()) {
+                    return false;
+                }
+                if (!testAndEatSymbol(']')) {
+                    return false;
+                }
+            } else if (testAndEatSymbol('.')) {  // subroutineCall with .
+                if (!testAndEatIdent()) {
+                    return false;
+                }
+
+                if (!testAndEatSymbol('(')) {
+                    return false;
+                }
+
+                if (!compileExpressionList()) {
+                    return false;
+                }
+
+                if (!testAndEatSymbol(')')) {
+                    return false;
+                }
+            } else if (testAndEatSymbol('(')) {  // subroutineCall no .
+                if (!compileExpressionList()) {
+                    return false;
+                }
+
+                if (!testAndEatSymbol(')')) {
+                    return false;
+                }
+            }
+            /* Else we already ate the varName and nothing
+             * else to do
+             */
+            *out_stream << "</term>\n";
+            return true;
+        } else if (tokeniser->symbol() == '(') {  // (expr)
+            *out_stream << "<term>\n";
+            *out_stream << tokeniser->xmlOutput();
+            if (!compileExpression()) {
+                return false;
+            }
+            if (!testAndEatSymbol(')')) {
+                return false;
+            }
+            *out_stream << "</term>\n";
+            tokeniser->advance();
+            return true;
+        }
+    }
+    return false;
+}
+
+bool JackGrammarEngine::compileExpression() {
+    if (!compileTerm()) {
+        return false;
+    }
+
+    while (testAndEatSymbol('+') || testAndEatSymbol('-') ||
+           testAndEatSymbol('*') || testAndEatSymbol('/') ||
+           testAndEatSymbol('&') || testAndEatSymbol('|') ||
+           testAndEatSymbol('<') || testAndEatSymbol('>') ||
+           testAndEatSymbol('=')) {
+        if (!compileTerm()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool JackGrammarEngine::compileExpressionList() {
+    while (compileExpression()) {
+        if (testAndEatSymbol(',')) {
+            if (!compileExpression()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
