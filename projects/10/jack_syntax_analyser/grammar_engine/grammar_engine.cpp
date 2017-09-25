@@ -19,7 +19,7 @@ JackGrammarEngine::JackGrammarEngine(std::string input_filename) {
 
 JackGrammarEngine::~JackGrammarEngine() {
     delete tokeniser;
-    if (!out_stream && out_stream->is_open()) {
+    if (out_stream != NULL && out_stream->is_open()) {
         out_stream->flush();
         out_stream->close();
     }
