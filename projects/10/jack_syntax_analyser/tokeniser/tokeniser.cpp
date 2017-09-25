@@ -66,8 +66,6 @@ void JackTokeniser::readNewLine() {
 }
 
 void JackTokeniser::advance() {
-    // TODO: Handle multi-line comments. There needs to be another attribute
-    // for this
     // Check for comment or end of line
     line_cursor = current_line.find_first_not_of(" \n\r\t", line_cursor);
     if (is_last_line && line_cursor == std::string::npos) {
@@ -75,9 +73,24 @@ void JackTokeniser::advance() {
         return;
     }
     if (line_cursor == std::string::npos ||
-        current_line.substr(line_cursor, 2) == "//" ||
-        current_line.substr(line_cursor, 2) == "/*") {
+        current_line.substr(line_cursor, 2) == "//") {
         readNewLine();
+        advance();
+    } else if (current_line.substr(line_cursor, 2) == "/*") {
+        ++line_cursor;  // Eat the /, and then eat the stars
+        line_cursor = current_line.find_first_not_of("*", line_cursor);
+        // Advance until the end of multiline comment is found
+        size_t pos_end_comment = current_line.find("*/");
+        while (pos_end_comment == std::string::npos) {
+            readNewLine();
+            pos_end_comment = current_line.find("*/");
+        }
+
+        // Go past the end of multiline comment marker, and advance once
+        line_cursor = pos_end_comment + 2;
+        if (line_cursor >= current_line.size()) {
+            readNewLine();
+        }
         advance();
     } else {  // Otherwise parse the token
               /* This is the zone where a State Machine implementation could be
