@@ -16,7 +16,7 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ../)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER grammar_engine)
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER symbol_table)
 
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION bin
