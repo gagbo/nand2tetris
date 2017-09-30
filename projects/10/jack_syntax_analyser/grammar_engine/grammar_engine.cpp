@@ -30,8 +30,6 @@ bool JackGrammarEngine::start() { return compileClass(); }
 
 bool JackGrammarEngine::testAndEatIdent() {
     if (tokeniser->getTokenType() != JackTokenType::IDENT) {
-        /* std::cerr << "Expected Identifier :\n"; */
-        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << tokeniser->xmlOutput();
@@ -42,8 +40,6 @@ bool JackGrammarEngine::testAndEatIdent() {
 
 bool JackGrammarEngine::testAndEatSymbol(char expected_char) {
     if (tokeniser->symbol() != expected_char) {
-        /* std::cerr << "Expected " << expected_char << "\n"; */
-        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << tokeniser->xmlOutput();
@@ -56,9 +52,8 @@ bool JackGrammarEngine::testAndEatKeyword(
     std::vector<JackKeyword> expected_keywords) {
     auto result = std::find(expected_keywords.begin(), expected_keywords.end(),
                             tokeniser->keyWord());
+
     if (result == expected_keywords.end()) {
-        /* std::cerr << "Expected another keyword\n"; */
-        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << tokeniser->xmlOutput();
@@ -69,7 +64,7 @@ bool JackGrammarEngine::testAndEatKeyword(
 
 bool JackGrammarEngine::testAndEatType() {
     /* We test first for the 3 valid keywords int char and boolean
-     * and if it's not good, look for an identifier
+     * and if it's not good, look for an identifier (class name)
      */
     std::vector<JackKeyword> valid_types = {
         JackKeyword::INT_, JackKeyword::CHAR_, JackKeyword::BOOLEAN_};
@@ -81,9 +76,8 @@ bool JackGrammarEngine::testAndEatType() {
 }
 
 bool JackGrammarEngine::compileClass() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::CLASS_) {
-        /* std::cerr << "Expected class keyword\n"; */
-        /* tokeniser->showState(); */
         return false;
     } else {
         *out_stream << "<class>\n";
@@ -110,6 +104,7 @@ bool JackGrammarEngine::compileClass() {
 }
 
 bool JackGrammarEngine::compileClassVarDec() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::STATIC_ &&
         tokeniser->keyWord() != JackKeyword::FIELD_) {
         return false;
@@ -138,6 +133,7 @@ bool JackGrammarEngine::compileClassVarDec() {
 
 bool JackGrammarEngine::compileSubroutine() {
     // constructor;function;method
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::CONSTRUCTOR_ &&
         tokeniser->keyWord() != JackKeyword::FUNCTION_ &&
         tokeniser->keyWord() != JackKeyword::METHOD_) {
@@ -211,6 +207,7 @@ bool JackGrammarEngine::compileParameterList() {
 }
 
 bool JackGrammarEngine::compileVarDec() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::VAR_) {
         return false;
     } else {
@@ -268,6 +265,7 @@ bool JackGrammarEngine::compileStatements() {
 }
 
 bool JackGrammarEngine::compileDo() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::DO_) {
         return false;
     } else {
@@ -308,6 +306,7 @@ bool JackGrammarEngine::compileDo() {
 }
 
 bool JackGrammarEngine::compileWhile() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::WHILE_) {
         return false;
     } else {
@@ -343,6 +342,7 @@ bool JackGrammarEngine::compileWhile() {
 }
 
 bool JackGrammarEngine::compileLet() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::LET_) {
         return false;
     } else {
@@ -382,6 +382,7 @@ bool JackGrammarEngine::compileLet() {
 }
 
 bool JackGrammarEngine::compileIf() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::IF_) {
         return false;
     } else {
@@ -430,6 +431,7 @@ bool JackGrammarEngine::compileIf() {
 }
 
 bool JackGrammarEngine::compileReturn() {
+    // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::RETURN_) {
         return false;
     } else {

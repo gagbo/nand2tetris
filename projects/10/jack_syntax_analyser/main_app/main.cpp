@@ -6,6 +6,9 @@
 #include "grammar_engine/grammar_engine.h"
 #include "tokeniser/tokeniser.h"
 
+/* Parse the arguments of the executable
+ * Side effect : fill files_list with the names of valid input names
+ */
 void parse_arguments(int argc, char** argv,
                      std::vector<std::string>& files_list);
 
@@ -15,6 +18,7 @@ int main(int argc, char** argv) {
 
     std::cerr << "We found " << files_list.size() << " files to compile.\n";
 
+    /* Loop over all the parsed filenames */
     for (size_t i = 0; i < files_list.size(); ++i) {
         std::string output_filename = files_list[i];
         output_filename.replace(output_filename.end() - 4,

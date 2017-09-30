@@ -96,8 +96,10 @@ class JackTokeniser {
     /** Tell the current token type */
     JackTokenType getTokenType() const;
 
+    /** Access the current token */
     std::string getToken() const;
 
+    /** Show the current line and position of tokeniser */
     void showState() const;
 
     /** Return the string to output in xml format */

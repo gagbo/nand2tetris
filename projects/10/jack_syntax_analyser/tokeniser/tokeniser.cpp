@@ -73,12 +73,15 @@ void JackTokeniser::advance() {
         return;
     }
     if (line_cursor == std::string::npos ||
-        current_line.substr(line_cursor, 2) == "//") {
+        current_line.substr(line_cursor, 2) == "//") {  // Inline comment
         readNewLine();
         advance();
-    } else if (current_line.substr(line_cursor, 2) == "/*") {
-        ++line_cursor;  // Eat the /, and then eat the stars
+    } else if (current_line.substr(line_cursor, 2) ==
+               "/*") {  // Multiline comment
+        // Eat the /, and then eat the stars
+        ++line_cursor;
         line_cursor = current_line.find_first_not_of("*", line_cursor);
+
         // Advance until the end of multiline comment is found
         size_t pos_end_comment = current_line.find("*/");
         while (pos_end_comment == std::string::npos) {
