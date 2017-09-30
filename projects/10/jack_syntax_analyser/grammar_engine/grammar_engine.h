@@ -1,8 +1,9 @@
 #ifndef _GRAMMARENGINE_GRAMMARENGINE_H_
-#define _GRAMMARENGINE_GRAMMARENGINE_H_ value
+#define _GRAMMARENGINE_GRAMMARENGINE_H_
 #include <algorithm>
 #include <string>
 #include <vector>
+#include "symbol_table/symbol_table.h"
 #include "tokeniser/tokeniser.h"
 
 class JackGrammarEngine {
@@ -14,15 +15,21 @@ class JackGrammarEngine {
      */
     JackGrammarEngine(std::string input_filename);
 
-    /* Starts the file parsing for the given instance */
+    /** Starts the file parsing for the given instance */
     bool start();
 
+    /** Destructor */
     ~JackGrammarEngine();
 
+    /** Access the tokeniser member
+     * This should only be used to debug the Grammar Engine
+     */
     JackTokeniser* getTokeniser() { return tokeniser; }
 
  protected:
+    /** tokeniser instance to parse the input file */
     JackTokeniser* tokeniser;
+    /** Output File Stream for writing */
     std::ofstream* out_stream;
 
  private:

@@ -1,4 +1,4 @@
-project(jack_grammar_engine)
+project(jack_symbol_table)
 
 file(GLOB ${PROJECT_NAME}_SRCS "*.cpp" )
 
@@ -15,9 +15,6 @@ add_library(${PROJECT_NAME} ${LIBRARY_TYPE}
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ../)
-
-target_link_libraries(${PROJECT_NAME} jack_tokeniser)
-target_link_libraries(${PROJECT_NAME} jack_symbol_table)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER grammar_engine)
 

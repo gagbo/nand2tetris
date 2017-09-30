@@ -31,5 +31,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${${PROJECT_NAME}_RUNTIME_OUTPU
 
 # Tree parsing
 add_subdirectory(tokeniser)
+add_subdirectory(symbol_table)
 add_subdirectory(grammar_engine)
 add_subdirectory(main_app)
