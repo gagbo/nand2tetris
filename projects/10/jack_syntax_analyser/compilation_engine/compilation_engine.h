@@ -1,24 +1,25 @@
-#ifndef _GRAMMARENGINE_GRAMMARENGINE_H_
-#define _GRAMMARENGINE_GRAMMARENGINE_H_
+#ifndef _COMPILATIONENGINE_COMPILATIONENGINE_H_
+#define _COMPILATIONENGINE_COMPILATIONENGINE_H_
 #include <algorithm>
 #include <string>
 #include <vector>
+#include "symbol_table/symbol_table.h"
 #include "tokeniser/tokeniser.h"
 
-class JackGrammarEngine {
+class JackCompilationEngine {
  public:
     /** Empty Constructor */
-    JackGrammarEngine();
+    JackCompilationEngine();
     /** Constructor taking a jack filename
      * Call compileClass() afterwards
      */
-    JackGrammarEngine(std::string input_filename);
+    JackCompilationEngine(std::string input_filename);
 
     /** Starts the file parsing for the given instance */
     bool start();
 
     /** Destructor */
-    ~JackGrammarEngine();
+    ~JackCompilationEngine();
 
     /** Access the tokeniser member
      * This should only be used to debug the Grammar Engine
@@ -30,6 +31,12 @@ class JackGrammarEngine {
     JackTokeniser* tokeniser;
     /** Output File Stream for writing */
     std::ofstream* out_stream;
+    /** Class level symbol table */
+    JackSymbolTable class_table;
+    /** Subroutine level symbol table */
+    JackSymbolTable inner_table;
+    /** Label counter for uniqueness */
+    int unique_label;
 
  private:
     /** Use the tokeniser to test for Ident and output it on out_stream */
@@ -70,4 +77,4 @@ class JackGrammarEngine {
     /** compileExpressionList Method */
     bool compileExpressionList();
 };
-#endif /* ifndef _GRAMMARENGINE_GRAMMARENGINE_H_ */
+#endif /* ifndef _COMPILATIONENGINE_COMPILATIONENGINE_H_ */
