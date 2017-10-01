@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+#include "compilation_engine/compilation_engine.h"
 #include "grammar_engine/grammar_engine.h"
 #include "tokeniser/tokeniser.h"
 
