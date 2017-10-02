@@ -22,4 +22,8 @@ typedef std::tuple<std::string, JackVariableKind, int> SymbolEntry;
 
 typedef std::map<std::string, SymbolEntry> JackSymbolTable;
 
+// TODO: Create a Struct or very public class that holds the kind counters along
+// with the JackSymbolTable.
+// Needs a clear() override, and an insert() override
+
 #endif /* ifndef _SYMBOLTABLE_SYMBOLTABLE_H */

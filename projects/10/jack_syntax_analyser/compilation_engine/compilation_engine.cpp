@@ -46,6 +46,26 @@ bool JackCompilationEngine::testAndEatIdent() {
     }
 }
 
+bool JackCompilationEngine::testAndEatIdent(SymbolEntry& hash_entry) {
+    if (tokeniser->getTokenType() != JackTokenType::IDENT) {
+        return false;
+    } else {
+        std::get<0>(hash_entry) = tokeniser->getToken();
+        tokeniser->advance();
+        return true;
+    }
+}
+
+bool JackCompilationEngine::testAndEatIdent(std::string& hash_key) {
+    if (tokeniser->getTokenType() != JackTokenType::IDENT) {
+        return false;
+    } else {
+        hash_key = tokeniser->getToken();
+        tokeniser->advance();
+        return true;
+    }
+}
+
 bool JackCompilationEngine::testAndEatSymbol(char expected_char) {
     if (tokeniser->symbol() != expected_char) {
         return false;
@@ -83,14 +103,31 @@ bool JackCompilationEngine::testAndEatType() {
     }
 }
 
+bool JackCompilationEngine::testAndEatType(SymbolEntry& hash_entry) {
+    /* We test first for the 3 valid keywords int char and boolean
+     * and if it's not good, look for an identifier (class name)
+     */
+    std::vector<JackKeyword> valid_types = {
+        JackKeyword::INT_, JackKeyword::CHAR_, JackKeyword::BOOLEAN_};
+    if (tokeniser->keyWord() == JackKeyword::INT_ ||
+        tokeniser->keyWord() == JackKeyword::CHAR_ ||
+        tokeniser->keyWord() == JackKeyword::BOOLEAN_) {
+        std::get<0>(hash_entry) == tokeniser->getToken();
+        tokeniser->advance();
+        return true;
+    } else {
+        return testAndEatIdent(hash_entry);
+    }
+}
+
 bool JackCompilationEngine::compileClass() {
     // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::CLASS_) {
         return false;
     } else {
         class_table.clear();
-        *out_stream << "<class>\n";
-        *out_stream << tokeniser->xmlOutput();
+        /* *out_stream << "<class>\n"; */
+        /* *out_stream << tokeniser->xmlOutput(); */
         tokeniser->advance();
         if (!testAndEatIdent()) {
             return false;
@@ -118,9 +155,10 @@ bool JackCompilationEngine::compileClassVarDec() {
         tokeniser->keyWord() != JackKeyword::FIELD_) {
         return false;
     } else {
-        *out_stream << "<classVarDec>\n";
-        *out_stream << tokeniser->xmlOutput();
+        /* *out_stream << "<classVarDec>\n"; */
+        /* *out_stream << tokeniser->xmlOutput(); */
         SymbolEntry new_var;
+        std::string new_var_key;
         switch (tokeniser->keyWord()) {
             case JackKeyword::STATIC_:
                 std::get<1>(new_var) = JackVariableKind::STATIC;
@@ -132,11 +170,13 @@ bool JackCompilationEngine::compileClassVarDec() {
                 break;
         }
         tokeniser->advance();
-        if (!testAndEatType()) {
+        if (!testAndEatType(new_var)) {
             return false;
         }
-        if (!testAndEatIdent()) {
+        if (!testAndEatIdent(new_var_key)) {
             return false;
+        } else {
+            // Add new_var_key, new_var in the table
         }
         // Read the remaining varNames
         while (testAndEatSymbol(',')) {

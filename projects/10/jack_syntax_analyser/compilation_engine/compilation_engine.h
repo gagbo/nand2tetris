@@ -41,13 +41,19 @@ class JackCompilationEngine {
  private:
     /** Use the tokeniser to test for Ident and output it on out_stream */
     bool testAndEatIdent();
+    /** Use the tokeniser to test for Ident and output it on out_stream */
+    bool testAndEatIdent(SymbolEntry& hash_entry);
+    /** Use the tokeniser to test for Ident and output it on out_stream */
+    bool testAndEatIdent(std::string& hash_key);
     /** Use the tokeniser to test for Symbol and output it on out_stream */
     bool testAndEatSymbol(char expected_char);
     /** Use the tokeniser to test for particular keyword and output it on
      * out_stream */
     bool testAndEatKeyword(std::vector<JackKeyword> expected_keywords);
-    /** Use the tokeniser to test for Ident and output it on out_stream */
+    /** Use the tokeniser to test for type and output it on out_stream */
     bool testAndEatType();
+    /** Use the tokeniser to test for type and updates a symbol table entry */
+    bool testAndEatType(SymbolEntry& hash_entry);
     /** compileClass Method */
     bool compileClass();
     /** compileClassVarDec Method */
