@@ -66,6 +66,7 @@ void VmWriter::UnaryOp(char operation) {
             exit(1);
     }
 }
+
 void VmWriter::KeywordConst(JackKeyword keyword) {
     switch (keyword) {
         case (JackKeyword::TRUE_):
