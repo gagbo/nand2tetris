@@ -59,3 +59,30 @@ std::string JackVariableTable::GetVmOutput(
         return output.str();
     }
 }
+
+JackVariableKind JackVariableTable::GetKindOf(std::string var_key) const {
+    auto it = var_map.find(var_key);
+    if (it == var_map.end()) {
+        return JackVariableKind::NONE;
+    } else {
+        return std::get<1>(it->second);
+    }
+}
+
+std::string JackVariableTable::GetTypeOf(std::string var_key) const {
+    auto it = var_map.find(var_key);
+    if (it == var_map.end()) {
+        return "";
+    } else {
+        return std::get<0>(it->second);
+    }
+}
+
+int JackVariableTable::GetIndexOf(std::string var_key) const {
+    auto it = var_map.find(var_key);
+    if (it == var_map.end()) {
+        return -1;
+    } else {
+        return std::get<2>(it->second);
+    }
+}
