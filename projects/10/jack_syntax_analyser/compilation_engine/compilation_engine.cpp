@@ -11,8 +11,8 @@ JackCompilationEngine::JackCompilationEngine()
 JackCompilationEngine::JackCompilationEngine(std::string input_filename) {
     tokeniser = NULL;
     out_stream = NULL;
-    class_table.clear();
-    inner_table.clear();
+    class_table.Clear();
+    inner_table.Clear();
     unique_label = 0;
     std::string output_filename = input_filename;
     output_filename.replace(output_filename.end() - 4, output_filename.end(),
@@ -24,8 +24,8 @@ JackCompilationEngine::JackCompilationEngine(std::string input_filename) {
 }
 
 JackCompilationEngine::~JackCompilationEngine() {
-    class_table.clear();
-    inner_table.clear();
+    class_table.Clear();
+    inner_table.Clear();
     delete tokeniser;
     if (out_stream != NULL && out_stream->is_open()) {
         out_stream->flush();
@@ -125,7 +125,7 @@ bool JackCompilationEngine::compileClass() {
     if (tokeniser->keyWord() != JackKeyword::CLASS_) {
         return false;
     } else {
-        class_table.clear();
+        class_table.Clear();
         /* *out_stream << "<class>\n"; */
         /* *out_stream << tokeniser->xmlOutput(); */
         tokeniser->advance();

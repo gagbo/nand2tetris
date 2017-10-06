@@ -32,9 +32,9 @@ class JackCompilationEngine {
     /** Output File Stream for writing */
     std::ofstream* out_stream;
     /** Class level symbol table */
-    JackSymbolTable class_table;
+    JackVariableTable class_table;
     /** Subroutine level symbol table */
-    JackSymbolTable inner_table;
+    JackVariableTable inner_table;
     /** Label counter for uniqueness */
     int unique_label;
 

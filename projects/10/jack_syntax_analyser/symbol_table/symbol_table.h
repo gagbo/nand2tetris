@@ -1,7 +1,9 @@
 #ifndef _SYMBOLTABLE_SYMBOLTABLE_H
 #define _SYMBOLTABLE_SYMBOLTABLE_H
 
+#include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <tuple>
 
@@ -9,7 +11,9 @@ enum struct JackVariableKind : int { FIELD, STATIC, ARGUMENT, LOCAL };
 
 static const char* KindStrings[] = {"field", "static", "argument", "local"};
 
-inline const char* getTextForKind(int enumVal) { return KindStrings[enumVal]; }
+inline const char* getTextForKind(JackVariableKind enumVal) {
+    return KindStrings[static_cast<int>(enumVal)];
+}
 
 // Tuple of symbol entry. (
 // type - int, Class, bool...- ,
@@ -22,8 +26,27 @@ typedef std::tuple<std::string, JackVariableKind, int> SymbolEntry;
 
 typedef std::map<std::string, SymbolEntry> JackSymbolTable;
 
-// TODO: Create a Struct or very public class that holds the kind counters along
-// with the JackSymbolTable.
-// Needs a clear() override, and an insert() override
+// A class to encapsulate counters and methods for JackSymbolTables
+class JackVariableTable {
+ public:
+    JackVariableTable() { var_map.clear(); }
+    ~JackVariableTable() { ; }
+
+    bool Insert(std::string var_name, SymbolEntry var_tuple);
+    bool Insert(std::string var_name, std::string var_type,
+                JackVariableKind var_kind);
+    std::string GetVmOutput(std::string var_key) const;
+    void Clear();
+
+ protected:
+    JackSymbolTable var_map;
+    int field_count;
+    int static_count;
+    int local_count;
+    int argument_count;
+
+ private:
+    int* VarCount(JackVariableKind);
+};
 
 #endif /* ifndef _SYMBOLTABLE_SYMBOLTABLE_H */
