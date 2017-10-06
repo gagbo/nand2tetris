@@ -42,10 +42,15 @@ bool JackVariableTable::Insert(std::string var_name, SymbolEntry var_tuple) {
     return Insert(var_name, std::get<0>(var_tuple), std::get<1>(var_tuple));
 }
 
-std::string JackVariableTable::GetVmOutput(std::string var_key) const {
+std::string JackVariableTable::GetVmOutput(
+    std::string var_key, JackVariableTable* p_parent_scope) const {
     if (var_map.find(var_key) == var_map.end()) {
-        std::cerr << "Variable " << var_key << " not found !\n";
-        return "";
+        if (p_parent_scope == NULL) {
+            std::cerr << "Variable " << var_key << " not found !\n";
+            return "";
+        } else {
+            return p_parent_scope->GetVmOutput(var_key, NULL);
+        }
     } else {
         std::ostringstream output;
         SymbolEntry var_tuple = var_map.at(var_key);

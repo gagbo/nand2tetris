@@ -32,11 +32,18 @@ class JackVariableTable {
     JackVariableTable() { var_map.clear(); }
     ~JackVariableTable() { ; }
 
+    // Insert / Clear operations
     bool Insert(std::string var_name, SymbolEntry var_tuple);
     bool Insert(std::string var_name, std::string var_type,
                 JackVariableKind var_kind);
-    std::string GetVmOutput(std::string var_key) const;
     void Clear();
+
+    // Accessors
+    std::string GetVmOutput(std::string var_key,
+                            JackVariableTable* p_parent_scope = NULL) const;
+    JackVariableKind GetKindOf(std::string var_key) const;
+    std::string GetTypeOf(std::string var_key) const;
+    int GetIndexOf(std::string var_key) const;
 
  protected:
     JackSymbolTable var_map;
