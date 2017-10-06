@@ -29,7 +29,11 @@ typedef std::map<std::string, SymbolEntry> JackSymbolTable;
 // A class to encapsulate counters and methods for JackSymbolTables
 class JackVariableTable {
  public:
-    JackVariableTable() { var_map.clear(); }
+    JackVariableTable() : p_parent_scope(NULL) { var_map.clear(); }
+    JackVariableTable(JackVariableTable* p_parent_scope)
+        : p_parent_scope(p_parent_scope) {
+        var_map.clear();
+    }
     ~JackVariableTable() { ; }
 
     // Insert / Clear operations
@@ -39,13 +43,16 @@ class JackVariableTable {
     void Clear();
 
     // Accessors
-    std::string GetVmOutput(std::string var_key,
-                            JackVariableTable* p_parent_scope = NULL) const;
+    std::string GetVmOutput(std::string var_key) const;
     JackVariableKind GetKindOf(std::string var_key) const;
     std::string GetTypeOf(std::string var_key) const;
     int GetIndexOf(std::string var_key) const;
 
+    // Lookup function
+    bool IsSymbol(std::string var_key) const;
+
  protected:
+    const JackVariableTable* p_parent_scope;
     JackSymbolTable var_map;
     int field_count;
     int static_count;
