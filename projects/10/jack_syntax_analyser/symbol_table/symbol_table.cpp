@@ -25,6 +25,10 @@ void JackVariableTable::Clear() {
     local_count = 0;
 }
 
+void JackVariableTable::SetParent(const JackVariableTable& parent_scope) {
+    p_parent_scope = &parent_scope;
+}
+
 bool JackVariableTable::Insert(std::string var_key, std::string var_type,
                                JackVariableKind var_kind) {
     if (var_map.find(var_key) == var_map.end()) {

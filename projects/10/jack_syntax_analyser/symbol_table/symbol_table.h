@@ -42,6 +42,9 @@ class JackVariableTable {
                 JackVariableKind var_kind);
     void Clear();
 
+    // Setter
+    void SetParent(const JackVariableTable& parent_scope);
+
     // Accessors
     std::string GetVmOutput(std::string var_key) const;
     JackVariableKind GetKindOf(std::string var_key) const;

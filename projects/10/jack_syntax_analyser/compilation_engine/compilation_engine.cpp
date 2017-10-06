@@ -12,7 +12,7 @@ JackCompilationEngine::JackCompilationEngine(std::string input_filename) {
     tokeniser = NULL;
     out_stream = NULL;
     class_table.Clear();
-    inner_table.Clear();
+    inner_table.SetParent(class_table);
     unique_label = 0;
     std::string output_filename = input_filename;
     output_filename.replace(output_filename.end() - 4, output_filename.end(),
@@ -126,10 +126,8 @@ bool JackCompilationEngine::compileClass() {
         return false;
     } else {
         class_table.Clear();
-        /* *out_stream << "<class>\n"; */
-        /* *out_stream << tokeniser->xmlOutput(); */
         tokeniser->advance();
-        if (!testAndEatIdent()) {
+        if (!testAndEatIdent(class_name)) {
             return false;
         }
         if (!testAndEatSymbol('{')) {
@@ -144,7 +142,6 @@ bool JackCompilationEngine::compileClass() {
         if (!testAndEatSymbol('}')) {
             return false;
         }
-        *out_stream << "</class>\n";
         return true;
     }
 }
@@ -155,8 +152,6 @@ bool JackCompilationEngine::compileClassVarDec() {
         tokeniser->keyWord() != JackKeyword::FIELD_) {
         return false;
     } else {
-        /* *out_stream << "<classVarDec>\n"; */
-        /* *out_stream << tokeniser->xmlOutput(); */
         SymbolEntry new_var;
         std::string new_var_key;
         switch (tokeniser->keyWord()) {
@@ -176,17 +171,17 @@ bool JackCompilationEngine::compileClassVarDec() {
         if (!testAndEatIdent(new_var_key)) {
             return false;
         } else {
-            // Add new_var_key, new_var in the table
+            class_table.Insert(new_var_key, new_var);
         }
         // Read the remaining varNames
         while (testAndEatSymbol(',')) {
-            testAndEatIdent();
+            testAndEatIdent(new_var_key);
+            class_table.Insert(new_var_key, new_var);
         }
 
         if (!testAndEatSymbol(';')) {
             return false;
         }
-        *out_stream << "</classVarDec>\n";
         return true;
     }
 }
@@ -199,8 +194,9 @@ bool JackCompilationEngine::compileSubroutine() {
         tokeniser->keyWord() != JackKeyword::METHOD_) {
         return false;
     } else {
-        *out_stream << "<subroutineDec>\n";
-        *out_stream << tokeniser->xmlOutput();
+        inner_table.Clear();
+        JackKeyword subroutine_type = tokeniser->keyWord();
+        std::string subroutine_name;
         tokeniser->advance();
         // void or type
         if (!testAndEatKeyword({JackKeyword::VOID_})) {
@@ -209,14 +205,14 @@ bool JackCompilationEngine::compileSubroutine() {
             }
         }
         // subroutineName
-        if (!testAndEatIdent()) {
+        if (!testAndEatIdent(subroutine_name)) {
             return false;
         }
         // Symbol and parameter list
         if (!testAndEatSymbol('(')) {
             return false;
         }
-        compileParameterList();
+        compileParameterList(subroutine_type);
         if (!testAndEatSymbol(')')) {
             return false;
         }
@@ -243,12 +239,18 @@ bool JackCompilationEngine::compileSubroutine() {
     }
 }
 
-bool JackCompilationEngine::compileParameterList() {
-    *out_stream << "<parameterList>\n";
-    if (testAndEatType()) {
-        if (!testAndEatIdent()) {
+bool JackCompilationEngine::compileParameterList(JackKeyword subroutine_type) {
+    SymbolEntry new_var;
+    std::get<1>(new_var) = JackVariableKind::ARGUMENT;
+    std::string new_var_key;
+    if (subroutine_type == JackKeyword::METHOD_) {
+        inner_table.Insert("this", class_name, JackVariableKind::ARGUMENT);
+    }
+    if (testAndEatType(new_var)) {
+        if (!testAndEatIdent(new_var_key)) {
             return false;
         }
+        inner_table.Insert(new_var_key, new_var);
     }
 
     // Read the remaining parameters
@@ -260,8 +262,8 @@ bool JackCompilationEngine::compileParameterList() {
         if (!testAndEatIdent()) {
             return false;
         }
+        inner_table.Insert(new_var_key, new_var);
     }
-    *out_stream << "</parameterList>\n";
 
     return true;
 }

@@ -37,6 +37,8 @@ class JackCompilationEngine {
     JackVariableTable inner_table;
     /** Label counter for uniqueness */
     int unique_label;
+    /** Store the class name for this pointer in symbol table */
+    std::string class_name;
 
  private:
     /** Use the tokeniser to test for Ident and output it on out_stream */
@@ -61,7 +63,7 @@ class JackCompilationEngine {
     /** compileSubroutine Method */
     bool compileSubroutine();
     /** compileParameterList Method */
-    bool compileParameterList();
+    bool compileParameterList(JackKeyword subroutine_type);
     /** compileVarDec Method */
     bool compileVarDec();
     /** compileStatements Method */
