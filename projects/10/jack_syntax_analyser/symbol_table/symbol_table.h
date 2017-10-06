@@ -9,7 +9,7 @@
 
 enum struct JackVariableKind : int { FIELD, STATIC, ARGUMENT, LOCAL, NONE };
 
-static const char* KindStrings[] = {"field", "static", "argument", "local", ""};
+static const char* KindStrings[] = {"this", "static", "argument", "local", ""};
 
 inline const char* getTextForKind(JackVariableKind enumVal) {
     return KindStrings[static_cast<int>(enumVal)];

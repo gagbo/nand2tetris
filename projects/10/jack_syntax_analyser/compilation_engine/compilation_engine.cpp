@@ -1,7 +1,7 @@
 #include "compilation_engine.h"
 
 JackCompilationEngine::JackCompilationEngine()
-    : tokeniser(NULL), out_stream(NULL) {
+    : tokeniser(NULL), out_stream(NULL), code_writer(NULL) {
     std::cerr
         << "The Jack Compilation Engine is not supposed to be instantiated"
            "without arguments !\n";
@@ -11,6 +11,7 @@ JackCompilationEngine::JackCompilationEngine()
 JackCompilationEngine::JackCompilationEngine(std::string input_filename) {
     tokeniser = NULL;
     out_stream = NULL;
+    code_writer = NULL;
     class_table.Clear();
     inner_table.SetParent(class_table);
     unique_label = 0;
@@ -19,6 +20,7 @@ JackCompilationEngine::JackCompilationEngine(std::string input_filename) {
                             "vm");
     tokeniser = new JackTokeniser(input_filename.c_str());
     out_stream = new std::ofstream(output_filename.c_str());
+    code_writer = new VmWriter(out_stream);
     std::cerr << "Compilation Engine instantiated for " << input_filename
               << "\n";
 }
@@ -32,6 +34,7 @@ JackCompilationEngine::~JackCompilationEngine() {
         out_stream->close();
     }
     delete out_stream;
+    delete code_writer;
 }
 
 bool JackCompilationEngine::start() { return compileClass(); }
@@ -197,12 +200,17 @@ bool JackCompilationEngine::compileSubroutine() {
         inner_table.Clear();
         JackKeyword subroutine_type = tokeniser->keyWord();
         std::string subroutine_name;
+        /* bool subroutine_is_void; */
         tokeniser->advance();
         // void or type
-        if (!testAndEatKeyword({JackKeyword::VOID_})) {
+        if (tokeniser->keyWord() != JackKeyword::VOID_) {
+            /* subroutine_is_void = false; */
             if (!testAndEatType()) {
                 return false;
             }
+        } else {
+            /* subroutine_is_void = true; */
+            tokeniser->advance();
         }
         // subroutineName
         if (!testAndEatIdent(subroutine_name)) {
@@ -273,28 +281,31 @@ bool JackCompilationEngine::compileVarDec() {
     if (tokeniser->keyWord() != JackKeyword::VAR_) {
         return false;
     } else {
-        *out_stream << "<varDec>\n";
-        *out_stream << tokeniser->xmlOutput();
+        SymbolEntry new_var;
+        std::get<1>(new_var) = JackVariableKind::LOCAL;
+        std::string new_var_key;
+
         tokeniser->advance();
 
-        if (!testAndEatType()) {
+        if (!testAndEatType(new_var)) {
             return false;
         }
 
-        if (!testAndEatIdent()) {
+        if (!testAndEatIdent(new_var_key)) {
             return false;
         }
+        inner_table.Insert(new_var_key, new_var);
 
         // Read the remaining varNames
         while (testAndEatSymbol(',')) {
-            testAndEatIdent();
+            testAndEatIdent(new_var);
+            inner_table.Insert(new_var_key, new_var);
         }
 
         if (!testAndEatSymbol(';')) {
             return false;
         }
 
-        *out_stream << "</varDec>\n";
         return true;
     }
 }
@@ -331,26 +342,29 @@ bool JackCompilationEngine::compileDo() {
     if (tokeniser->keyWord() != JackKeyword::DO_) {
         return false;
     } else {
-        *out_stream << "<doStatement>\n";
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
 
-        if (!testAndEatIdent()) {
+        std::string function_name;
+        int function_args = 0;
+        if (!testAndEatIdent(function_name)) {
             return false;
         }
 
         // Test if it's a class.subRoutine call
         if (testAndEatSymbol('.')) {
-            if (!testAndEatIdent()) {
+            function_name += ".";
+            std::string sub_name;
+            if (!testAndEatIdent(sub_name)) {
                 return false;
             }
+            function_name += sub_name;
         }
 
         if (!testAndEatSymbol('(')) {
             return false;
         }
 
-        if (!compileExpressionList()) {
+        if (!compileExpressionList(function_args)) {
             return false;
         }
 
@@ -362,7 +376,8 @@ bool JackCompilationEngine::compileDo() {
             return false;
         }
 
-        *out_stream << "</doStatement>\n";
+        code_writer->Do(function_name, function_args);
+
         return true;
     }
 }
@@ -372,8 +387,6 @@ bool JackCompilationEngine::compileWhile() {
     if (tokeniser->keyWord() != JackKeyword::WHILE_) {
         return false;
     } else {
-        *out_stream << "<whileStatement>\n";
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
 
         if (!testAndEatSymbol('(')) {
@@ -408,11 +421,10 @@ bool JackCompilationEngine::compileLet() {
     if (tokeniser->keyWord() != JackKeyword::LET_) {
         return false;
     } else {
-        *out_stream << "<letStatement>\n";
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
 
-        if (!testAndEatIdent()) {
+        std::string target;
+        if (!testAndEatIdent(target)) {
             return false;
         }
 
@@ -438,7 +450,7 @@ bool JackCompilationEngine::compileLet() {
             return false;
         }
 
-        *out_stream << "</letStatement>\n";
+        code_writer->Let(inner_table, target);
         return true;
     }
 }
@@ -448,8 +460,6 @@ bool JackCompilationEngine::compileIf() {
     if (tokeniser->keyWord() != JackKeyword::IF_) {
         return false;
     } else {
-        *out_stream << "<ifStatement>\n";
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
 
         if (!testAndEatSymbol('(')) {
@@ -497,9 +507,13 @@ bool JackCompilationEngine::compileReturn() {
     if (tokeniser->keyWord() != JackKeyword::RETURN_) {
         return false;
     } else {
-        *out_stream << "<returnStatement>\n";
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
+
+        if (tokeniser->symbol() == ';') {
+            code_writer->ReturnVoid();
+            tokeniser->advance();
+            return true;
+        }
 
         compileExpression();
 
@@ -507,44 +521,34 @@ bool JackCompilationEngine::compileReturn() {
             return false;
         }
 
-        *out_stream << "</returnStatement>\n";
         return true;
     }
 }
 
 bool JackCompilationEngine::compileTerm() {
-    // Using the || operator means the evaluation for unaryOp will stop if
-    // the first one is good
     if (tokeniser->symbol() == '-' || tokeniser->symbol() == '~') {
-        *out_stream << "<term>\n";
-        *out_stream << tokeniser->xmlOutput();
+        char unary_op = tokeniser->symbol();
         tokeniser->advance();
         if (!compileTerm()) {
             return false;
         }
-        *out_stream << "</term>\n";
+        code_writer->UnaryOp(unary_op);
         return true;
     } else {
         if (tokeniser->getTokenType() == JackTokenType::INT_CONST) {
-            *out_stream << "<term>\n";
-            *out_stream << tokeniser->xmlOutput();
+            code_writer->IntConst(tokeniser->intVal());
             tokeniser->advance();
-            *out_stream << "</term>\n";
             return true;
         } else if (tokeniser->getTokenType() == JackTokenType::STRING_CONST) {
-            *out_stream << "<term>\n";
-            *out_stream << tokeniser->xmlOutput();
+            // Handle the creation on the fly of strings
             tokeniser->advance();
-            *out_stream << "</term>\n";
             return true;
         } else if (tokeniser->keyWord() == JackKeyword::TRUE_ ||
                    tokeniser->keyWord() == JackKeyword::FALSE_ ||
                    tokeniser->keyWord() == JackKeyword::NULL_ ||
                    tokeniser->keyWord() == JackKeyword::THIS_) {
-            *out_stream << "<term>\n";
-            *out_stream << tokeniser->xmlOutput();
+            code_writer->KeywordConst(tokeniser->keyWord());
             tokeniser->advance();
-            *out_stream << "</term>\n";
             return true;
         } else if (tokeniser->getTokenType() == JackTokenType::IDENT) {
             /* This case should handle :
@@ -552,8 +556,6 @@ bool JackCompilationEngine::compileTerm() {
              *   - varName[expr]
              *   - subroutineCall
              */
-            *out_stream << "<term>\n";
-            *out_stream << tokeniser->xmlOutput();
             tokeniser->advance();
             if (testAndEatSymbol('[')) {  // varName[expr]
                 if (!compileExpression()) {
@@ -571,7 +573,8 @@ bool JackCompilationEngine::compileTerm() {
                     return false;
                 }
 
-                if (!compileExpressionList()) {
+                int temp;
+                if (!compileExpressionList(temp)) {
                     return false;
                 }
 
@@ -579,7 +582,8 @@ bool JackCompilationEngine::compileTerm() {
                     return false;
                 }
             } else if (testAndEatSymbol('(')) {  // subroutineCall no .
-                if (!compileExpressionList()) {
+                int temp;
+                if (!compileExpressionList(temp)) {
                     return false;
                 }
 
@@ -590,11 +594,8 @@ bool JackCompilationEngine::compileTerm() {
             /* Else we already ate the varName and nothing
              * else to do
              */
-            *out_stream << "</term>\n";
             return true;
         } else if (tokeniser->symbol() == '(') {  // (expr)
-            *out_stream << "<term>\n";
-            *out_stream << tokeniser->xmlOutput();
             tokeniser->advance();
             if (!compileExpression()) {
                 return false;
@@ -605,7 +606,6 @@ bool JackCompilationEngine::compileTerm() {
                 *out_stream << std::endl;
                 exit(1);
             }
-            *out_stream << "</term>\n";
             return true;
         }
     }
@@ -613,17 +613,13 @@ bool JackCompilationEngine::compileTerm() {
 }
 
 bool JackCompilationEngine::compileExpression() {
-    auto back_from_empty_expression = out_stream->tellp();
-    *out_stream << "<expression>\n";
-    auto empty_expression = out_stream->tellp();
     if (!compileTerm()) {
-        out_stream->seekp(back_from_empty_expression);
         return false;
     }
 
     while (std::string("-*/&|<>=+").find(tokeniser->symbol()) !=
            std::string::npos) {
-        *out_stream << tokeniser->xmlOutput();
+        char operation = tokeniser->symbol();
         tokeniser->advance();
         if (!compileTerm()) {
             std::cerr << "Term -> op -> expecting term\n";
@@ -631,16 +627,12 @@ bool JackCompilationEngine::compileExpression() {
             *out_stream << std::endl;
             exit(1);
         }
-    }
-    bool erase_expr_tag = (out_stream->tellp() == empty_expression);
-    *out_stream << "</expression>\n";
-    if (erase_expr_tag) {
-        out_stream->seekp(back_from_empty_expression);
+        code_writer->Op(operation);
     }
     return true;
 }
 
-bool JackCompilationEngine::compileExpressionList() {
+bool JackCompilationEngine::compileExpressionList(int& function_args) {
     *out_stream << "<expressionList>\n";
     if (tokeniser->symbol() == ')') {
         *out_stream << "</expressionList>\n";
@@ -648,6 +640,7 @@ bool JackCompilationEngine::compileExpressionList() {
     }
 
     while (compileExpression()) {
+        function_args++;
         if (!testAndEatSymbol(',')) {
             if (tokeniser->symbol() == ')') {
                 *out_stream << "</expressionList>\n";

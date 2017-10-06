@@ -5,8 +5,11 @@
 #include <vector>
 #include "symbol_table/symbol_table.h"
 #include "tokeniser/tokeniser.h"
+#include "vm_writer.h"
 
 class JackCompilationEngine {
+    friend VmWriter;
+
  public:
     /** Empty Constructor */
     JackCompilationEngine();
@@ -35,6 +38,8 @@ class JackCompilationEngine {
     JackVariableTable class_table;
     /** Subroutine level symbol table */
     JackVariableTable inner_table;
+    /** Writer module for the code */
+    VmWriter* code_writer;
     /** Label counter for uniqueness */
     int unique_label;
     /** Store the class name for this pointer in symbol table */
@@ -83,6 +88,6 @@ class JackCompilationEngine {
     /** compileTerm Method */
     bool compileTerm();
     /** compileExpressionList Method */
-    bool compileExpressionList();
+    bool compileExpressionList(int& function_args);
 };
 #endif /* ifndef _COMPILATIONENGINE_COMPILATIONENGINE_H_ */
