@@ -43,7 +43,6 @@ bool JackCompilationEngine::testAndEatIdent() {
     if (tokeniser->getTokenType() != JackTokenType::IDENT) {
         return false;
     } else {
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
         return true;
     }
@@ -73,7 +72,6 @@ bool JackCompilationEngine::testAndEatSymbol(char expected_char) {
     if (tokeniser->symbol() != expected_char) {
         return false;
     } else {
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
         return true;
     }
@@ -87,7 +85,6 @@ bool JackCompilationEngine::testAndEatKeyword(
     if (result == expected_keywords.end()) {
         return false;
     } else {
-        *out_stream << tokeniser->xmlOutput();
         tokeniser->advance();
         return true;
     }
@@ -225,8 +222,6 @@ bool JackCompilationEngine::compileSubroutine() {
             return false;
         }
 
-        *out_stream << "<subroutineBody>\n";
-
         if (!testAndEatSymbol('{')) {
             return false;
         }
@@ -241,8 +236,6 @@ bool JackCompilationEngine::compileSubroutine() {
             return false;
         }
 
-        *out_stream << "</subroutineBody>\n";
-        *out_stream << "</subroutineDec>\n";
         return true;
     }
 }
@@ -312,7 +305,6 @@ bool JackCompilationEngine::compileVarDec() {
 
 bool JackCompilationEngine::compileStatements() {
     bool foundStatement = false;
-    *out_stream << "<statements>\n";
     do {
         foundStatement = false;
         if (compileLet()) {
@@ -333,7 +325,6 @@ bool JackCompilationEngine::compileStatements() {
         }
     } while (foundStatement);
 
-    *out_stream << "</statements>\n";
     return true;
 }
 
@@ -411,7 +402,6 @@ bool JackCompilationEngine::compileWhile() {
             return false;
         }
 
-        *out_stream << "</whileStatement>\n";
         return true;
     }
 }
@@ -497,7 +487,6 @@ bool JackCompilationEngine::compileIf() {
             }
         }
 
-        *out_stream << "</ifStatement>\n";
         return true;
     }
 }
@@ -556,16 +545,30 @@ bool JackCompilationEngine::compileTerm() {
              *   - varName[expr]
              *   - subroutineCall
              */
+            std::string ident = tokeniser->getToken();
             tokeniser->advance();
             if (testAndEatSymbol('[')) {  // varName[expr]
+                *out_stream << "push " << inner_table.GetVmOutput(ident)
+                            << "\n";
                 if (!compileExpression()) {
                     return false;
                 }
                 if (!testAndEatSymbol(']')) {
                     return false;
                 }
+                code_writer->ArrayAccess();
             } else if (testAndEatSymbol('.')) {  // subroutineCall with .
-                if (!testAndEatIdent()) {
+                int arg_count = 0;
+                if (inner_table.GetTypeOf(ident) !=
+                    "") {  // Then it is a method call
+                    *out_stream << "push " << inner_table.GetVmOutput(ident)
+                                << "\n";
+                    arg_count++;
+                } else {  // Else it is a function call
+                }
+
+                std::string method;
+                if (!testAndEatIdent(method)) {
                     return false;
                 }
 
@@ -573,27 +576,35 @@ bool JackCompilationEngine::compileTerm() {
                     return false;
                 }
 
-                int temp;
-                if (!compileExpressionList(temp)) {
+                if (!compileExpressionList(arg_count)) {
                     return false;
                 }
 
                 if (!testAndEatSymbol(')')) {
                     return false;
                 }
+                code_writer->SubroutineCall(
+                    inner_table.GetTypeOf(ident) + "." + method, arg_count);
             } else if (testAndEatSymbol('(')) {  // subroutineCall no .
-                int temp;
-                if (!compileExpressionList(temp)) {
+                // This means the class is implied and depends on the file
+                int arg_count = 0;
+                if (!compileExpressionList(arg_count)) {
                     return false;
                 }
 
                 if (!testAndEatSymbol(')')) {
                     return false;
                 }
+
+                code_writer->SubroutineCall(class_name + "." + ident,
+                                            arg_count);
+            } else {
+                /* Else we already ate the varName and nothing
+                 * else to do
+                 */
+                *out_stream << "push " << inner_table.GetVmOutput(ident)
+                            << "\n";
             }
-            /* Else we already ate the varName and nothing
-             * else to do
-             */
             return true;
         } else if (tokeniser->symbol() == '(') {  // (expr)
             tokeniser->advance();
@@ -633,9 +644,7 @@ bool JackCompilationEngine::compileExpression() {
 }
 
 bool JackCompilationEngine::compileExpressionList(int& function_args) {
-    *out_stream << "<expressionList>\n";
     if (tokeniser->symbol() == ')') {
-        *out_stream << "</expressionList>\n";
         return true;
     }
 
@@ -643,7 +652,6 @@ bool JackCompilationEngine::compileExpressionList(int& function_args) {
         function_args++;
         if (!testAndEatSymbol(',')) {
             if (tokeniser->symbol() == ')') {
-                *out_stream << "</expressionList>\n";
                 return true;
             } else {
                 return false;

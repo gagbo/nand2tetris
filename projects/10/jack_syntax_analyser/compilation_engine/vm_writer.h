@@ -19,6 +19,8 @@ class VmWriter {
     void KeywordConst(JackKeyword keyword);
     void Op(char operation);
     void UnaryOp(char operation);
+    void ArrayAccess();
+    void SubroutineCall(std::string name, int args);
 
  protected:
     std::ofstream& out_stream;

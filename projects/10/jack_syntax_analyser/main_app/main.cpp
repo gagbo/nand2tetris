@@ -22,12 +22,11 @@ int main(int argc, char** argv) {
     /* Loop over all the parsed filenames */
     for (size_t i = 0; i < files_list.size(); ++i) {
         std::string output_filename = files_list[i];
-        output_filename.replace(output_filename.end() - 4,
-                                output_filename.end(), "xml");
 
-        std::cerr << "Converting " << files_list[i] << " into "
-                  << output_filename << "\n";
-        JackGrammarEngine* file_compiler = new JackGrammarEngine(files_list[i]);
+        std::cerr << "Converting " << files_list[i] << "\n";
+        JackGrammarEngine* file_grammar = new JackGrammarEngine(files_list[i]);
+        JackCompilationEngine* file_compiler =
+            new JackCompilationEngine(files_list[i]);
 
         file_compiler->start();
 
@@ -44,6 +43,7 @@ int main(int argc, char** argv) {
 
         std::cout << "Done !\n";
         delete file_compiler;
+        delete file_grammar;
     }
 
     return 0;

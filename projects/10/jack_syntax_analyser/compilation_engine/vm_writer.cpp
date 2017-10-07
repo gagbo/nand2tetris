@@ -87,3 +87,14 @@ void VmWriter::KeywordConst(JackKeyword keyword) {
             exit(1);
     }
 }
+
+void VmWriter::ArrayAccess() {
+    out_stream << "add\n"
+                  "pop pointer 1\n"
+                  "push that 0\n"
+                  "pop temp 0\n";
+}
+
+void VmWriter::SubroutineCall(std::string name, int args) {
+    out_stream << "call " << name << " " << args << "\n";
+}
