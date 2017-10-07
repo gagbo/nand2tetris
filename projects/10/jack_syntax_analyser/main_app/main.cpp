@@ -24,7 +24,8 @@ int main(int argc, char** argv) {
         std::string output_filename = files_list[i];
 
         std::cerr << "Converting " << files_list[i] << "\n";
-        JackGrammarEngine* file_grammar = new JackGrammarEngine(files_list[i]);
+        /* JackGrammarEngine* file_grammar = new
+         * JackGrammarEngine(files_list[i]); */
         JackCompilationEngine* file_compiler =
             new JackCompilationEngine(files_list[i]);
 
@@ -43,7 +44,7 @@ int main(int argc, char** argv) {
 
         std::cout << "Done !\n";
         delete file_compiler;
-        delete file_grammar;
+        /* delete file_grammar; */
     }
 
     return 0;
