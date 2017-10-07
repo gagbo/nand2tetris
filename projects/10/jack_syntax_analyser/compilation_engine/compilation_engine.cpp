@@ -234,6 +234,11 @@ bool JackCompilationEngine::compileSubroutine() {
 
         code_writer->Function(class_name + "." + subroutine_name,
                               local_var_count);
+        if (subroutine_type == JackKeyword::CONSTRUCTOR_) {
+            code_writer->Constructor(class_table.FieldCount());
+        } else if (subroutine_type == JackKeyword::METHOD_) {
+            code_writer->Method();
+        }
 
         compileStatements();
 
@@ -262,10 +267,10 @@ bool JackCompilationEngine::compileParameterList(JackKeyword subroutine_type) {
     // Read the remaining parameters
     // If there's a comma, we have to have a parameter
     while (testAndEatSymbol(',')) {
-        if (!testAndEatType()) {
+        if (!testAndEatType(new_var)) {
             return false;
         }
-        if (!testAndEatIdent()) {
+        if (!testAndEatIdent(new_var_key)) {
             return false;
         }
         inner_table.Insert(new_var_key, new_var);
@@ -297,7 +302,7 @@ bool JackCompilationEngine::compileVarDec(int& local) {
 
         // Read the remaining varNames
         while (testAndEatSymbol(',')) {
-            testAndEatIdent(new_var);
+            testAndEatIdent(new_var_key);
             inner_table.Insert(new_var_key, new_var);
             local++;
         }
@@ -342,27 +347,43 @@ bool JackCompilationEngine::compileDo() {
     } else {
         tokeniser->advance();
 
-        std::string function_name;
-        int function_args = 0;
-        if (!testAndEatIdent(function_name)) {
+        std::string ident;
+        int arg_count = 0;
+        if (!testAndEatIdent(ident)) {
             return false;
         }
 
+        std::string class_called;
         // Test if it's a class.subRoutine call
         if (testAndEatSymbol('.')) {
-            function_name += ".";
+            // TODO: Code duplication with CompileTerm
+            if (inner_table.GetTypeOf(ident) !=
+                "") {  // Then it is a method call
+                *out_stream << "push " << inner_table.GetVmOutput(ident)
+                            << "\n";
+                arg_count++;
+                class_called = inner_table.GetTypeOf(ident);
+            } else {  // Else it is a function call
+                class_called = ident;
+            }
+            ident = class_called + ".";
             std::string sub_name;
             if (!testAndEatIdent(sub_name)) {
                 return false;
             }
-            function_name += sub_name;
+            ident += sub_name;
+        } else if (inner_table.GetTypeOf(ident) == "") {
+            // Test if it's (implicit_this).method call
+            *out_stream << "push pointer 0\n";
+            arg_count++;
+            ident = class_name + "." + ident;
         }
 
         if (!testAndEatSymbol('(')) {
             return false;
         }
 
-        if (!compileExpressionList(function_args)) {
+        if (!compileExpressionList(arg_count)) {
             return false;
         }
 
@@ -374,7 +395,7 @@ bool JackCompilationEngine::compileDo() {
             return false;
         }
 
-        code_writer->Do(function_name, function_args);
+        code_writer->Do(ident, arg_count);
 
         return true;
     }
@@ -385,6 +406,9 @@ bool JackCompilationEngine::compileWhile() {
     if (tokeniser->keyWord() != JackKeyword::WHILE_) {
         return false;
     } else {
+        int first_label = unique_label++;
+        int second_label = unique_label++;
+        code_writer->Label(first_label);
         tokeniser->advance();
 
         if (!testAndEatSymbol('(')) {
@@ -399,6 +423,8 @@ bool JackCompilationEngine::compileWhile() {
             return false;
         }
 
+        code_writer->IfFirstPart(second_label);
+
         if (!testAndEatSymbol('{')) {
             return false;
         }
@@ -408,6 +434,9 @@ bool JackCompilationEngine::compileWhile() {
         if (!testAndEatSymbol('}')) {
             return false;
         }
+
+        code_writer->Goto(first_label);
+        code_writer->Label(second_label);
 
         return true;
     }
@@ -421,18 +450,22 @@ bool JackCompilationEngine::compileLet() {
         tokeniser->advance();
 
         std::string target;
+        bool is_array = false;
         if (!testAndEatIdent(target)) {
             return false;
         }
 
         // Test if it's an Array call
         if (testAndEatSymbol('[')) {
+            is_array = true;
+            code_writer->Push(inner_table, target);
             if (!compileExpression()) {
                 return false;
             }
             if (!testAndEatSymbol(']')) {
                 return false;
             }
+            code_writer->Add();
         }
 
         if (!testAndEatSymbol('=')) {
@@ -447,7 +480,11 @@ bool JackCompilationEngine::compileLet() {
             return false;
         }
 
-        code_writer->Let(inner_table, target);
+        if (!is_array) {
+            code_writer->Let(inner_table, target);
+        } else {
+            code_writer->LetArray();
+        }
         return true;
     }
 }
@@ -457,6 +494,8 @@ bool JackCompilationEngine::compileIf() {
     if (tokeniser->keyWord() != JackKeyword::IF_) {
         return false;
     } else {
+        int first_label = unique_label++;
+        int second_label = unique_label++;
         tokeniser->advance();
 
         if (!testAndEatSymbol('(')) {
@@ -466,6 +505,8 @@ bool JackCompilationEngine::compileIf() {
         if (!compileExpression()) {
             return false;
         }
+
+        code_writer->IfFirstPart(first_label);
 
         if (!testAndEatSymbol(')')) {
             return false;
@@ -481,6 +522,8 @@ bool JackCompilationEngine::compileIf() {
             return false;
         }
 
+        code_writer->IfMidPart(second_label, first_label);
+
         // Test if there's an else bloc :
         if (testAndEatKeyword({JackKeyword::ELSE_})) {
             if (!testAndEatSymbol('{')) {
@@ -493,6 +536,7 @@ bool JackCompilationEngine::compileIf() {
                 return false;
             }
         }
+        code_writer->Label(second_label);
 
         return true;
     }
@@ -509,6 +553,12 @@ bool JackCompilationEngine::compileReturn() {
             code_writer->ReturnVoid();
             tokeniser->advance();
             return true;
+        } else if (tokeniser->keyWord() == JackKeyword::THIS_) {
+            code_writer->ReturnThis();
+            tokeniser->advance();
+            if (!testAndEatSymbol(';')) {
+                return false;
+            }
         }
 
         compileExpression();
@@ -516,6 +566,8 @@ bool JackCompilationEngine::compileReturn() {
         if (!testAndEatSymbol(';')) {
             return false;
         }
+
+        code_writer->Return();
 
         return true;
     }
@@ -536,7 +588,7 @@ bool JackCompilationEngine::compileTerm() {
             tokeniser->advance();
             return true;
         } else if (tokeniser->getTokenType() == JackTokenType::STRING_CONST) {
-            // Handle the creation on the fly of strings
+            code_writer->StringConst(tokeniser->stringVal());
             tokeniser->advance();
             return true;
         } else if (tokeniser->keyWord() == JackKeyword::TRUE_ ||
@@ -563,15 +615,19 @@ bool JackCompilationEngine::compileTerm() {
                 if (!testAndEatSymbol(']')) {
                     return false;
                 }
+                code_writer->Add();
                 code_writer->ArrayAccess();
             } else if (testAndEatSymbol('.')) {  // subroutineCall with .
                 int arg_count = 0;
+                std::string class_called;
                 if (inner_table.GetTypeOf(ident) !=
                     "") {  // Then it is a method call
                     *out_stream << "push " << inner_table.GetVmOutput(ident)
                                 << "\n";
                     arg_count++;
+                    class_called = inner_table.GetTypeOf(ident);
                 } else {  // Else it is a function call
+                    class_called = ident;
                 }
 
                 std::string method;
@@ -590,8 +646,8 @@ bool JackCompilationEngine::compileTerm() {
                 if (!testAndEatSymbol(')')) {
                     return false;
                 }
-                code_writer->SubroutineCall(
-                    inner_table.GetTypeOf(ident) + "." + method, arg_count);
+                code_writer->SubroutineCall(class_called + "." + method,
+                                            arg_count);
             } else if (testAndEatSymbol('(')) {  // subroutineCall no .
                 // This means the class is implied and depends on the file
                 int arg_count = 0;

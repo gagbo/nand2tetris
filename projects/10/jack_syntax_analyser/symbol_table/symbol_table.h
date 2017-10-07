@@ -50,6 +50,7 @@ class JackVariableTable {
     JackVariableKind GetKindOf(std::string var_key) const;
     std::string GetTypeOf(std::string var_key) const;
     int GetIndexOf(std::string var_key) const;
+    inline int FieldCount() const { return field_count; }
 
     // Lookup function
     bool IsSymbol(std::string var_key) const;
