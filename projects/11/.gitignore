@@ -1,2 +1,4 @@
 **/*.vm
 **/*.xml
+#Symlink to Compiler
+JackSyntaxAnalyser
