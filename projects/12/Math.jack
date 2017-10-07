@@ -23,6 +23,17 @@ class Math {
      *  the Jack expressions x*y and multiply(x,y) return the same value.
      */
     function int multiply(int x, int y) {
+        var int i, sum, shiftedX;
+        let sum = 0;
+        let shiftedX = x;
+        let i = 0;
+        while (i<16) {
+            if (y ith LSB == 1) {
+                let sum = sum + shiftedX;
+            }
+            let shiftedX = shiftedX + shiftedX;
+        }
+        return sum;
     }
 
     /** Returns the integer part of x/y.
