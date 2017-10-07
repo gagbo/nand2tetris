@@ -13,6 +13,7 @@ JackCompilationEngine::JackCompilationEngine(std::string input_filename) {
     out_stream = NULL;
     code_writer = NULL;
     class_table.Clear();
+    inner_table.Clear();
     inner_table.SetParent(class_table);
     unique_label = 0;
     std::string output_filename = input_filename;
@@ -226,9 +227,13 @@ bool JackCompilationEngine::compileSubroutine() {
             return false;
         }
 
-        while (compileVarDec()) {
-            compileVarDec();
+        int local_var_count = 0;
+        while (compileVarDec(local_var_count)) {
+            compileVarDec(local_var_count);
         }
+
+        code_writer->Function(class_name + "." + subroutine_name,
+                              local_var_count);
 
         compileStatements();
 
@@ -269,7 +274,7 @@ bool JackCompilationEngine::compileParameterList(JackKeyword subroutine_type) {
     return true;
 }
 
-bool JackCompilationEngine::compileVarDec() {
+bool JackCompilationEngine::compileVarDec(int& local) {
     // Simple test because we need to write xml tag before token
     if (tokeniser->keyWord() != JackKeyword::VAR_) {
         return false;
@@ -287,12 +292,14 @@ bool JackCompilationEngine::compileVarDec() {
         if (!testAndEatIdent(new_var_key)) {
             return false;
         }
+        local++;
         inner_table.Insert(new_var_key, new_var);
 
         // Read the remaining varNames
         while (testAndEatSymbol(',')) {
             testAndEatIdent(new_var);
             inner_table.Insert(new_var_key, new_var);
+            local++;
         }
 
         if (!testAndEatSymbol(';')) {

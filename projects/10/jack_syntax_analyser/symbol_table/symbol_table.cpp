@@ -31,12 +31,16 @@ void JackVariableTable::SetParent(const JackVariableTable& parent_scope) {
 
 bool JackVariableTable::Insert(std::string var_key, std::string var_type,
                                JackVariableKind var_kind) {
-    if (var_map.find(var_key) == var_map.end()) {
+    if (var_map.find(var_key) != var_map.end()) {
         std::cerr << "Variable " << var_key << " already exists !\n";
         return false;
     } else {
         SymbolEntry var_new_tuple(var_type, var_kind, *VarCount(var_kind));
         var_map.insert(std::make_pair(var_key, var_new_tuple));
+        /* std::cerr << var_key << " " << var_type << " " */
+        /*           << getTextForKind(var_kind) << " " << *VarCount(var_kind)
+         */
+        /*           << " added to the table\n"; */
         ++*VarCount(var_kind);
         return true;
     }
@@ -59,6 +63,7 @@ std::string JackVariableTable::GetVmOutput(std::string var_key) const {
         SymbolEntry var_tuple = var_map.at(var_key);
         output << getTextForKind(std::get<1>(var_tuple));
         output << " " << std::get<2>(var_tuple);
+        /* std::cerr << var_key << " " << output.str() << "\n"; */
         return output.str();
     }
 }

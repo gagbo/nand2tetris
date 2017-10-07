@@ -98,3 +98,7 @@ void VmWriter::ArrayAccess() {
 void VmWriter::SubroutineCall(std::string name, int args) {
     out_stream << "call " << name << " " << args << "\n";
 }
+
+void VmWriter::Function(std::string name, int args) {
+    out_stream << "function " << name << " " << args << "\n";
+}

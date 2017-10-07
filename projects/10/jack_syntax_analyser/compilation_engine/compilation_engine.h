@@ -70,7 +70,7 @@ class JackCompilationEngine {
     /** compileParameterList Method */
     bool compileParameterList(JackKeyword subroutine_type);
     /** compileVarDec Method */
-    bool compileVarDec();
+    bool compileVarDec(int& local);
     /** compileStatements Method */
     bool compileStatements();
     /** compileDo Method */

@@ -21,6 +21,7 @@ class VmWriter {
     void UnaryOp(char operation);
     void ArrayAccess();
     void SubroutineCall(std::string name, int args);
+    void Function(std::string name, int local);
 
  protected:
     std::ofstream& out_stream;
