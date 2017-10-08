@@ -99,6 +99,15 @@ class Math {
             }
         }
 
+        if ((absY>absX) | (absY<0)) {
+            return 0;
+        }
+        let q = Math.divide(absX, 2*absY);
+        if ((absX - (2 * absY * q)) < absY) {
+            return negDiv * 2 * q;
+        } else {
+            return negDiv * ((2 * q) + 1);
+        }
     }
 
     /** Returns the integer part of the square root of x. */
