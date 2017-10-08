@@ -33,6 +33,7 @@ class Math {
 
     /** Returns the absolute value of x. */
     function int abs(int x) {
+        return (Math.max(x, -x));
     }
 
     /** Returns the product of x and y. 
@@ -68,9 +69,19 @@ class Math {
 
     /** Returns the greater number. */
     function int max(int a, int b) {
+        if (a > b) {
+            return a;
+        } else {
+            return b;
+        }
     }
 
     /** Returns the smaller number. */
     function int min(int a, int b) {
+        if (a < b) {
+            return a;
+        } else {
+            return b;
+        }
     }
 }
