@@ -10,10 +10,17 @@
  */ 
 class Memory {
     static Array ram;
+    static Array heap;
+    static int freeList;
 
     /** Initializes the class. */
     function void init() {
         let ram = 0;
+        let heap = 2048; // until 16383
+        let freeList = 2048;
+        let heap[0] = 0;
+        let heap[1] = 14335;
+        return;
     }
 
     /** Returns the RAM value at the given address. */
@@ -30,10 +37,48 @@ class Memory {
     /** Finds an available RAM block of the given size and returns
      *  a reference to its base address. */
     function int alloc(int size) {
+    // First fit
+        var Array block;
+        var int block_next, block_size;
+        var Array newBlock;
+        let block = freeList;
+        let block_size = freeList[1];
+        let block_next = freeList[0];
+        if (block_size > (size + 2)) {
+            let freeList = freeList + size + 2;
+            let freeList[0] = 0;
+            let freeList[1] = block_size - size - 2;
+            let block[0] = 0;
+            let block[1] = size;
+            return block + 2;
+        }
+        while (~(block_next = 0)) {
+            let block = block_next;
+            let block_size = block[1];
+            let block_next = block[0];
+            if (block_size > (size + 2)) {
+                let block_size = block_size - size - 2;
+                let block[1] = block_size;
+                let newBlock = block + block_size;
+                let newBlock[0] = 0;
+                let newBlock[1] = size;
+                return newBlock + 2;
+            }
+        }
+        return -1;
     }
 
     /** De-allocates the given object (cast as an array) by making
      *  it available for future allocations. */
     function void deAlloc(Array o) {
-    }    
+        var Array block_next, block_next_next;
+        let block_next = freeList;
+        let block_next_next = freeList[0];
+        while (~(block_next_next=0)) {
+            let block_next = block_next_next;
+            let block_next_next = block_next[0];
+        }
+        let block_next_next = o;
+        return;
+    }
 }
