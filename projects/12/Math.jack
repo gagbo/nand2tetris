@@ -28,7 +28,26 @@ class Math {
         let twoToThe[12] = 4096;
         let twoToThe[13] = 8192;
         let twoToThe[14] = 16384;
-        let twoToThe[15] = 32768;
+        let twoToThe[15] = 32767;
+    }
+
+    /** Returns true if i-th LSB of x is 1, false if 0 */
+    function boolean bit (int x, int i) {
+        var int j, shiftedX;
+        if (i = 15) {
+            return (x < 0);
+        }
+
+        let j = 14;
+        let shiftedX = x;
+        while (j > i) {
+            if (shiftedX > (twoToThe[j] - 1)) {
+                let shiftedX = shiftedX - twoToThe[j];
+            }
+            let j = j - 1;
+        }
+
+        return (shiftedX > (twoToThe[j] - 1));
     }
 
     /** Returns the absolute value of x. */
