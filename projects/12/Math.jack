@@ -112,6 +112,17 @@ class Math {
 
     /** Returns the integer part of the square root of x. */
     function int sqrt(int x) {
+        var int j, y;
+        let y = 0;
+        let j = 7;
+        if (x = 32767) {
+            return 181;
+        }
+        while (j > -1) {
+            if ( ((y+twoToThe[j]) * (y+twoToThe[j])) < (x+1) ) {
+                let y = y + twoToThe[j];
+            }
+        return y;
     }
 
     /** Returns the greater number. */
