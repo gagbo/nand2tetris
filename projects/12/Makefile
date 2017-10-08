@@ -1,4 +1,7 @@
-Math: Math.jack
-	@cp -lfv Math.jack MathTest/Math.jack
-	../../tools/JackCompiler.sh MathTest
-	../../tools/VMEmulator.sh MathTest/MathTest.tst
+all: Math Memory Screen Output Keyboard String Array Sys
+
+%: %.jack
+	@cp -lfv $< $@Test/$<
+	../../tools/JackCompiler.sh $@Test
+	@echo "Ready to run ../../tools/VMEmulator.sh\
+	 on $@Test/$@Test.tst"
