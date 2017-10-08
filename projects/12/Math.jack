@@ -40,7 +40,11 @@ class Math {
         }
 
         let j = 14;
-        let shiftedX = x;
+        if (Math.bit(x,15)) {
+            let shiftedX = x + 32767 + 1;
+        } else {
+            let shiftedX = x;
+        }
         while (j > i) {
             if (shiftedX > (twoToThe[j] - 1)) {
                 let shiftedX = shiftedX - twoToThe[j];
@@ -66,11 +70,12 @@ class Math {
         let sum = 0;
         let shiftedX = x;
         let i = 0;
-        while (i<17) {
+        while (i<16) {
             if (Math.bit(y,i)) {
                 let sum = sum + shiftedX;
             }
             let shiftedX = shiftedX + shiftedX;
+            let i = i + 1;
         }
         return sum;
     }
@@ -122,6 +127,8 @@ class Math {
             if ( ((y+twoToThe[j]) * (y+twoToThe[j])) < (x+1) ) {
                 let y = y + twoToThe[j];
             }
+            let j = j - 1;
+        }
         return y;
     }
 
