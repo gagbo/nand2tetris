@@ -29,6 +29,7 @@ class Math {
         let twoToThe[13] = 8192;
         let twoToThe[14] = 16384;
         let twoToThe[15] = 32767;
+        return;
     }
 
     /** Returns true if i-th LSB of x is 1, false if 0 */
