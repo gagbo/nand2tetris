@@ -172,12 +172,16 @@ class Screen {
         while ((Math.abs(a)<(dx+1)) & (Math.abs(b)<(dy+1))) {
             do Screen.drawPixel(x+a, y+b);
 
-            if (diff>0) {
+            if (dx = 0) {
                 let b = b + db;
-                let diff = diff + dx;
             } else {
-                let a = a + da;
-                let diff = diff + dy;
+                if (diff>0) {
+                    let b = b + db;
+                    let diff = diff - dx;
+                } else {
+                    let a = a + da;
+                    let diff = diff + dy;
+                }
             }
         }
         return;
