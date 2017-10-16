@@ -44,7 +44,7 @@ class Screen {
         while (j<256) {
             let i = 0;
             while (i < 32) {
-                do Memory.poke(16384 + 32 * j + i, 0);
+                do Memory.poke(16384 + (32 * j) + i, 0);
                 let i = i + 1;
             }
             let j = j + 1;
