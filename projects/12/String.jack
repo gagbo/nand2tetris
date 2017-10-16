@@ -11,54 +11,138 @@
  * string-oriented operations.
  */
 class String {
+    field int len, maxLength;
+    field Array table;
 
     /** constructs a new empty string with a maximum length of maxLength
      *  and initial length of 0. */
-    constructor String new(int maxLength) {
+    constructor String new(int maxLen) {
+        if (maxLen > 0) {
+            let table = Array.new(maxLen);
+        } else {
+            let table = Memory.alloc(1);
+        }
+        let len = 0;
+        let maxLength = maxLen;
+        return this;
     }
 
     /** Disposes this string. */
     method void dispose() {
+        do table.dispose();
+        do Memory.deAlloc(this);
+        return;
     }
 
     /** Returns the current length of this string. */
     method int length() {
+        return len;
     }
 
     /** Returns the character at the j-th location of this string. */
     method char charAt(int j) {
+        if (j < len) {
+            return table[j];
+        } else {
+            return 0;
+        }
     }
 
     /** Sets the character at the j-th location of this string to c. */
     method void setCharAt(int j, char c) {
+        if (j < len) {
+            let table[j] = c;
+            return;
+        } else {
+            return;
+        }
     }
 
     /** Appends c to this string's end and returns this string. */
     method String appendChar(char c) {
+        if (len < maxLength) {
+            let table[len] = c;
+            let len = len + 1;
+        }
+        return this;
     }
 
     /** Erases the last character from this string. */
     method void eraseLastChar() {
+        if (len > 0) {
+            let table[len - 1] = 0;
+            let len = len - 1;
+        }
+        return;
     }
 
     /** Returns the integer value of this string, 
      *  until a non-digit character is detected. */
     method int intValue() {
+        var int cursor;
+        var boolean negInt;
+        var int value;
+
+        let cursor = 0;
+        let negInt = false;
+        let value = 0;
+        if (table[cursor] = 45) {
+            let negInt = true;
+            let cursor = cursor + 1;
+        }
+
+        while ((cursor < len) & (table[cursor] > 47) & (table[cursor] < 58) ) {
+            let value = value * 10;
+            let value = value + table[cursor]-48;
+            let cursor = cursor + 1;
+        }
+
+        if (negInt) {
+            return -value;
+        } else {
+            return value;
+        }
     }
 
     /** Sets this string to hold a representation of the given value. */
     method void setInt(int val) {
+        var int digit;
+        var int c;
+        var String res;
+
+        let res = String.new(5);
+        let len = 0;
+        if (val < 0) {
+            do appendChar(45);
+            let val = -val;
+        }
+
+        while (val > 0) {
+            let digit = val - ((val/10)*10);
+            let c = digit + 48;
+            do res.appendChar(c);
+            let val = val/10;
+        }
+        let c = 0;
+        while ( c < res.length() ) {
+            do appendChar(res.charAt(res.length() - c - 1));
+            let c = c +1;
+        }
+        return;
     }
 
     /** Returns the new line character. */
     function char newLine() {
+        return 128;
     }
 
     /** Returns the backspace character. */
     function char backSpace() {
+        return 129;
     }
 
     /** Returns the double quote (") character. */
     function char doubleQuote() {
+        return 34;
     }
 }
