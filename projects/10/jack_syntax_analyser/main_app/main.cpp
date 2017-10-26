@@ -1,3 +1,17 @@
+/* Copyright 2017 Gerry Agbobada
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of version 3 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <boost/filesystem.hpp>  // Is included in std=c++17
 #include <iostream>
 #include <string>
@@ -24,27 +38,13 @@ int main(int argc, char** argv) {
         std::string output_filename = files_list[i];
 
         std::cerr << "Converting " << files_list[i] << "\n";
-        /* JackGrammarEngine* file_grammar = new
-         * JackGrammarEngine(files_list[i]); */
         JackCompilationEngine* file_compiler =
             new JackCompilationEngine(files_list[i]);
 
         file_compiler->start();
 
-        // TODO : Change this once the debugging phase is over
-        /* JackTokeniser* token_machine = file_compiler->getTokeniser(); */
-        /* while (token_machine->hasMoreTokens()) { */
-        /*     std::cout << "Token found : " << token_machine->getToken() << " -
-         * " */
-        /*               << static_cast<int>(token_machine->getTokenType()) */
-        /*               << "\n"; */
-        /*     token_machine->showState(); */
-        /*     token_machine->advance(); */
-        /* } */
-
         std::cout << "Done !\n";
         delete file_compiler;
-        /* delete file_grammar; */
     }
 
     return 0;
